@@ -1,180 +1,168 @@
-import {
-  defineConfig,
-  resolveSiteDataByRoute,
-  type HeadConfig
-} from 'vitepress'
-import {
-  groupIconMdPlugin,
-  groupIconVitePlugin,
-  localIconLoader
-} from 'vitepress-plugin-group-icons'
-import llmstxt from 'vitepress-plugin-llms'
-
-const prod = !!process.env.NETLIFY
+import { defineConfig, type DefaultTheme } from 'vitepress'
 
 export default defineConfig({
-  title: 'VitePress',
+  title: 'PyLLM',
+  description: 'Python与大模型开发教程，从入门到实战',
 
-  rewrites: {
-    'en/:rest*': ':rest*'
-  },
-
-  lastUpdated: true,
   cleanUrls: true,
-  metaChunk: true,
-
-  markdown: {
-    math: true,
-    codeTransformers: [
-      // We use `[!!code` and `@@include` in demo to prevent transformation,
-      // here we revert it back.
-      {
-        postprocess(code) {
-          return code
-            .replaceAll('[!!code', '[!code')
-            .replaceAll('@@include', '@include')
-        }
-      }
-    ],
-    config(md) {
-      // TODO: remove when https://github.com/vuejs/vitepress/issues/4431 is fixed
-      const fence = md.renderer.rules.fence!
-      md.renderer.rules.fence = function (tokens, idx, options, env, self) {
-        const { localeIndex = 'root' } = env
-        const codeCopyButtonTitle = (() => {
-          switch (localeIndex) {
-            case 'es':
-              return 'Copiar código'
-            case 'fa':
-              return 'کپی کد'
-            case 'ko':
-              return '코드 복사'
-            case 'pt':
-              return 'Copiar código'
-            case 'ru':
-              return 'Скопировать код'
-            case 'zh':
-              return '复制代码'
-            case 'ja':
-              return 'コードをコピー'
-            default:
-              return 'Copy code'
-          }
-        })()
-        return fence(tokens, idx, options, env, self).replace(
-          '<button title="Copy Code" class="copy"></button>',
-          `<button title="${codeCopyButtonTitle}" class="copy"></button>`
-        )
-      }
-      md.use(groupIconMdPlugin)
-    }
-  },
-
-  sitemap: {
-    hostname: 'https://vitepress.dev',
-    transformItems(items) {
-      return items.filter((item) => !item.url.includes('migration'))
-    }
-  },
-
   head: [
-    [
-      'link',
-      { rel: 'icon', type: 'image/svg+xml', href: '/vitepress-logo-mini.svg' }
-    ],
-    [
-      'link',
-      { rel: 'icon', type: 'image/png', href: '/vitepress-logo-mini.png' }
-    ],
-    ['meta', { name: 'theme-color', content: '#5f67ee' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:site_name', content: 'VitePress' }],
-    [
-      'meta',
-      {
-        property: 'og:image',
-        content: 'https://vitepress.dev/vitepress-og.jpg'
-      }
-    ],
-    ['meta', { property: 'og:url', content: 'https://vitepress.dev/' }],
-    [
-      'script',
-      {
-        src: 'https://cdn.usefathom.com/script.js',
-        'data-site': 'AZBRSFGG',
-        'data-spa': 'auto',
-        defer: ''
-      }
-    ]
+    ['link', { rel: 'icon', href: '/pyllm-logo.svg', type: 'image/svg+xml' }]
   ],
 
   themeConfig: {
-    logo: { src: '/vitepress-logo-mini.svg', width: 24, height: 24 },
-
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ],
+    logo: '/pyllm-logo.svg',
+    nav: nav(),
 
     search: {
-      provider: 'algolia',
-      options: {
-        appId: '8J64VVRP8K',
-        apiKey: '52f578a92b88ad6abde815aae2b0ad7c',
-        indexName: 'vitepress',
-        askAi: {
-          assistantId: 'YaVSonfX5bS8',
-          sidePanel: true
-        }
-      }
+      provider: 'local'
     },
 
-    carbonAds: { code: 'CEBDT27Y', placement: 'vuejsorg' }
-  },
+    sidebar: {
+      '/pages/python/': { base: '/pages/python/', items: sidebarPython() },
+      '/pages/llm/': { base: '/pages/llm/', items: sidebarLLM() },
+      '/pages/database/': { base: '/pages/database/', items: sidebarDatabase() },
+      '/pages/ai-coding/': { base: '/pages/ai-coding/', items: sidebarAICoding() }
+    },
 
-  locales: {
-    root: { label: 'English', lang: 'en-US', dir: 'ltr' },
-    zh: { label: '简体中文', lang: 'zh-Hans', dir: 'ltr' },
-    pt: { label: 'Português', lang: 'pt-BR', dir: 'ltr' },
-    ru: { label: 'Русский', lang: 'ru-RU', dir: 'ltr' },
-    es: { label: 'Español', lang: 'es', dir: 'ltr' },
-    ko: { label: '한국어', lang: 'ko-KR', dir: 'ltr' },
-    fa: { label: 'فارسی', lang: 'fa-IR', dir: 'rtl' },
-    ja: { label: '日本語', lang: 'ja', dir: 'ltr' }
-  },
+    footer: {
+      message: '基于 MIT 许可发布',
+      copyright: '版权所有 © 2024-至今'
+    },
 
-  vite: {
-    plugins: [
-      groupIconVitePlugin({
-        customIcon: {
-          vitepress: localIconLoader(
-            import.meta.url,
-            '../public/vitepress-logo-mini.svg'
-          ),
-          firebase: 'logos:firebase'
-        }
-      }),
-      prod &&
-        llmstxt({
-          workDir: 'en',
-          ignoreFiles: ['index.md']
-        })
-    ],
-    experimental: {
-      enableNativePlugin: true
-    }
-  },
+    docFooter: {
+      prev: '上一页',
+      next: '下一页'
+    },
 
-  transformPageData: prod
-    ? (pageData, ctx) => {
-        const site = resolveSiteDataByRoute(
-          ctx.siteConfig.site,
-          pageData.relativePath
-        )
-        const title = `${pageData.title || site.title} | ${pageData.description || site.description}`
-        ;((pageData.frontmatter.head ??= []) as HeadConfig[]).push(
-          ['meta', { property: 'og:locale', content: site.lang }],
-          ['meta', { property: 'og:title', content: title }]
-        )
-      }
-    : undefined
+    outline: {
+      label: '页面导航'
+    },
+
+    lastUpdated: {
+      text: '最后更新于'
+    },
+
+    notFound: {
+      title: '页面未找到',
+      quote: '但如果你不改变方向，并且继续寻找，你可能最终会到达你所前往的地方。',
+      linkLabel: '前往首页',
+      linkText: '带我回首页'
+    },
+
+    langMenuLabel: '多语言',
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '菜单',
+    darkModeSwitchLabel: '主题',
+    lightModeSwitchTitle: '切换到浅色模式',
+    darkModeSwitchTitle: '切换到深色模式',
+    skipToContentLabel: '跳转到内容'
+  }
 })
+
+function nav(): DefaultTheme.NavItem[] {
+  return [
+    { text: '首页', link: '/' },
+    {
+      text: 'Python',
+      activeMatch: '/pages/python/',
+      items: [
+        { text: 'Python核心教程', link: '/pages/python/core/' },
+        { text: 'NumPy教程', link: '/pages/python/numpy/' },
+        { text: 'Pandas教程', link: '/pages/python/pandas/' },
+        { text: 'Matplotlib教程', link: '/pages/python/matplotlib/' }
+      ]
+    },
+    {
+      text: 'LLM',
+      activeMatch: '/pages/llm/',
+      items: [
+        { text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/' },
+        { text: 'Hugging Face Transformers教程', link: '/pages/llm/transformers/' },
+        { text: 'Ollama教程', link: '/pages/llm/ollama/' },
+        { text: 'vLLM教程', link: '/pages/llm/vllm/' },
+        { text: 'LangChain教程', link: '/pages/llm/langchain/' }
+      ]
+    },
+    {
+      text: '数据库',
+      activeMatch: '/pages/database/',
+      items: [
+        { text: 'PG Vector教程', link: '/pages/database/pgvector/' },
+        { text: 'Milvus教程', link: '/pages/database/milvus/' },
+        { text: 'Chroma教程', link: '/pages/database/chroma/' },
+        { text: 'Faiss教程', link: '/pages/database/faiss/' },
+        { text: 'DuckDB教程', link: '/pages/database/duckdb/' },
+        { text: 'LanceDB教程', link: '/pages/database/lancedb/' }
+      ]
+    },
+    {
+      text: 'AI编程',
+      activeMatch: '/pages/ai-coding/',
+      items: [
+        { text: 'OpenClaw教程', link: '/pages/ai-coding/openclaw/' },
+        { text: 'OpenCode教程', link: '/pages/ai-coding/opencode/' },
+        { text: 'DeepSeek教程', link: '/pages/ai-coding/deepseek/' }
+      ]
+    },
+    { text: '博客', link: '/pages/blog/' },
+    { text: '关于', link: '/pages/about/' }
+  ]
+}
+
+function sidebarPython(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'Python',
+      items: [
+        { text: 'Python核心教程', link: 'core/' },
+        { text: 'NumPy教程', link: 'numpy/' },
+        { text: 'Pandas教程', link: 'pandas/' },
+        { text: 'Matplotlib教程', link: 'matplotlib/' }
+      ]
+    }
+  ]
+}
+
+function sidebarLLM(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'LLM',
+      items: [
+        { text: 'PyTorch Lightning教程', link: 'pytorch-lightning/' },
+        { text: 'Hugging Face Transformers教程', link: 'transformers/' },
+        { text: 'Ollama教程', link: 'ollama/' },
+        { text: 'vLLM教程', link: 'vllm/' },
+        { text: 'LangChain教程', link: 'langchain/' }
+      ]
+    }
+  ]
+}
+
+function sidebarDatabase(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: '数据库',
+      items: [
+        { text: 'PG Vector教程', link: 'pgvector/' },
+        { text: 'Milvus教程', link: 'milvus/' },
+        { text: 'Chroma教程', link: 'chroma/' },
+        { text: 'Faiss教程', link: 'faiss/' },
+        { text: 'DuckDB教程', link: 'duckdb/' },
+        { text: 'LanceDB教程', link: 'lancedb/' }
+      ]
+    }
+  ]
+}
+
+function sidebarAICoding(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: 'AI编程',
+      items: [
+        { text: 'OpenClaw教程', link: 'openclaw/' },
+        { text: 'OpenCode教程', link: 'opencode/' },
+        { text: 'DeepSeek教程', link: 'deepseek/' }
+      ]
+    }
+  ]
+}

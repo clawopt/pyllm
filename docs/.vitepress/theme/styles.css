@@ -36,8 +36,32 @@
   padding: 18px;
 }
 
+.VPHero .heading .name {
+  white-space: nowrap !important;
+  font-size: 2rem !important;
+}
+
 /* used in reference/default-theme-search */
 img[src='/search.png'] {
   width: 100%;
   aspect-ratio: 1 / 1;
 }
+
+/* 隐藏标题上下的分割线 */
+.VPDoc .content {
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+.VPDoc.has-sidebar .content::before,
+.VPDoc.has-sidebar .content::after,
+.VPDoc .content::before,
+.VPDoc .content::after {
+  display: none !important;
+}
+
+.VPDoc .VPContent .content-container::before,
+.VPDoc .VPContent .content-container::after {
+  display: none !important;
+}
+

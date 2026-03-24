@@ -1,5 +1,12 @@
 import Theme from 'vitepress/theme'
-import 'virtual:group-icons.css'
 import './styles.css'
+import HomeCategories from './components/HomeCategories.vue'
+import CustomHero from './components/CustomHero.vue'
 
-export default Theme
+export default {
+  extends: Theme,
+  enhanceApp({ app }) {
+    app.component('HomeCategories', HomeCategories)
+    app.component('CustomHero', CustomHero)
+  }
+}
