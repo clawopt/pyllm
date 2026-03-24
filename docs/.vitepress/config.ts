@@ -4,6 +4,7 @@ export default defineConfig({
   title: 'PyLLM',
   description: 'Python与大模型开发教程，从入门到实战',
 
+  base: '/pyllm/',
   cleanUrls: true,
   head: [
     ['link', { rel: 'icon', href: '/pyllm-logo.svg', type: 'image/svg+xml' }]
