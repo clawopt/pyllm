@@ -184,7 +184,7 @@
 }
 
 .recommend-title {
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--vp-c-text-1);
   margin: 0 0 1rem;
