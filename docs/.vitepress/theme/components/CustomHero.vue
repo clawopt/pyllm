@@ -80,8 +80,50 @@ import { withBase } from 'vitepress'
     min-height: auto;
   }
 
+  .hero-mid {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .recommend-section {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
   .hero-right {
-    width: 100%;
+    width: 100% !important;
+  }
+
+  .recommend-title,
+  .blog-title {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-mid,
+  .hero-right {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .recommend-section {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .recommend-title,
+  .blog-title,
+  .recommend-item,
+  .blog-item {
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    box-sizing: border-box;
   }
 }
 
@@ -180,8 +222,7 @@ import { withBase } from 'vitepress'
 
 .recommend-section {
   padding-top: 0.5rem;
-  width: 80%;
-  margin: 0 auto;
+  /* width/margin handled above and in responsive rules */
 }
 
 .recommend-title {
