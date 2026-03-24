@@ -76,7 +76,7 @@
           <a
             v-for="course in categories[activeIndex].courses"
             :key="course.link"
-            :href="course.link"
+            :href="withBase(course.link)"
             class="course-card"
           >
             <h3 class="course-name">{{ course.name }}</h3>
@@ -90,6 +90,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { withBase } from 'vitepress'
 
 const activeIndex = ref(0)
 

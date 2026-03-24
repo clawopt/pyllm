@@ -7,7 +7,7 @@ export default defineConfig({
   base: '/pyllm/',
   cleanUrls: true,
   head: [
-    ['link', { rel: 'icon', href: '/pyllm-logo.svg', type: 'image/svg+xml' }]
+    ['link', { rel: 'icon', href: '/pyllm/pyllm-logo.svg', type: 'image/svg+xml' }]
   ],
 
   themeConfig: {

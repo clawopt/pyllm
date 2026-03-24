@@ -7,8 +7,8 @@
       </h1>
       <p class="hero-text">一站式大模型教程学习平台</p>
       <div class="hero-actions">
-        <a href="/pages/python/core/" class="vp-button brand medium">立即开始</a>
-        <a href="/pages/llm/" class="vp-button alt medium">大模型学习路线</a>
+        <a :href="withBase('/pages/python/core/')" class="vp-button brand medium">立即开始</a>
+        <a :href="withBase('/pages/llm/')" class="vp-button alt medium">大模型学习路线</a>
       </div>
     </div>
     <div class="hero-mid">
@@ -18,16 +18,16 @@
           <a href="https://gpt.paperily.cn/" target="_blank" rel="noopener" class="recommend-item">
             极速高效方便的论文阅读神器
           </a>
-          <a href="/pages/llm/vllm/" class="recommend-item">
+          <a :href="withBase('/pages/llm/vllm/')" class="recommend-item">
             高吞吐量推理与部署 vLLM
           </a>
-          <a href="/pages/llm/transformers/" class="recommend-item">
+          <a :href="withBase('/pages/llm/transformers/')" class="recommend-item">
             Transformer 模型库入门
           </a>
-          <a href="/pages/database/milvus/" class="recommend-item">
+          <a :href="withBase('/pages/database/milvus/')" class="recommend-item">
             向量数据库：Milvus 实战
           </a>
-          <a href="/pages/ai-coding/deepseek/" class="recommend-item">
+          <a :href="withBase('/pages/ai-coding/deepseek/')" class="recommend-item">
             DeepSeek 模型应用精选
           </a>
         </div>
@@ -37,26 +37,27 @@
       <div class="blog-section">
         <h3 class="blog-title">最新博客</h3>
         <div class="blog-list">
-          <a href="/pages/blog/llm-2024-review" class="blog-item">
+          <a :href="withBase('/pages/blog/llm-2024-review')" class="blog-item">
             <span class="blog-date">2024-12-20</span>
             <span class="blog-name">2024年大模型技术回顾与展望</span>
           </a>
-          <a href="/pages/blog/python-tips-2024" class="blog-item">
+          <a :href="withBase('/pages/blog/python-tips-2024')" class="blog-item">
             <span class="blog-date">2024-12-15</span>
             <span class="blog-name">Python高级编程技巧总结</span>
           </a>
-          <a href="/pages/blog/vector-db-comparison" class="blog-item">
+          <a :href="withBase('/pages/blog/vector-db-comparison')" class="blog-item">
             <span class="blog-date">2024-12-10</span>
             <span class="blog-name">向量数据库对比：Milvus vs Chroma</span>
           </a>
         </div>
-        <a href="/pages/blog/" class="blog-more">更多 →</a>
+        <a :href="withBase('/pages/blog/')" class="blog-more">更多 →</a>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { withBase } from 'vitepress'
 </script>
 
 <style scoped>
