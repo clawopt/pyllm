@@ -7,8 +7,8 @@
       </h1>
       <p class="hero-text">一站式大模型教程学习平台</p>
       <div class="hero-actions">
-        <a :href="withBase('/pages/python/core/')" class="vp-button brand medium">立即开始</a>
-        <a :href="withBase('/pages/llm/')" class="vp-button alt medium">大模型学习路线</a>
+        <a :href="withBase('/pages/python/core/00-intro')" class="vp-button brand medium">立即开始</a>
+        <a :href="withBase('/llm-learning-path')" class="vp-button alt medium">大模型学习路线</a>
       </div>
     </div>
     <div class="hero-mid">
