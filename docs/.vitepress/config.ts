@@ -67,7 +67,7 @@ function nav(): DefaultTheme.NavItem[] {
       text: 'Python',
       activeMatch: '/pages/python/',
       items: [
-        { text: 'Python核心教程', link: '/pages/python/core/' },
+        { text: 'Python核心教程', link: '/pages/python/core/00-intro' },
         { text: 'NumPy教程', link: '/pages/python/numpy/' },
         { text: 'Pandas教程', link: '/pages/python/pandas/' },
         { text: 'Matplotlib教程', link: '/pages/python/matplotlib/' }
@@ -113,12 +113,117 @@ function nav(): DefaultTheme.NavItem[] {
 function sidebarPython(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Python',
+      text: 'Python核心教程',
+      collapsed: false,
       items: [
-        { text: 'Python核心教程', link: 'core/' },
-        { text: 'NumPy教程', link: 'numpy/' },
-        { text: 'Pandas教程', link: 'pandas/' },
-        { text: 'Matplotlib教程', link: 'matplotlib/' }
+        { text: '基本介绍', link: 'core/00-intro' },
+        { text: '安装与环境搭建', link: 'core/01-install' }
+      ]
+    },
+    {
+      text: '基础',
+      collapsed: false,
+      items: [
+        { text: '基本类型', link: 'core/10-data-number' },
+        { text: '字符串与编码', link: 'core/11-data-str' },
+        { text: '变量和对象', link: 'core/12-data-object' },
+        { text: '条件、循环与异常', link: 'core/13-data-ifwhile' }
+      ]
+    },
+    {      text: '函数',
+      collapsed: false,
+      items: [
+        { text: '函数基础', link: 'core/20-func-basics' },
+        { text: '高级参数特性', link: 'core/21-func-advanced' },
+        { text: '函数式编程工具', link: 'core/22-func-functional' },
+        { text: '闭包与装饰器', link: 'core/23-func-closure' },
+        { text: '递归与特殊函数', link: 'core/25-func-special' }
+      ]
+    },
+    {
+      text: '数据结构',
+      collapsed: false,
+      items: [
+        { text: '列表', link: 'core/30-struct-list' },
+        { text: '元组', link: 'core/31-struct-tuple' },
+        { text: '字典', link: 'core/32-struct-dict' },
+        { text: '集合', link: 'core/33-struct-set' }
+      ]
+    },
+    {
+      text: '集合',
+      collapsed: false,
+      items: [
+        { text: 'dequeue', link: 'core/40-collection-dequeue' },
+        { text: 'defaultdict', link: 'core/41-collection-defaultdict' },
+        { text: 'Counter', link: 'core/42-collection-counter' },
+        { text: 'namedtuple', link: 'core/43-collection-namedtuple' }
+      ]
+    },
+    {
+      text: '高级特性',
+      collapsed: false,
+      items: [
+        { text: '迭代器', link: 'core/50-pro-iterator' },
+        { text: '推导式', link: 'core/51-pro-comprehensions' },
+        { text: '生成器', link: 'core/54-pro-generator' }
+      ]
+    },
+    {
+      text: '模块',
+      collapsed: false,
+      items: [
+        { text: '模块基础', link: 'core/60-module-basics' },
+        { text: '导入', link: 'core/61-module-import' },
+        { text: '组织', link: 'core/62-module-package' },
+        { text: '安装与发布', link: 'core/63-module-distribution' },
+        { text: '高级特性', link: 'core/64-module-advanced' }
+      ]
+    },
+    {
+      text: '面向对象',
+      collapsed: false,
+      items: [
+        { text: '类与对象基础', link: 'core/70-oop-basics' },
+        { text: '属性与方法', link: 'core/71-oop-attributes' },
+        { text: '继承与多态', link: 'core/72-oop-inheritance' },
+        { text: '魔术方法', link: 'core/73-oop-magic' },
+        { text: '封装与访问控制', link: 'core/74-oop-encapsulation' },
+        { text: '高级特性', link: 'core/75-oop-advanced' },
+        { text: '设计模式', link: 'core/76-oop-patterns' }
+      ]
+    },
+    {    
+      text: 'IO',
+      collapsed: false,
+      items: [
+        { text: '文件操作基础', link: 'core/80-io-file' },
+        { text: '路径操作', link: 'core/81-io-path' },
+        { text: '上下文管理器', link: 'core/82-io-context' },
+        { text: '文本与二进制', link: 'core/83-io-text-binary' },
+        { text: '数据序列化', link: 'core/84-io-serialization' },
+        { text: '标准输入输出', link: 'core/85-io-stdio' }
+      ]
+    },
+    {    
+      text: '并发',
+      collapsed: false,
+      items: [
+        { text: '并发编程基础', link: 'core/90-concurrency-basics' },
+        { text: '多进程编程', link: 'core/91-concurrency-multiprocess' },
+        { text: '多线程编程', link: 'core/92-concurrency-threading' },
+        { text: '异步编程', link: 'core/93-concurrency-async' },
+        { text: '并发进阶与实践', link: 'core/94-concurrency-advanced' }
+      ]
+    },
+    {    
+      text: '常用模块',
+      collapsed: false,
+      items: [
+        { text: '日期时间与随机数', link: 'core/X0-datetime-random' },
+        { text: '正则表达式', link: 'core/X1-regex' },
+        { text: '系统与进程', link: 'core/X2-system-process' },
+        { text: '工具模块', link: 'core/X3-tools' }
       ]
     }
   ]
