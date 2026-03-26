@@ -100,7 +100,7 @@ const categories = [
     title: 'Python',
     courses: [
       { name: 'Python核心教程', desc: 'Python编程基础与核心概念', link: '/pages/python/core/00-intro' },
-      { name: 'NumPy教程', desc: '科学计算与数组操作', link: '/pages/python/numpy/' },
+      { name: 'NumPy教程', desc: '科学计算与数组操作', link: '/pages/python/numpy/01-00-numpy-intro.md' },
       { name: 'Pandas教程', desc: '数据分析与处理', link: '/pages/python/pandas/' },
       { name: 'Matplotlib教程', desc: '数据可视化与绘图', link: '/pages/python/matplotlib/' }
     ]
