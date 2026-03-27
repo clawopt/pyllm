@@ -18,18 +18,6 @@
           <a href="https://gpt.paperily.cn/" target="_blank" rel="noopener" class="recommend-item">
             极速高效方便的论文阅读神器
           </a>
-          <a :href="withBase('/pages/llm/vllm/')" class="recommend-item">
-            高吞吐量推理与部署 vLLM
-          </a>
-          <a :href="withBase('/pages/llm/transformers/')" class="recommend-item">
-            Transformer 模型库入门
-          </a>
-          <a :href="withBase('/pages/database/milvus/')" class="recommend-item">
-            向量数据库：Milvus 实战
-          </a>
-          <a :href="withBase('/pages/ai-coding/deepseek/')" class="recommend-item">
-            DeepSeek 模型应用精选
-          </a>
         </div>
       </div>
     </div>
@@ -37,17 +25,9 @@
       <div class="blog-section">
         <h3 class="blog-title">最新博客</h3>
         <div class="blog-list">
-          <a :href="withBase('/pages/blog/llm-2024-review')" class="blog-item">
-            <span class="blog-date">2024-12-20</span>
-            <span class="blog-name">2024年大模型技术回顾与展望</span>
-          </a>
-          <a :href="withBase('/pages/blog/python-tips-2024')" class="blog-item">
-            <span class="blog-date">2024-12-15</span>
-            <span class="blog-name">Python高级编程技巧总结</span>
-          </a>
-          <a :href="withBase('/pages/blog/vector-db-comparison')" class="blog-item">
-            <span class="blog-date">2024-12-10</span>
-            <span class="blog-name">向量数据库对比：Milvus vs Chroma</span>
+          <a :href="withBase('/pages/blog/20260327-From Reasoning Thinking to Agentic Thinking')" class="blog-item">
+            <span class="blog-date">2026-03-27</span>
+            <span class="blog-name">林俊阳:从推理思考到智能体思考</span>
           </a>
         </div>
         <a :href="withBase('/pages/blog/')" class="blog-more">更多 →</a>

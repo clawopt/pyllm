@@ -101,19 +101,18 @@ const categories = [
     courses: [
       { name: 'Python核心教程', desc: 'Python编程基础与核心概念', link: '/pages/python/core/00-intro' },
       { name: 'NumPy教程', desc: '科学计算与数组操作', link: '/pages/python/numpy/01-00-numpy-intro' },
-      { name: 'Pandas教程', desc: '数据分析与处理', link: '/pages/python/pandas/' },
-      { name: 'Matplotlib教程', desc: '数据可视化与绘图', link: '/pages/python/matplotlib/' }
+      { name: 'Pandas教程', desc: '数据分析与处理', link: '/pages/python/pandas/' }
     ]
   },
   {
     icon: '🤖',
     title: 'LLM',
     courses: [
-      { name: 'PyTorch Lightning教程', desc: '快速训练深度学习模型', link: '/pages/llm/pytorch-lightning/' },
+      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/' },
       { name: 'Hugging Face Transformers', desc: 'Transformer模型与应用', link: '/pages/llm/transformers/' },
       { name: 'Ollama教程', desc: '本地部署大语言模型', link: '/pages/llm/ollama/' },
       { name: 'vLLM教程', desc: '高效推理与服务部署', link: '/pages/llm/vllm/' },
-      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/' }
+      { name: 'PyTorch Lightning教程', desc: '快速训练深度学习模型', link: '/pages/llm/pytorch-lightning/' }
     ]
   },
   {

@@ -17,8 +17,3 @@ s = pd.Series([1, 2, 3, 4, 5])
 df = pd.DataFrame({'name': ['Alice', 'Bob'], 'age': [25, 30]})
 print(df)
 ```
-
-## 下一步
-
-继续学习：
-- [Matplotlib教程](/pages/python/matplotlib/)
