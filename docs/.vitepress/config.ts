@@ -469,11 +469,11 @@ function sidebarLLM(): DefaultTheme.SidebarItem[] {
     {
       text: 'LLM',
       items: [
-        { text: 'PyTorch Lightning教程', link: 'pytorch-lightning/' },
+        { text: 'LangChain教程', link: 'langchain/' },
         { text: 'Hugging Face Transformers教程', link: 'transformers/' },
         { text: 'Ollama教程', link: 'ollama/' },
         { text: 'vLLM教程', link: 'vllm/' },
-        { text: 'LangChain教程', link: 'langchain/' }
+        { text: 'PyTorch Lightning教程', link: 'pytorch-lightning/' }
       ]
     }
   ]

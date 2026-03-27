@@ -8,6 +8,6 @@ title: 最新博客
 
 ## 2024年12月
 
-#### [林俊阳:从推理思考到智能体思考](/pages/blog/20260327-From Reasoning Thinking to Agentic Thinking)
-- **时间**: 2024-12-206-0327
+#### [林俊阳:从推理思考到智能体思考](/pages/blog/20260327-From%20Reasoning%20Thinking%20to%20Agentic%20Thinking)
+- **时间**: 2026-03-27
 - **简介**: 探讨从传统推理思考模式向智能体思考模式的演进，分析大模型时代下AI智能体的核心设计理念与应用场景。
