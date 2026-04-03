@@ -612,47 +612,26 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
       text: '深入浅出Pandas',
       items: [
         {
-          text: '第1章 Pandas 简介',
-          collapsed: false,
-          items: [
-            {text: '什么是 Pandas', link: '01-01-what-is-pandas'},
-            {text: '历史与发展', link: '01-02-history-and-development'},
-            {text: '核心数据结构概述', link: '01-03-core-data-structures'},
-            {text: '在大模型时代的价值', link: '01-04-pandas-in-llm-era'}
-          ]
-        },
+      text: '第1章 基本介绍',
+      collapsed: false,
+      items: [
+        {text: '什么是 Pandas', link: '01-01-what-is-pandas'},
+        {text: '为什么大模型需要 Pandas', link: '01-02-why-pandas-for-llm'},
+        {text: '生态与学习路线', link: '01-03-ecosystem-and-roadmap'}
+      ]
+    },
+    {
+      text: '第2章 安装与环境配置',
+      collapsed: false,
+      items: [
+        {text: '安装 Pandas', link: '03-01-installation'},
+        {text: 'Pandas 3.0 要点速览', link: '03-02-pandas3-highlights'},
+        {text: 'PyArrow 后端基础', link: '03-03-pyarrow-basics'},
+        {text: '开发环境推荐', link: '03-04-environment-setup'}
+      ]
+    },
         {
-          text: '第2章 在大模型生态中的定位',
-          collapsed: false,
-          items: [
-            {
-              text: '为什么大模型离不开 Pandas',
-              link: '02-01-why-pandas-for-llm'
-            },
-            {text: '典型场景全景图', link: '02-02-typical-scenarios-overview'},
-            {
-              text: 'Python 数据处理生态链',
-              link: '02-03-data-processing-ecosystem'
-            }
-          ]
-        },
-        {
-          text: '第3章 安装与环境配置',
-          collapsed: false,
-          items: [
-            {text: '安装与版本选择', link: '03-01-installation-and-version'}, {
-              text: 'Pandas 3.0 核心新特性一览',
-              link: '03-02-pandas3-new-features'
-            },
-            {
-              text: 'PyArrow 后端深度解析',
-              link: '03-03-pyarrow-backend-deep-dive'
-            },
-            {text: '推荐开发环境', link: '03-04-recommended-environment'}
-          ]
-        },
-        {
-          text: '第4章 核心数据结构',
+          text: '第3章 核心数据结构',
           collapsed: false,
           items: [
             {text: 'Series：一维带标签数组', link: '04-01-series-in-depth'},
@@ -662,7 +641,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第5章 数据读写 I/O',
+          text: '第4章 数据读写 I/O',
           collapsed: false,
           items: [
             {
@@ -675,7 +654,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第6章 数据审查与探索',
+          text: '第5章 数据审查与探索',
           collapsed: false,
           items: [
             {text: '基础信息查看', link: '06-01-basic-info-overview'},
@@ -685,7 +664,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第7章 数据清洗实战',
+          text: '第6章 数据清洗实战',
           collapsed: false,
           items: [
             {text: '缺失值处理', link: '07-01-missing-values-handling'},
@@ -698,7 +677,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第8章 数据筛选',
+          text: '第7章 数据筛选',
           collapsed: false,
           items: [
             {text: '布尔索引', link: '08-01-boolean-indexing'},
@@ -708,7 +687,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第9章 数据转换与特征工程',
+          text: '第8章 数据转换与特征工程',
           collapsed: false,
           items: [
             {text: '列与行选择', link: '09-01-column-row-selection'},
@@ -721,7 +700,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第10章 排序与排名',
+          text: '第9章 排序与排名',
           collapsed: false,
           items: [
             {text: '排序基础', link: '10-01-sorting'},
@@ -733,7 +712,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第11章 分组聚合与透视',
+          text: '第10章 分组聚合与透视',
           collapsed: false,
           items: [
             {text: 'groupby() 分组基础', link: '11-01-groupby-basics'},
@@ -745,7 +724,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第12章 数据合并与连接',
+          text: '第11章 数据合并与连接',
           collapsed: false,
           items: [
             {text: 'merge() 基础', link: '12-01-merge-basics'},
@@ -756,7 +735,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第13章 数据拼接与组合',
+          text: '第12章 数据拼接与组合',
           collapsed: false,
           items: [
             {text: 'concat() 数据拼接', link: '13-01-concat-basics'},
@@ -766,7 +745,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第14章 时间序列处理',
+          text: '第13章 时间序列处理',
           collapsed: false,
           items: [
             {text: '时间序列基础与解析', link: '14-01-timeseries-basics'},
@@ -777,7 +756,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第15章 数据可视化',
+          text: '第14章 数据可视化',
           collapsed: false,
           items: [
             {text: 'Pandas 内置可视化基础', link: '15-01-plotting-basics'},
@@ -789,7 +768,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第16章 高级操作技巧',
+          text: '第15章 高级操作技巧',
           collapsed: false,
           items: [
             {text: '迭代器与分块处理', link: '16-01-iteration-chunking'},
@@ -800,7 +779,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第17章 性能优化',
+          text: '第16章 性能优化',
           collapsed: false,
           items: [
             {text: '内存优化实战', link: '17-01-memory-optimization'},
@@ -810,7 +789,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第18章 PandasAI 与自然语言查询',
+          text: '第17章 PandasAI 与自然语言查询',
           collapsed: false,
           items: [
             {text: 'PandasAI 简介与环境搭建', link: '18-01-pandasai-intro'},
@@ -840,7 +819,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第21章 LangChain Agent 集成',
+          text: '第18章 LangChain + Pandas Agent',
           collapsed: false,
           items: [
             {text: 'Pandas × LangChain 概览', link: '21-01-langchain-overview'},
@@ -850,7 +829,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第22章 MCP 协议与数据服务',
+          text: '第19章 MCP Server 与多模态',
           collapsed: false,
           items: [
             {text: 'MCP 协议与 Pandas 服务', link: '22-01-mcp-overview'},
@@ -870,7 +849,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第24章 分布式计算扩展',
+          text: '第20章 分布式处理与总结',
           collapsed: false,
           items: [
             {text: 'Dask 基础入门', link: '24-01-dask-basics'},
@@ -889,7 +868,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第26章 案例一：千万级对话语料清洗',
+          text: '第21章 案例1：千万级语料清洗',
           collapsed: false,
           items: [
             {text: '加载原始对话日志', link: '26-01-load-conversation-data'}, {
@@ -907,7 +886,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第27章 案例二：RAG 知识库构建流水线',
+          text: '第22章 案例2：RAG 知识库构建',
           collapsed: false,
           items: [
             {text: '文档解析与分块', link: '27-01-document-parsing-chunking'},
@@ -922,7 +901,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第28章 案例三：LangChain Pandas Agent 构建',
+          text: '第23章 案例3：LangChain Pandas Agent',
           collapsed: false,
           items: [
             {text: '环境配置与 API Key 设置', link: '28-01-env-setup-apikey'}, {
@@ -934,7 +913,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第29章 案例四：模型评估与对比分析',
+          text: '第24章 案例4：模型评估对比分析',
           collapsed: false,
           items: [
             {
@@ -950,7 +929,7 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
           ]
         },
         {
-          text: '第30章 案例五：迁移至 Polars 获得 10 倍加速',
+          text: '第25章 案例5：迁移 Polars 获得加速',
           collapsed: false,
           items: [
             {
