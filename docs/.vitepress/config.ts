@@ -1,4 +1,4 @@
-import { defineConfig, type DefaultTheme } from 'vitepress'
+import {defineConfig, type DefaultTheme} from 'vitepress'
 
 export default defineConfig({
   title: 'PyLLM',
@@ -6,47 +6,41 @@ export default defineConfig({
 
   base: '/pyllm/',
   cleanUrls: true,
-  head: [
-    ['link', { rel: 'icon', href: '/pyllm/pyllm-logo.svg', type: 'image/svg+xml' }]
-  ],
+  head: [[
+    'link', {rel: 'icon', href: '/pyllm/pyllm-logo.svg', type: 'image/svg+xml'}
+  ]],
 
   themeConfig: {
     logo: '/pyllm-logo.svg',
     nav: nav(),
 
-    search: {
-      provider: 'local'
-    },
+    search: {provider: 'local'},
 
     sidebar: {
-      '/pages/python/core/': { base: '/pages/python/core/', items: sidebarPython() },
-      '/pages/python/numpy/': { base: '/pages/python/numpy/', items: sidebarNumPy() },
-      '/pages/llm/': { base: '/pages/llm/', items: sidebarLLM() },
-      '/pages/database/': { base: '/pages/database/', items: sidebarDatabase() },
-      '/pages/ai-coding/': { base: '/pages/ai-coding/openclaw/', items: sidebarAICoding() }
+      '/pages/python/core/':
+          {base: '/pages/python/core/', items: sidebarPython()},
+      '/pages/python/numpy/':
+          {base: '/pages/python/numpy/', items: sidebarNumPy()},
+      '/pages/python/pandas/':
+          {base: '/pages/python/pandas/', items: sidebarPandas()},
+      '/pages/llm/': {base: '/pages/llm/', items: sidebarLLM()},
+      '/pages/database/': {base: '/pages/database/', items: sidebarDatabase()},
+      '/pages/ai-coding/':
+          {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()}
     },
 
-    footer: {
-      message: '基于 MIT 许可发布',
-      copyright: '版权所有 © 2024-至今'
-    },
+    footer: {message: '基于 MIT 许可发布', copyright: '版权所有 © 2024-至今'},
 
-    docFooter: {
-      prev: '上一页',
-      next: '下一页'
-    },
+    docFooter: {prev: '上一页', next: '下一页'},
 
-    outline: {
-      label: '页面导航'
-    },
+    outline: {label: '页面导航'},
 
-    lastUpdated: {
-      text: '最后更新于'
-    },
+    lastUpdated: {text: '最后更新于'},
 
     notFound: {
       title: '页面未找到',
-      quote: '但如果你不改变方向，并且继续寻找，你可能最终会到达你所前往的地方。',
+      quote:
+          '但如果你不改变方向，并且继续寻找，你可能最终会到达你所前往的地方。',
       linkLabel: '前往首页',
       linkText: '带我回首页'
     },
@@ -61,545 +55,923 @@ export default defineConfig({
   }
 })
 
-function nav(): DefaultTheme.NavItem[] {
-  return [
-    { text: '首页', link: '/' },
-    {
-      text: 'Python',
-      activeMatch: '/pages/python/',
-      items: [
-        { text: 'Python核心教程', link: '/pages/python/core/00-intro' },
-        { text: 'NumPy教程', link: '/pages/python/numpy/01-00-numpy-intro' },
-        { text: 'Pandas教程', link: '/pages/python/pandas/' },
-      ]
-    },
-    {
-      text: 'LLM',
-      activeMatch: '/pages/llm/',
-      items: [
-        { text: 'LangChain教程', link: '/pages/llm/langchain/' },
-        { text: 'Hugging Face Transformers教程', link: '/pages/llm/transformers/' },
-        { text: 'Ollama教程', link: '/pages/llm/ollama/' },
-        { text: 'vLLM教程', link: '/pages/llm/vllm/' },
-        { text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/' }
-      ]
-    },
-    {
-      text: '数据库',
-      activeMatch: '/pages/database/',
-      items: [
-        { text: 'PG Vector教程', link: '/pages/database/pgvector/' },
-        { text: 'Milvus教程', link: '/pages/database/milvus/' },
-        { text: 'Chroma教程', link: '/pages/database/chroma/' },
-        { text: 'Faiss教程', link: '/pages/database/faiss/' },
-        { text: 'DuckDB教程', link: '/pages/database/duckdb/' },
-        { text: 'LanceDB教程', link: '/pages/database/lancedb/' }
-      ]
-    },
-    {
-      text: 'AI编程',
-      activeMatch: '/pages/ai-coding/',
-      items: [
-        { text: 'OpenClaw教程', link: '/pages/ai-coding/openclaw/' },
-        { text: 'OpenCode教程', link: '/pages/ai-coding/opencode/' },
-        { text: 'DeepSeek教程', link: '/pages/ai-coding/deepseek/' }
-      ]
-    },
-    { text: '博客', link: '/pages/blog/' },
-    { text: '关于', link: '/pages/about/' }
-  ]
-}
+function nav(): DefaultTheme
+    .NavItem[]{return [
+      {text: '首页', link: '/'}, {
+        text: 'Python',
+        activeMatch: '/pages/python/',
+        items: [
+          {text: 'Python核心教程', link: '/pages/python/core/00-intro'},
+          {text: 'NumPy教程', link: '/pages/python/numpy/01-00-numpy-intro'},
+          {text: 'Pandas教程', link: '/pages/python/pandas/'},
+        ]
+      },
+      {
+        text: 'LLM',
+        activeMatch: '/pages/llm/',
+        items: [
+          {text: 'LangChain教程', link: '/pages/llm/langchain/'}, {
+            text: 'Hugging Face Transformers教程',
+            link: '/pages/llm/transformers/'
+          },
+          {text: 'Ollama教程', link: '/pages/llm/ollama/'},
+          {text: 'vLLM教程', link: '/pages/llm/vllm/'},
+          {text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/'}
+        ]
+      },
+      {
+        text: '数据库',
+        activeMatch: '/pages/database/',
+        items: [
+          {text: 'PG Vector教程', link: '/pages/database/pgvector/'},
+          {text: 'Milvus教程', link: '/pages/database/milvus/'},
+          {text: 'Chroma教程', link: '/pages/database/chroma/'},
+          {text: 'Faiss教程', link: '/pages/database/faiss/'},
+          {text: 'DuckDB教程', link: '/pages/database/duckdb/'},
+          {text: 'LanceDB教程', link: '/pages/database/lancedb/'}
+        ]
+      },
+      {
+        text: 'AI编程',
+        activeMatch: '/pages/ai-coding/',
+        items: [
+          {text: 'OpenClaw教程', link: '/pages/ai-coding/openclaw/'},
+          {text: 'OpenCode教程', link: '/pages/ai-coding/opencode/'},
+          {text: 'DeepSeek教程', link: '/pages/ai-coding/deepseek/'}
+        ]
+      },
+      {text: '博客', link: '/pages/blog/'},
+      {text: '关于', link: '/pages/about/'}
+    ]}
 
-function sidebarPython(): DefaultTheme.SidebarItem[] {
+function
+sidebarPython():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'Python编程：从入门到实战',
+        items: [
+          {
+            text: '第一章 介绍与环境搭建',
+            collapsed: false,
+            items: [
+              {text: '基本介绍', link: '00-intro'},
+              {text: '安装与环境搭建', link: '01-install'}
+            ]
+          },
+          {
+            text: '第二章 数据类型与分支控制',
+            collapsed: false,
+            items: [
+              {text: '基本类型', link: '10-data-number'},
+              {text: '字符串与编码', link: '11-data-str'},
+              {text: '变量和对象', link: '12-data-object'},
+              {text: '条件、循环与异常', link: '13-data-ifwhile'}
+            ]
+          },
+          {
+            text: '第三章 函数与参数',
+            collapsed: false,
+            items: [
+              {text: '函数基础', link: '20-func-basics'},
+              {text: '高级参数特性', link: '21-func-advanced'},
+              {text: '函数式编程工具', link: '22-func-functional'},
+              {text: '闭包与装饰器', link: '23-func-closure'},
+              {text: '递归与特殊函数', link: '25-func-special'}
+            ]
+          },
+          {
+            text: '第四章 数据结构',
+            collapsed: false,
+            items: [
+              {text: '列表', link: '30-struct-list'},
+              {text: '元组', link: '31-struct-tuple'},
+              {text: '字典', link: '32-struct-dict'},
+              {text: '集合', link: '33-struct-set'}
+            ]
+          },
+          {
+            text: '第五章 集合与映射',
+            collapsed: false,
+            items: [
+              {text: 'dequeue', link: '40-collection-dequeue'},
+              {text: 'defaultdict', link: '41-collection-defaultdict'},
+              {text: 'Counter', link: '42-collection-counter'},
+              {text: 'namedtuple', link: '43-collection-namedtuple'}
+            ]
+          },
+          {
+            text: '第六章 高级特性',
+            collapsed: false,
+            items: [
+              {text: '迭代器', link: '50-pro-iterator'},
+              {text: '推导式', link: '51-pro-comprehensions'},
+              {text: '生成器', link: '54-pro-generator'}
+            ]
+          },
+          {
+            text: '第七章 模块使用',
+            collapsed: false,
+            items: [
+              {text: '模块基础', link: '60-module-basics'},
+              {text: '导入', link: '61-module-import'},
+              {text: '组织', link: '62-module-package'},
+              {text: '安装与发布', link: '63-module-distribution'},
+              {text: '高级特性', link: '64-module-advanced'}
+            ]
+          },
+          {
+            text: '第八章 面向对象编程',
+            collapsed: false,
+            items: [
+              {text: '类与对象基础', link: '70-oop-basics'},
+              {text: '属性与方法', link: '71-oop-attributes'},
+              {text: '继承与多态', link: '72-oop-inheritance'},
+              {text: '魔术方法', link: '73-oop-magic'},
+              {text: '封装与访问控制', link: '74-oop-encapsulation'},
+              {text: '高级特性', link: '75-oop-advanced'},
+              {text: '设计模式', link: '76-oop-patterns'}
+            ]
+          },
+          {
+            text: '第九章 输入输出',
+            collapsed: false,
+            items: [
+              {text: '文件操作基础', link: '80-io-file'},
+              {text: '路径操作', link: '81-io-path'},
+              {text: '上下文管理器', link: '82-io-context'},
+              {text: '文本与二进制', link: '83-io-text-binary'},
+              {text: '数据序列化', link: '84-io-serialization'},
+              {text: '标准输入输出', link: '85-io-stdio'}
+            ]
+          },
+          {
+            text: '第十章 并发编程',
+            collapsed: false,
+            items: [
+              {text: '并发编程基础', link: '90-concurrency-basics'},
+              {text: '多进程编程', link: '91-concurrency-multiprocess'},
+              {text: '多线程编程', link: '92-concurrency-threading'},
+              {text: '异步编程', link: '93-concurrency-async'},
+              {text: '并发进阶与实践', link: '94-concurrency-advanced'}
+            ]
+          },
+          {
+            text: '第十章 常用模块',
+            collapsed: false,
+            items: [
+              {text: '日期时间与随机数', link: 'X0-datetime-random'},
+              {text: '正则表达式', link: 'X1-regex'},
+              {text: '系统与进程', link: 'X2-system-process'},
+              {text: '工具模块', link: 'X3-tools'}
+            ]
+          }
+        ]
+      }]
+    }
+
+function
+sidebarNumPy():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'Numpy学习指南',
+        items: [
+          {
+            text: '第1章 基础概念',
+            collapsed: false,
+            items: [
+              {text: 'NumPy是什么', link: '01-00-numpy-intro'},
+              {text: 'NumPy优势对比', link: '01-01-numpy-vs-list'},
+              {text: '安装与配置', link: '01-02-install-config'},
+              {text: '导入与约定', link: '01-03-import-convention'},
+              {text: 'NumPy与LLM开发', link: '01-04-why-numpy-llm'}
+            ]
+          },
+          {
+            text: '第2章 ndarray属性',
+            collapsed: false,
+            items: [
+              {text: 'ndarray属性', link: '02-01-ndarray-attributes'},
+              {text: 'dtype深入理解', link: '02-02-dtype-deep-dive'},
+              {text: '从列表创建', link: '02-03-ndarray-from-list'},
+              {text: 'AI中的应用', link: '02-04-ndarray-in-ai'}
+            ]
+          },
+          {
+            text: '第3章 数组创建',
+            collapsed: false,
+            items: [
+              {text: 'zeros与ones', link: '03-01-zeros-ones'},
+              {text: 'eye与identity', link: '03-02-eye-identity'},
+              {text: 'arange与linspace', link: '03-03-arange-linspace'},
+              {text: 'tile与meshgrid', link: '03-04-tile-meshgrid'},
+              {text: '随机数组', link: '03-05-random-arrays'},
+              {text: '从数据创建', link: '03-06-array-from-data'}
+            ]
+          },
+          {
+            text: '第4章 形状操作',
+            collapsed: false,
+            items: [
+              {text: 'shape与reshape', link: '04-01-shape-reshape'},
+              {text: 'flatten与ravel', link: '04-02-flatten-ravel'},
+              {text: '转置操作', link: '04-03-transpose'},
+              {text: 'expand与squeeze', link: '04-04-expand-squeeze'},
+              {text: 'concatenate与stack', link: '04-05-concatenate-stack'},
+              {text: 'split分割', link: '04-06-split-array'}
+            ]
+          },
+          {
+            text: '第5章 索引与切片',
+            collapsed: false,
+            items: [
+              {text: '基本索引', link: '05-01-basic-indexing'},
+              {text: '整数数组索引', link: '05-02-integer-array-indexing'},
+              {text: '布尔掩码', link: '05-03-boolean-masking'},
+              {text: '花式索引', link: '05-04-fancy-indexing'},
+              {text: 'LLM嵌入查找', link: '05-05-llm-embedding-lookup'}
+            ]
+          },
+          {
+            text: '第6章 运算与性能',
+            collapsed: false,
+            items: [
+              {text: '元素级运算', link: '06-01-element-wise-operations'},
+              {text: '向量化性能', link: '06-02-vectorization-performance'},
+              {text: '矩阵乘法', link: '06-03-matrix-multiplication'},
+              {text: 'LLM自注意力', link: '06-04-llm-self-attention'}
+            ]
+          },
+          {
+            text: '第7章 广播机制',
+            collapsed: false,
+            items: [
+              {text: '广播规则', link: '07-01-broadcasting-rules'},
+              {text: '数组扩张', link: '07-02-array-expansion'},
+              {text: 'LLM位置编码', link: '07-03-llm-positional-encoding'}
+            ]
+          },
+          {
+            text: '第8章 数学函数',
+            collapsed: false,
+            items: [
+              {text: '指数与对数', link: '08-01-exp-log'},
+              {text: '激活函数', link: '08-02-activation-functions'},
+              {text: 'clip截断', link: '08-03-clip-functions'}
+            ]
+          },
+          {
+            text: '第9章 统计与损失',
+            collapsed: false,
+            items: [
+              {text: '基础统计', link: '09-01-statistics-basic'},
+              {text: 'axis统计', link: '09-02-axis-statistics'},
+              {text: 'cumsum累加', link: '09-03-cumsum-operations'},
+              {text: 'LLM困惑度', link: '09-04-llm-perplexity'}
+            ]
+          },
+          {
+            text: '第10章 线性代数',
+            collapsed: false,
+            items: [
+              {text: '点积', link: '10-01-dot-product'}, {
+                text: '特征值与特征向量',
+                link: '10-02-eigenvalues-eigenvectors'
+              },
+              {text: '奇异值分解', link: '10-03-svd'},
+              {text: '矩阵求逆与伪逆', link: '10-04-pinv'},
+              {text: '范数计算', link: '10-05-norm'}
+            ]
+          },
+          {
+            text: '第11章 随机数生成',
+            collapsed: false,
+            items: [
+              {text: '随机种子与可复现性', link: '11-01-random-seed'},
+              {text: '常见分布', link: '11-02-common-distributions'},
+              {text: '随机采样', link: '11-03-random-sampling'},
+              {text: '随机排列', link: '11-04-random-permutation'},
+              {text: '随机初始化权重', link: '11-05-random-initialization'}
+            ]
+          },
+          {
+            text: '第12章 内存布局',
+            collapsed: false,
+            items: [
+              {text: 'C顺序与Fortran顺序', link: '12-01-c-fortran-order'},
+              {text: '视图与副本', link: '12-02-view-vs-copy'},
+              {text: 'ndarray.view', link: '12-03-view-ndarray'},
+              {text: '原地操作', link: '12-04-inplace-operations'}
+            ]
+          },
+          {
+            text: '第13章 结构化数组',
+            collapsed: false,
+            items: [
+              {text: '创建结构化数组', link: '13-01-structured-arrays'},
+              {text: '字段访问与操作', link: '13-02-field-access'},
+              {text: 'HuggingFace导出', link: '13-03-huggingface-export'}
+            ]
+          },
+          {
+            text: '第14章 文件IO',
+            collapsed: false,
+            items: [
+              {text: '文本文件IO', link: '14-01-text-io'},
+              {text: '二进制文件IO', link: '14-02-binary-io'},
+              {text: '内存映射', link: '14-03-memmap'}
+            ]
+          },
+          {
+            text: '实战一：词嵌入矩阵',
+            collapsed: false,
+            items: [
+              {text: '词汇表与索引映射', link: '15-01-vocab-index'},
+              {text: '嵌入矩阵创建', link: '15-02-embedding-matrix'},
+              {text: '嵌入查找实现', link: '15-03-embedding-lookup'},
+              {text: '词向量相似度可视化', link: '15-04-visualize-similarity'}
+            ]
+          },
+          {
+            text: '实战二：多头自注意力',
+            collapsed: false,
+            items: [
+              {text: 'QKV投影矩阵', link: '16-01-qkv-projections'},
+              {text: '缩放点积注意力', link: '16-02-scaled-attention'},
+              {text: '因果掩码', link: '16-03-causal-mask'},
+              {text: '前向传播模拟', link: '16-04-forward-propagation'}
+            ]
+          },
+          {
+            text: '实战三：LayerNorm与残差',
+            collapsed: false,
+            items: [
+              {text: 'LayerNorm实现', link: '17-01-layer-norm'},
+              {text: '残差连接模拟', link: '17-02-residual-connection'},
+              {text: 'NumPy vs PyTorch对比', link: '17-03-numpy-vs-pytorch'}
+            ]
+          },
+          {
+            text: '实战四：GPT文本生成',
+            collapsed: false,
+            items: [
+              {text: '预训练嵌入概述', link: '18-01-pretrained-embeddings'},
+              {text: 'Transformer解码器', link: '18-02-transformer-decoder'},
+              {text: '温度采样', link: '18-03-temperature-sampling'},
+              {text: '简单文本序列生成', link: '18-04-text-generation'}
+            ]
+          },
+          {
+            text: '实战五：LoRA低秩适配',
+            collapsed: false,
+            items: [
+              {text: 'LoRA原理', link: '19-01-lora-principle'},
+              {text: 'LoRA前向传播', link: '19-02-lora-forward'},
+              {text: '参数量节省', link: '19-03-parameter-savings'}
+            ]
+          },
+          {
+            text: '实战六：HuggingFace集成',
+            collapsed: false,
+            items: [
+              {text: 'tokenizer转NumPy', link: '20-01-tokenizer-to-numpy'},
+              {text: '数据集转NumPy', link: '20-02-datasets-to-numpy'},
+              {text: 'NumPy DataLoader', link: '20-03-numpy-dataloader'}
+            ]
+          },
+          {
+            text: '实战七：框架互操作',
+            collapsed: false,
+            items: [
+              {text: 'PyTorch互操作', link: '21-01-torch-numpy'},
+              {text: 'TensorFlow互操作', link: '21-02-tensorflow-numpy'},
+              {text: '预处理与训练', link: '21-03-preprocessing-training'}
+            ]
+          },
+          {
+            text: '实战八：LLM评估',
+            collapsed: false,
+            items: [
+              {text: '困惑度计算', link: '22-01-perplexity'},
+              {text: 'BLEU/ROUGE指标', link: '22-02-bleu-rouge'},
+              {text: '文本多样性评估', link: '22-03-text-diversity'}
+            ]
+          }
+        ]
+      }]
+    }
+
+function
+sidebarLLM():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'LLM',
+        items: [
+          {text: 'LangChain教程', link: 'langchain/'},
+          {text: 'Hugging Face Transformers教程', link: 'transformers/'},
+          {text: 'Ollama教程', link: 'ollama/'},
+          {text: 'vLLM教程', link: 'vllm/'},
+          {text: 'PyTorch Lightning教程', link: 'pytorch-lightning/'}
+        ]
+      }]
+    }
+
+function
+sidebarDatabase():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: '数据库',
+        items: [
+          {text: 'PG Vector教程', link: 'pgvector/'},
+          {text: 'Milvus教程', link: 'milvus/'},
+          {text: 'Chroma教程', link: 'chroma/'},
+          {text: 'Faiss教程', link: 'faiss/'},
+          {text: 'DuckDB教程', link: 'duckdb/'},
+          {text: 'LanceDB教程', link: 'lancedb/'}
+        ]
+      }]
+    }
+
+function
+sidebarAICoding():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'OpenClaw从入门到精通',
+        items: [
+          {
+            text: '第1章 基础概念',
+            collapsed: false,
+            items: [
+              {text: 'OpenClaw是什么', link: '01-01-what-is-openclaw'},
+              {text: 'OpenClaw能做什么', link: '01-02-what-can-openclaw-do'},
+              {text: '技术架构概览', link: '01-03-architecture-overview'}
+            ]
+          },
+          {
+            text: '第2章 部署指南',
+            collapsed: false,
+            items: [
+              {text: '部署前置准备', link: '02-01-deployment-prerequisites'},
+              {text: '本地部署', link: '02-02-local-deployment'},
+              {text: '云端部署', link: '02-03-cloud-deployment'},
+              {text: '初始化配置', link: '02-04-initialization'}
+            ]
+          },
+          {
+            text: '第3章 配置定制',
+            collapsed: false,
+            items: [
+              {text: '配置文件详解', link: '03-01-config-files'},
+              {text: '定义AI身份', link: '03-02-define-soul'},
+              {text: '设置用户偏好', link: '03-03-user-preferences'},
+              {text: '定时任务配置', link: '03-04-heartbeat-tasks'}
+            ]
+          },
+          {
+            text: '第4章 模型配置',
+            collapsed: false,
+            items: [
+              {text: '支持的AI模型提供商', link: '04-01-supported-models'},
+              {text: 'API Key配置', link: '04-02-api-key-config'},
+              {text: '模型策略与成本优化', link: '04-03-model-strategy'},
+              {text: '本地模型部署', link: '04-04-ollama-deployment'}
+            ]
+          },
+          {
+            text: '第5章 技能系统',
+            collapsed: false,
+            items: [
+              {text: 'Skills技能系统概述', link: '05-01-skills-overview'},
+              {text: '必备核心技能', link: '05-02-core-skills'},
+              {text: '技能管理命令', link: '05-03-skill-management'},
+              {text: '自定义Skill开发', link: '05-04-custom-skill'},
+              {text: '技能安全', link: '05-05-skill-security'}
+            ]
+          },
+          {
+            text: '第6章 消息渠道',
+            collapsed: false,
+            items: [
+              {text: '支持的消息平台', link: '06-01-message-platforms'},
+              {text: '渠道配置方法', link: '06-02-channel-config'},
+              {text: '多账户管理', link: '06-03-multi-account'}
+            ]
+          },
+          {
+            text: '第7章 日常使用',
+            collapsed: false,
+            items: [
+              {text: '访问方式', link: '07-01-access-methods'},
+              {text: '常用CLI命令', link: '07-02-cli-commands'},
+              {text: '常见问题排查', link: '07-03-troubleshooting'}
+            ]
+          },
+          {
+            text: '第8章 实战案例',
+            collapsed: false,
+            items: [
+              {text: '自动发微信公众号文章', link: '08-01-wechat-article'},
+              {text: '日报自动生成与发送', link: '08-02-daily-report'},
+              {text: '7×24小时信息中枢', link: '08-03-info-hub'},
+              {text: '个人知识库管理', link: '08-04-knowledge-base'}
+            ]
+          },
+          {
+            text: '第9章 进阶玩法',
+            collapsed: false,
+            items: [
+              {text: '多Agent配置', link: '09-01-multi-agent'},
+              {text: 'RAG检索增强生成', link: '09-02-rag'},
+              {text: '上下文记忆配置', link: '09-03-context-memory'},
+              {text: '数据分析与优化', link: '09-04-analytics'}
+            ]
+          },
+          {
+            text: '附录',
+            collapsed: false,
+            items: [
+              {text: 'OpenClaw命令速查表', link: '10-01-command-reference'},
+              {text: '常用Skill推荐清单', link: '10-02-skill-recommendations'},
+              {text: '各模型提供商控制台地址', link: '10-03-model-providers'},
+              {text: '安全配置检查清单', link: '10-04-security-checklist'},
+              {text: '相关资源链接', link: '10-05-resources'}
+            ]
+          }
+        ]
+      }]
+    }
+
+function
+sidebarPandas(): DefaultTheme.SidebarItem[] {
   return [
     {
-      text: 'Python编程：从入门到实战',
+      text: '深入浅出Pandas',
       items: [
         {
-          text: '第一章 介绍与环境搭建',
+          text: '第1章 Pandas 简介',
           collapsed: false,
           items: [
-            { text: '基本介绍', link: '00-intro' },
-            { text: '安装与环境搭建', link: '01-install' }
+            {text: '什么是 Pandas', link: '01-01-what-is-pandas'},
+            {text: '历史与发展', link: '01-02-history-and-development'},
+            {text: '核心数据结构概述', link: '01-03-core-data-structures'},
+            {text: '在大模型时代的价值', link: '01-04-pandas-in-llm-era'}
           ]
         },
         {
-          text: '第二章 数据类型与分支控制',
+          text: '第2章 在大模型生态中的定位',
           collapsed: false,
           items: [
-            { text: '基本类型', link: '10-data-number' },
-            { text: '字符串与编码', link: '11-data-str' },
-            { text: '变量和对象', link: '12-data-object' },
-            { text: '条件、循环与异常', link: '13-data-ifwhile' }
+            {
+              text: '为什么大模型离不开 Pandas',
+              link: '02-01-why-pandas-for-llm'
+            },
+            {text: '典型场景全景图', link: '02-02-typical-scenarios-overview'},
+            {
+              text: 'Python 数据处理生态链',
+              link: '02-03-data-processing-ecosystem'
+            }
           ]
         },
         {
-          text: '第三章 函数与参数',
+          text: '第3章 安装与环境配置',
           collapsed: false,
           items: [
-            { text: '函数基础', link: '20-func-basics' },
-            { text: '高级参数特性', link: '21-func-advanced' },
-            { text: '函数式编程工具', link: '22-func-functional' },
-            { text: '闭包与装饰器', link: '23-func-closure' },
-            { text: '递归与特殊函数', link: '25-func-special' }
+            {text: '安装与版本选择', link: '03-01-installation-and-version'}, {
+              text: 'Pandas 3.0 核心新特性一览',
+              link: '03-02-pandas3-new-features'
+            },
+            {
+              text: 'PyArrow 后端深度解析',
+              link: '03-03-pyarrow-backend-deep-dive'
+            },
+            {text: '推荐开发环境', link: '03-04-recommended-environment'}
           ]
         },
         {
-          text: '第四章 数据结构',
+          text: '第4章 核心数据结构',
           collapsed: false,
           items: [
-            { text: '列表', link: '30-struct-list' },
-            { text: '元组', link: '31-struct-tuple' },
-            { text: '字典', link: '32-struct-dict' },
-            { text: '集合', link: '33-struct-set' }
+            {text: 'Series：一维带标签数组', link: '04-01-series-in-depth'},
+            {text: 'DataFrame：二维表格', link: '04-02-dataframe-in-depth'},
+            {text: '数据查看与探索', link: '04-03-data-exploration'},
+            {text: '数据类型（dtype）体系', link: '04-04-dtype-system'}
           ]
         },
         {
-          text: '第五章 集合与映射',
+          text: '第5章 数据读写 I/O',
           collapsed: false,
           items: [
-            { text: 'dequeue', link: '40-collection-dequeue' },
-            { text: 'defaultdict', link: '41-collection-defaultdict' },
-            { text: 'Counter', link: '42-collection-counter' },
-            { text: 'namedtuple', link: '43-collection-namedtuple' }
+            {
+              text: '文本格式：CSV 与 JSON',
+              link: '05-01-text-formats-csv-json'
+            },
+            {text: '数据库读写 SQL', link: '05-02-database-sql'},
+            {text: '大模型语料专用格式', link: '05-03-special-formats'},
+            {text: '数据加载最佳实践', link: '05-04-loading-best-practices'}
           ]
         },
         {
-          text: '第六章 高级特性',
+          text: '第6章 数据审查与探索',
           collapsed: false,
           items: [
-            { text: '迭代器', link: '50-pro-iterator' },
-            { text: '推导式', link: '51-pro-comprehensions' },
-            { text: '生成器', link: '54-pro-generator' }
+            {text: '基础信息查看', link: '06-01-basic-info-overview'},
+            {text: '缺失值识别与统计', link: '06-02-missing-values'},
+            {text: '重复值检测', link: '06-03-duplicates-detection'},
+            {text: '数据质量报告生成模板', link: '06-04-data-quality-report'}
           ]
         },
         {
-          text: '第七章 模块使用',
+          text: '第7章 数据清洗实战',
           collapsed: false,
           items: [
-            { text: '模块基础', link: '60-module-basics' },
-            { text: '导入', link: '61-module-import' },
-            { text: '组织', link: '62-module-package' },
-            { text: '安装与发布', link: '63-module-distribution' },
-            { text: '高级特性', link: '64-module-advanced' }
+            {text: '缺失值处理', link: '07-01-missing-values-handling'},
+            {text: '重复值处理', link: '07-02-duplicates-handling'},
+            {text: '数据类型转换', link: '07-03-data-type-conversion'},
+            {text: '字符串处理', link: '07-04-string-processing'}, {
+              text: '大模型驱动的高阶数据清洗',
+              link: '07-05-llm-driven-cleaning'
+            }
           ]
         },
         {
-          text: '第八章 面向对象编程',
+          text: '第8章 数据筛选',
           collapsed: false,
           items: [
-            { text: '类与对象基础', link: '70-oop-basics' },
-            { text: '属性与方法', link: '71-oop-attributes' },
-            { text: '继承与多态', link: '72-oop-inheritance' },
-            { text: '魔术方法', link: '73-oop-magic' },
-            { text: '封装与访问控制', link: '74-oop-encapsulation' },
-            { text: '高级特性', link: '75-oop-advanced' },
-            { text: '设计模式', link: '76-oop-patterns' }
+            {text: '布尔索引', link: '08-01-boolean-indexing'},
+            {text: 'query() 查询方法', link: '08-02-query-method'},
+            {text: '便捷过滤函数', link: '08-03-convenient-filters'},
+            {text: 'SFT 数据集筛选实战', link: '08-04-sft-filtering-scenario'}
           ]
         },
         {
-          text: '第九章 输入输出',
+          text: '第9章 数据转换与特征工程',
           collapsed: false,
           items: [
-            { text: '文件操作基础', link: '80-io-file' },
-            { text: '路径操作', link: '81-io-path' },
-            { text: '上下文管理器', link: '82-io-context' },
-            { text: '文本与二进制', link: '83-io-text-binary' },
-            { text: '数据序列化', link: '84-io-serialization' },
-            { text: '标准输入输出', link: '85-io-stdio' }
+            {text: '列与行选择', link: '09-01-column-row-selection'},
+            {text: '列的新增与修改', link: '09-02-column-modification'}, {
+              text: 'apply() 深度解析与向量化',
+              link: '09-03-apply-vectorization'
+            },
+            {text: '数据重塑：宽长格式转换', link: '09-04-data-reshaping'},
+            {text: '特征工程实战', link: '09-05-feature-engineering'}
           ]
         },
         {
-          text: '第十章 并发编程',
+          text: '第10章 排序与排名',
           collapsed: false,
           items: [
-            { text: '并发编程基础', link: '90-concurrency-basics' },
-            { text: '多进程编程', link: '91-concurrency-multiprocess' },
-            { text: '多线程编程', link: '92-concurrency-threading' },
-            { text: '异步编程', link: '93-concurrency-async' },
-            { text: '并发进阶与实践', link: '94-concurrency-advanced' }
+            {text: '排序基础', link: '10-01-sorting'},
+            {text: 'rank() 排名方法', link: '10-02-rank'}, {
+              text: 'nlargest() / nsmallest() TopN 选择',
+              link: '10-03-topn-selection'
+            },
+            {text: '排序实战场景', link: '10-04-sorting-scenarios'}
           ]
         },
         {
-          text: '第十章 常用模块',
+          text: '第11章 分组聚合与透视',
           collapsed: false,
           items: [
-            { text: '日期时间与随机数', link: 'X0-datetime-random' },
-            { text: '正则表达式', link: 'X1-regex' },
-            { text: '系统与进程', link: 'X2-system-process' },
-            { text: '工具模块', link: 'X3-tools' }
+            {text: 'groupby() 分组基础', link: '11-01-groupby-basics'},
+            {text: '聚合方法详解', link: '11-02-aggregation-methods'},
+            {text: '分组转换与过滤', link: '11-03-transform-filter'},
+            {text: '数据透视表与交叉表', link: '11-04-pivot-crosstab'},
+            {text: '分组后拆分与导出', link: '11-05-groupby-split'},
+            {text: '分组聚合实战场景', link: '11-06-groupby-scenarios'}
+          ]
+        },
+        {
+          text: '第12章 数据合并与连接',
+          collapsed: false,
+          items: [
+            {text: 'merge() 基础', link: '12-01-merge-basics'},
+            {text: 'merge() 高级技巧', link: '12-02-merge-advanced'},
+            {text: 'join() 索引连接', link: '12-03-join-index'},
+            {text: '合并性能优化', link: '12-04-merge-performance'},
+            {text: '合并与连接实战', link: '12-05-merge-scenarios'}
+          ]
+        },
+        {
+          text: '第13章 数据拼接与组合',
+          collapsed: false,
+          items: [
+            {text: 'concat() 数据拼接', link: '13-01-concat-basics'},
+            {text: 'combine_first() 与 update()', link: '13-02-combine-update'},
+            {text: '去重合并与对齐', link: '13-03-dedup-align'},
+            {text: '拼接综合实战', link: '13-04-merge-scenarios'}
+          ]
+        },
+        {
+          text: '第14章 时间序列处理',
+          collapsed: false,
+          items: [
+            {text: '时间序列基础与解析', link: '14-01-timeseries-basics'},
+            {text: '时间索引与重采样', link: '14-02-resample-rolling'},
+            {text: '偏移与差分', link: '14-03-shift-diff'},
+            {text: 'API 监控与趋势分析', link: '14-04-timeseries-monitoring'},
+            {text: '训练日志与成本趋势', link: '14-05-timeseries-scenarios'}
+          ]
+        },
+        {
+          text: '第15章 数据可视化',
+          collapsed: false,
+          items: [
+            {text: 'Pandas 内置可视化基础', link: '15-01-plotting-basics'},
+            {text: '高级可视化技巧', link: '15-02-advanced-plotting'},
+            {text: 'LLM 评估可视化实战', link: '15-03-llm-visualization'}, {
+              text: '可视化最佳实践与导出',
+              link: '15-04-visualization-best-practices'
+            }
+          ]
+        },
+        {
+          text: '第16章 高级操作技巧',
+          collapsed: false,
+          items: [
+            {text: '迭代器与分块处理', link: '16-01-iteration-chunking'},
+            {text: '样式与格式化输出', link: '16-02-style-formatting'},
+            {text: 'MultiIndex 深度操作', link: '16-03-multiindex'},
+            {text: 'Categorical 深度应用', link: '16-04-categorical-deep'},
+            {text: '管道式链式操作', link: '16-05-pipeline-chaining'}
+          ]
+        },
+        {
+          text: '第17章 性能优化',
+          collapsed: false,
+          items: [
+            {text: '内存优化实战', link: '17-01-memory-optimization'},
+            {text: '计算性能优化', link: '17-02-compute-performance'},
+            {text: 'I/O 性能优化', link: '17-03-io-performance'},
+            {text: '性能分析工具集', link: '17-04-performance-toolkit'}
+          ]
+        },
+        {
+          text: '第18章 PandasAI 与自然语言查询',
+          collapsed: false,
+          items: [
+            {text: 'PandasAI 简介与环境搭建', link: '18-01-pandasai-intro'},
+            {text: 'PandasAI 核心用法', link: '18-02-pandasai-core'},
+            {text: '高级功能与最佳实践', link: '18-03-pandasai-advanced'},
+            {text: 'LLM 开发中的实战', link: '18-04-pandasai-scenarios'}
+          ]
+        },
+        {
+          text: '第19章 RAG 知识库管理',
+          collapsed: false,
+          items: [
+            {text: '知识库数据结构设计', link: '19-01-rag-schema'},
+            {text: '知识库检索与排序', link: '19-02-rag-retrieval'},
+            {text: '知识库管理与维护', link: '19-03-rag-management'},
+            {text: '完整工作流实战', link: '19-04-rag-workflow'}
+          ]
+        },
+        {
+          text: '第20章 综合项目实战',
+          collapsed: false,
+          items: [
+            {text: 'SFT 数据集处理流水线', link: '20-01-sft-pipeline'},
+            {text: 'SFT 分层抽样与导出', link: '20-02-sft-export'},
+            {text: '模型评估报告系统', link: '20-03-eval-report'},
+            {text: 'API 成本监控仪表盘', link: '20-04-cost-dashboard'}
+          ]
+        },
+        {
+          text: '第21章 LangChain Agent 集成',
+          collapsed: false,
+          items: [
+            {text: 'Pandas × LangChain 概览', link: '21-01-langchain-overview'},
+            {text: '数据分析 Agent 构建', link: '21-02-analysis-agent'},
+            {text: 'Agent 记忆与状态管理', link: '21-03-agent-memory'},
+            {text: 'Agent 综合应用场景', link: '21-04-langchain-scenarios'}
+          ]
+        },
+        {
+          text: '第22章 MCP 协议与数据服务',
+          collapsed: false,
+          items: [
+            {text: 'MCP 协议与 Pandas 服务', link: '22-01-mcp-overview'},
+            {text: 'MCP 工具定义与路由', link: '22-02-mcp-tools'},
+            {text: 'MCP 资源管理与版本', link: '22-03-mcp-resources'},
+            {text: '生产级 MCP Server 实现', link: '22-04-mcp-complete'}
+          ]
+        },
+        {
+          text: '第23章 多模态数据处理',
+          collapsed: false,
+          items: [
+            {text: '图像数据管理', link: '23-01-image-data'},
+            {text: '音频数据管理', link: '23-02-audio-data'},
+            {text: '多模态数据统一框架', link: '23-03-multimodal-unified'},
+            {text: '多模态场景实战', link: '23-04-multimodal-scenarios'}
+          ]
+        },
+        {
+          text: '第24章 分布式计算扩展',
+          collapsed: false,
+          items: [
+            {text: 'Dask 基础入门', link: '24-01-dask-basics'},
+            {text: 'Modin 与 Ray 集成', link: '24-02-modin-ray'},
+            {text: '分布式最佳实践', link: '24-03-distributed-best-practices'},
+            {text: '分布式场景实战', link: '24-04-distributed-scenarios'}
+          ]
+        },
+        {
+          text: '第25章 总结与进阶路线',
+          collapsed: false,
+          items: [
+            {text: '知识体系全景总结', link: '25-01-knowledge-summary'},
+            {text: '学习路线图', link: '25-02-learning-roadmap'},
+            {text: '进阶主题与生态扩展', link: '25-03-advanced-topics'}
+          ]
+        },
+        {
+          text: '第26章 案例一：千万级对话语料清洗',
+          collapsed: false,
+          items: [
+            {text: '加载原始对话日志', link: '26-01-load-conversation-data'}, {
+              text: '数据质量分析报告生成',
+              link: '26-02-quality-analysis-report'
+            },
+            {
+              text: '使用 LLM 辅助清洗异常数据',
+              link: '26-03-llm-assisted-cleaning'
+            },
+            {
+              text: '导出为 SFT / DPO 训练格式',
+              link: '26-04-export-sft-dpo-format'
+            }
+          ]
+        },
+        {
+          text: '第27章 案例二：RAG 知识库构建流水线',
+          collapsed: false,
+          items: [
+            {text: '文档解析与分块', link: '27-01-document-parsing-chunking'},
+            {text: '元数据管理', link: '27-02-metadata-management'}, {
+              text: '向量索引构建前的数据准备',
+              link: '27-03-vector-prep-chunking'
+            },
+            {
+              text: '构建端到端的自动化流水线',
+              link: '27-04-end-to-end-pipeline'
+            }
+          ]
+        },
+        {
+          text: '第28章 案例三：LangChain Pandas Agent 构建',
+          collapsed: false,
+          items: [
+            {text: '环境配置与 API Key 设置', link: '28-01-env-setup-apikey'}, {
+              text: '创建 Pandas DataFrame Agent',
+              link: '28-02-create-pandas-agent'
+            },
+            {text: '自然语言问答交互', link: '28-03-natural-language-qa'},
+            {text: '部署为简单的 Web 应用', link: '28-04-web-app-deployment'}
+          ]
+        },
+        {
+          text: '第29章 案例四：模型评估与对比分析',
+          collapsed: false,
+          items: [
+            {
+              text: '加载多个模型的推理结果',
+              link: '29-01-load-multi-model-results'
+            },
+            {
+              text: '自动化指标计算与对比表生成',
+              link: '29-02-auto-metrics-comparison'
+            },
+            {text: '可视化对比图表', link: '29-03-visualization-charts'},
+            {text: '生成评估报告', link: '29-04-generate-eval-report'}
+          ]
+        },
+        {
+          text: '第30章 案例五：迁移至 Polars 获得 10 倍加速',
+          collapsed: false,
+          items: [
+            {
+              text: '识别性能瓶颈（使用 %timeit 测量）',
+              link: '30-01-identify-bottlenecks'
+            },
+            {
+              text: '语法迁移：关键函数对照与改写',
+              link: '30-02-syntax-migration-guide'
+            },
+            {
+              text: '混合使用：Pandas ↔ Polars 数据互转',
+              link: '30-03-hybrid-pandas-polars'
+            },
+            {
+              text: '迁移前后的性能对比报告',
+              link: '30-04-migration-performance-report'
+            }
           ]
         }
       ]
-    }
-  ]
-}
-
-function sidebarNumPy(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'Numpy学习指南',
-      items: [
-        {
-          text: '第1章 基础概念',
-          collapsed: false,
-          items: [
-            { text: 'NumPy是什么', link: '01-00-numpy-intro' },
-            { text: 'NumPy优势对比', link: '01-01-numpy-vs-list' },
-            { text: '安装与配置', link: '01-02-install-config' },
-            { text: '导入与约定', link: '01-03-import-convention' },
-            { text: 'NumPy与LLM开发', link: '01-04-why-numpy-llm' }
-          ]
-        },
-        {
-          text: '第2章 ndarray属性',
-          collapsed: false,
-          items: [
-            { text: 'ndarray属性', link: '02-01-ndarray-attributes' },
-            { text: 'dtype深入理解', link: '02-02-dtype-deep-dive' },
-            { text: '从列表创建', link: '02-03-ndarray-from-list' },
-            { text: 'AI中的应用', link: '02-04-ndarray-in-ai' }
-          ]
-        },
-        {
-          text: '第3章 数组创建',
-          collapsed: false,
-          items: [
-            { text: 'zeros与ones', link: '03-01-zeros-ones' },
-            { text: 'eye与identity', link: '03-02-eye-identity' },
-            { text: 'arange与linspace', link: '03-03-arange-linspace' },
-            { text: 'tile与meshgrid', link: '03-04-tile-meshgrid' },
-            { text: '随机数组', link: '03-05-random-arrays' },
-            { text: '从数据创建', link: '03-06-array-from-data' }
-          ]
-        },
-        {
-          text: '第4章 形状操作',
-          collapsed: false,
-          items: [
-            { text: 'shape与reshape', link: '04-01-shape-reshape' },
-            { text: 'flatten与ravel', link: '04-02-flatten-ravel' },
-            { text: '转置操作', link: '04-03-transpose' },
-            { text: 'expand与squeeze', link: '04-04-expand-squeeze' },
-            { text: 'concatenate与stack', link: '04-05-concatenate-stack' },
-            { text: 'split分割', link: '04-06-split-array' }
-          ]
-        },
-        {
-          text: '第5章 索引与切片',
-          collapsed: false,
-          items: [
-            { text: '基本索引', link: '05-01-basic-indexing' },
-            { text: '整数数组索引', link: '05-02-integer-array-indexing' },
-            { text: '布尔掩码', link: '05-03-boolean-masking' },
-            { text: '花式索引', link: '05-04-fancy-indexing' },
-            { text: 'LLM嵌入查找', link: '05-05-llm-embedding-lookup' }
-          ]
-        },
-        {
-          text: '第6章 运算与性能',
-          collapsed: false,
-          items: [
-            { text: '元素级运算', link: '06-01-element-wise-operations' },
-            { text: '向量化性能', link: '06-02-vectorization-performance' },
-            { text: '矩阵乘法', link: '06-03-matrix-multiplication' },
-            { text: 'LLM自注意力', link: '06-04-llm-self-attention' }
-          ]
-        },
-        {
-          text: '第7章 广播机制',
-          collapsed: false,
-          items: [
-            { text: '广播规则', link: '07-01-broadcasting-rules' },
-            { text: '数组扩张', link: '07-02-array-expansion' },
-            { text: 'LLM位置编码', link: '07-03-llm-positional-encoding' }
-          ]
-        },
-        {
-          text: '第8章 数学函数',
-          collapsed: false,
-          items: [
-            { text: '指数与对数', link: '08-01-exp-log' },
-            { text: '激活函数', link: '08-02-activation-functions' },
-            { text: 'clip截断', link: '08-03-clip-functions' }
-          ]
-        },
-        {
-          text: '第9章 统计与损失',
-          collapsed: false,
-          items: [
-            { text: '基础统计', link: '09-01-statistics-basic' },
-            { text: 'axis统计', link: '09-02-axis-statistics' },
-            { text: 'cumsum累加', link: '09-03-cumsum-operations' },
-            { text: 'LLM困惑度', link: '09-04-llm-perplexity' }
-          ]
-        },
-        {
-          text: '第10章 线性代数',
-          collapsed: false,
-          items: [
-            { text: '点积', link: '10-01-dot-product' },
-            { text: '特征值与特征向量', link: '10-02-eigenvalues-eigenvectors' },
-            { text: '奇异值分解', link: '10-03-svd' },
-            { text: '矩阵求逆与伪逆', link: '10-04-pinv' },
-            { text: '范数计算', link: '10-05-norm' }
-          ]
-        },
-        {
-          text: '第11章 随机数生成',
-          collapsed: false,
-          items: [
-            { text: '随机种子与可复现性', link: '11-01-random-seed' },
-            { text: '常见分布', link: '11-02-common-distributions' },
-            { text: '随机采样', link: '11-03-random-sampling' },
-            { text: '随机排列', link: '11-04-random-permutation' },
-            { text: '随机初始化权重', link: '11-05-random-initialization' }
-          ]
-        },
-        {
-          text: '第12章 内存布局',
-          collapsed: false,
-          items: [
-            { text: 'C顺序与Fortran顺序', link: '12-01-c-fortran-order' },
-            { text: '视图与副本', link: '12-02-view-vs-copy' },
-            { text: 'ndarray.view', link: '12-03-view-ndarray' },
-            { text: '原地操作', link: '12-04-inplace-operations' }
-          ]
-        },
-        {
-          text: '第13章 结构化数组',
-          collapsed: false,
-          items: [
-            { text: '创建结构化数组', link: '13-01-structured-arrays' },
-            { text: '字段访问与操作', link: '13-02-field-access' },
-            { text: 'HuggingFace导出', link: '13-03-huggingface-export' }
-          ]
-        },
-        {
-          text: '第14章 文件IO',
-          collapsed: false,
-          items: [
-            { text: '文本文件IO', link: '14-01-text-io' },
-            { text: '二进制文件IO', link: '14-02-binary-io' },
-            { text: '内存映射', link: '14-03-memmap' }
-          ]
-        },
-        {
-          text: '实战一：词嵌入矩阵',
-          collapsed: false,
-          items: [
-            { text: '词汇表与索引映射', link: '15-01-vocab-index' },
-            { text: '嵌入矩阵创建', link: '15-02-embedding-matrix' },
-            { text: '嵌入查找实现', link: '15-03-embedding-lookup' },
-            { text: '词向量相似度可视化', link: '15-04-visualize-similarity' }
-          ]
-        },
-        {
-          text: '实战二：多头自注意力',
-          collapsed: false,
-          items: [
-            { text: 'QKV投影矩阵', link: '16-01-qkv-projections' },
-            { text: '缩放点积注意力', link: '16-02-scaled-attention' },
-            { text: '因果掩码', link: '16-03-causal-mask' },
-            { text: '前向传播模拟', link: '16-04-forward-propagation' }
-          ]
-        },
-        {
-          text: '实战三：LayerNorm与残差',
-          collapsed: false,
-          items: [
-            { text: 'LayerNorm实现', link: '17-01-layer-norm' },
-            { text: '残差连接模拟', link: '17-02-residual-connection' },
-            { text: 'NumPy vs PyTorch对比', link: '17-03-numpy-vs-pytorch' }
-          ]
-        },
-        {
-          text: '实战四：GPT文本生成',
-          collapsed: false,
-          items: [
-            { text: '预训练嵌入概述', link: '18-01-pretrained-embeddings' },
-            { text: 'Transformer解码器', link: '18-02-transformer-decoder' },
-            { text: '温度采样', link: '18-03-temperature-sampling' },
-            { text: '简单文本序列生成', link: '18-04-text-generation' }
-          ]
-        },
-        {
-          text: '实战五：LoRA低秩适配',
-          collapsed: false,
-          items: [
-            { text: 'LoRA原理', link: '19-01-lora-principle' },
-            { text: 'LoRA前向传播', link: '19-02-lora-forward' },
-            { text: '参数量节省', link: '19-03-parameter-savings' }
-          ]
-        },
-        {
-          text: '实战六：HuggingFace集成',
-          collapsed: false,
-          items: [
-            { text: 'tokenizer转NumPy', link: '20-01-tokenizer-to-numpy' },
-            { text: '数据集转NumPy', link: '20-02-datasets-to-numpy' },
-            { text: 'NumPy DataLoader', link: '20-03-numpy-dataloader' }
-          ]
-        },
-        {
-          text: '实战七：框架互操作',
-          collapsed: false,
-          items: [
-            { text: 'PyTorch互操作', link: '21-01-torch-numpy' },
-            { text: 'TensorFlow互操作', link: '21-02-tensorflow-numpy' },
-            { text: '预处理与训练', link: '21-03-preprocessing-training' }
-          ]
-        },
-        {
-          text: '实战八：LLM评估',
-          collapsed: false,
-          items: [
-            { text: '困惑度计算', link: '22-01-perplexity' },
-            { text: 'BLEU/ROUGE指标', link: '22-02-bleu-rouge' },
-            { text: '文本多样性评估', link: '22-03-text-diversity' }
-          ]
-        }
-      ]
-    }
-  ]
-}
-
-function sidebarLLM(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'LLM',
-      items: [
-        { text: 'LangChain教程', link: 'langchain/' },
-        { text: 'Hugging Face Transformers教程', link: 'transformers/' },
-        { text: 'Ollama教程', link: 'ollama/' },
-        { text: 'vLLM教程', link: 'vllm/' },
-        { text: 'PyTorch Lightning教程', link: 'pytorch-lightning/' }
-      ]
-    }
-  ]
-}
-
-function sidebarDatabase(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: '数据库',
-      items: [
-        { text: 'PG Vector教程', link: 'pgvector/' },
-        { text: 'Milvus教程', link: 'milvus/' },
-        { text: 'Chroma教程', link: 'chroma/' },
-        { text: 'Faiss教程', link: 'faiss/' },
-        { text: 'DuckDB教程', link: 'duckdb/' },
-        { text: 'LanceDB教程', link: 'lancedb/' }
-      ]
-    }
-  ]
-}
-
-function sidebarAICoding(): DefaultTheme.SidebarItem[] {
-  return [
-    {
-      text: 'OpenClaw从入门到精通',
-      items: [
-        {
-          text: '第1章 基础概念',
-          collapsed: false,
-          items: [
-            { text: 'OpenClaw是什么', link: '01-01-what-is-openclaw' },
-            { text: 'OpenClaw能做什么', link: '01-02-what-can-openclaw-do' },
-            { text: '技术架构概览', link: '01-03-architecture-overview' }
-          ]
-        },
-        {
-          text: '第2章 部署指南',
-          collapsed: false,
-          items: [
-            { text: '部署前置准备', link: '02-01-deployment-prerequisites' },
-            { text: '本地部署', link: '02-02-local-deployment' },
-            { text: '云端部署', link: '02-03-cloud-deployment' },
-            { text: '初始化配置', link: '02-04-initialization' }
-          ]
-        },
-        {
-          text: '第3章 配置定制',
-          collapsed: false,
-          items: [
-            { text: '配置文件详解', link: '03-01-config-files' },
-            { text: '定义AI身份', link: '03-02-define-soul' },
-            { text: '设置用户偏好', link: '03-03-user-preferences' },
-            { text: '定时任务配置', link: '03-04-heartbeat-tasks' }
-          ]
-        },
-        {
-          text: '第4章 模型配置',
-          collapsed: false,
-          items: [
-            { text: '支持的AI模型提供商', link: '04-01-supported-models' },
-            { text: 'API Key配置', link: '04-02-api-key-config' },
-            { text: '模型策略与成本优化', link: '04-03-model-strategy' },
-            { text: '本地模型部署', link: '04-04-ollama-deployment' }
-          ]
-        },
-        {
-          text: '第5章 技能系统',
-          collapsed: false,
-          items: [
-            { text: 'Skills技能系统概述', link: '05-01-skills-overview' },
-            { text: '必备核心技能', link: '05-02-core-skills' },
-            { text: '技能管理命令', link: '05-03-skill-management' },
-            { text: '自定义Skill开发', link: '05-04-custom-skill' },
-            { text: '技能安全', link: '05-05-skill-security' }
-          ]
-        },
-        {
-          text: '第6章 消息渠道',
-          collapsed: false,
-          items: [
-            { text: '支持的消息平台', link: '06-01-message-platforms' },
-            { text: '渠道配置方法', link: '06-02-channel-config' },
-            { text: '多账户管理', link: '06-03-multi-account' }
-          ]
-        },
-        {
-          text: '第7章 日常使用',
-          collapsed: false,
-          items: [
-            { text: '访问方式', link: '07-01-access-methods' },
-            { text: '常用CLI命令', link: '07-02-cli-commands' },
-            { text: '常见问题排查', link: '07-03-troubleshooting' }
-          ]
-        },
-        {
-          text: '第8章 实战案例',
-          collapsed: false,
-          items: [
-            { text: '自动发微信公众号文章', link: '08-01-wechat-article' },
-            { text: '日报自动生成与发送', link: '08-02-daily-report' },
-            { text: '7×24小时信息中枢', link: '08-03-info-hub' },
-            { text: '个人知识库管理', link: '08-04-knowledge-base' }
-          ]
-        },
-        {
-          text: '第9章 进阶玩法',
-          collapsed: false,
-          items: [
-            { text: '多Agent配置', link: '09-01-multi-agent' },
-            { text: 'RAG检索增强生成', link: '09-02-rag' },
-            { text: '上下文记忆配置', link: '09-03-context-memory' },
-            { text: '数据分析与优化', link: '09-04-analytics' }
-          ]
-        },
-        {
-          text: '附录',
-          collapsed: false,
-          items: [
-            { text: 'OpenClaw命令速查表', link: '10-01-command-reference' },
-            { text: '常用Skill推荐清单', link: '10-02-skill-recommendations' },
-            { text: '各模型提供商控制台地址', link: '10-03-model-providers' },
-            { text: '安全配置检查清单', link: '10-04-security-checklist' },
-            { text: '相关资源链接', link: '10-05-resources' }
-          ]
-        }
-      ]
-    }
+    },
   ]
 }
