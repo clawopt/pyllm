@@ -1,270 +1,74 @@
 ---
 title: 数据重塑：宽长格式转换
-description: melt() 逆透视 / pivot() 透视 / wide_to_long() / stack() 与 unstack()
+description: melt() 逆透视 / pivot() 透视 / stack() 与 unstack() / wide_to_long()，LLM 场景下的数据格式转换实战
 ---
-# 数据重塑操作
+# 数据重塑：宽格式与长格式的相互转换
 
+在数据处理中你经常遇到两种表格格式。**宽格式（Wide）** 是每个变量一列、每行一个观测——适合人类阅读和 Excel 展示。**长格式（Long）** 是所有值堆在一列里、用另一列标识变量名——适合绘图和做分析。
 
-## 为什么需要数据重塑
-
-在 LLM 数据处理中，你经常遇到两种格式：
-
-**宽格式（Wide）**：每个变量一列，适合人类阅读和 Excel 展示
-```python
-import pandas as pd
-
-wide_df = pd.DataFrame({
-    'model': ['GPT-4o', 'Claude', 'Llama', 'Qwen'],
-    'MMLU': [88.7, 89.2, 84.5, 83.5],
-    'HumanEval': [92.0, 93.1, 82.4, 78.6],
-    'MATH': [76.6, 71.1, 50.4, 60.8],
-    'GPQA': [53.9, 59.3, 34.2, 40.1],
-})
-print("=== 宽格式 ===")
-print(wide_df)
-```
-
-**长格式（Long）**：所有值堆在一列，用另一列标识变量名，适合绘图和分析
-```python
-long_df = pd.DataFrame({
-    'model': ['GPT-4o']*4 + ['Claude']*4 + ['Llama']*4 + ['Qwen']*4,
-    'metric': ['MMLU','HumanEval','MATH','GPQA']*4,
-    'score': [88.7,92.0,76.6,53.9, 89.2,93.1,71.1,59.3,
-              84.5,82.4,50.4,34.2, 83.5,78.6,60.8,40.1],
-})
-print("\n=== 长格式 ===")
-print(long_df)
-```
-
-## melt()：从宽转长（逆透视）
-
-### 基础用法
+## 宽转长：melt()
 
 ```python
 import pandas as pd
 
-df = pd.DataFrame({
+wide = pd.DataFrame({
     'model': ['GPT-4o', 'Claude', 'Llama'],
     'MMLU': [88.7, 89.2, 84.5],
     'HumanEval': [92.0, 93.1, 82.4],
     'MATH': [76.6, 71.1, 50.4],
 })
 
-melted = df.melt(
-    id_vars=['model'],
-    var_name='metric',
-    value_name='score'
+long = wide.melt(
+    id_vars=['model'],       # 不变的主键列
+    var_name='metric',        # 原来的列名变成这个新列的值
+    value_name='score'        # 原来的数值变成这个新列
 )
 
-print(melted)
+print("宽格式:")
+print(wide)
+print("\n长格式:")
+print(long)
 ```
 
-### 选择性融化部分列
+`melt()` 的作用是把"多列指标"拆成"两列：一列记录指标名称、一列记录指标值"。这在 LLM 评测场景中特别常见——你的原始数据可能是每个模型一行、每个评测指标一列（宽格式），但画图或做对比分析时需要长格式（每个模型×指标组合一行）。
+
+## 长转宽：pivot()
 
 ```python
-import pandas as pd
-
-df = pd.DataFrame({
-    'model': ['GPT-4o', 'Claude'],
-    'params_B': [1760, 175],
-    'MMLU': [88.7, 89.2],
-    'HumanEval': [92.0, 93.1],
-    'price': [2.50, 3.00],
-})
-
-partial_melt = df.melt(
-    id_vars=['model', 'params_B', 'price'],
-    value_vars=['MMLU', 'HumanEval'],
-    var_name='benchmark',
-    value_name='score'
-)
-print(partial_melt)
-```
-
-## pivot()：从长转宽（透视）
-
-### 基础用法
-
-```python
-import pandas as pd
-
-long_df = pd.DataFrame({
-    'model': ['GPT-4o', 'GPT-4o', 'Claude', 'Claude', 'Llama', 'Llama'],
-    'metric': ['MMLU', 'HumanEval', 'MMLU', 'HumanEval', 'MMLU', 'HumanEval'],
-    'score': [88.7, 92.0, 89.2, 93.1, 84.5, 82.4],
-})
-
-pivoted = long_df.pivot(
+wide_again = long.pivot(
     index='model',
     columns='metric',
     values='score'
-)
-
-print(pivoted)
+).reset_index()
+print(wide_again)
 ```
 
-### 处理重复值（pivot_table）
-
-当 `index + columns` 组合有重复时，`pivot()` 会报错，需要用 `pivot_table()`：
+`pivot()` 是 `melt()` 的逆操作——它把长格式还原回宽格式。注意 `pivot()` 要求 `(index, columns)` 的组合是唯一的，如果有重复值会报错。如果确实有重复值需要聚合，应该用 `pivot_table()` 并指定 `aggfunc`：
 
 ```python
-import pandas as pd
-import numpy as np
-
-long_df = pd.DataFrame({
-    'model': ['GPT-4o', 'GPT-4o', 'GPT-4o', 'Claude', 'Claude'],
-    'metric': ['MMLU', 'MMLU', 'HumanEval', 'MMLU', 'HumanEval'],
-    'score': [88.7, 87.5, 92.0, 89.2, 93.1],
-    'run_id': ['v1', 'v2', 'v1', 'v1', 'v1'],
-})
-
-pt = long_df.pivot_table(
+summary = long.pivot_table(
     index='model',
     columns='metric',
     values='score',
     aggfunc='mean'
 )
-print(pt)
-
-pt_multi = long_df.pivot_table(
-    index='model',
-    columns='metric',
-    values='score',
-    aggfunc=['mean', 'count']
-)
-print(pt_multi)
 ```
 
-## wide_to_long()：处理规律命名的宽表
+## stack() 和 unstack()：基于索引的重塑
+
+`melt()/pivot()` 操作的是 DataFrame 的列，而 `stack()/unstack()` 操作的是索引层级：
 
 ```python
-import pandas as pd
-
 df = pd.DataFrame({
-    'model': ['A', 'B'],
-    'score_2024Q1': [85, 90],
-    'score_2024Q2': [87, 88],
-    'score_2024Q3': [91, 92],
-    'latency_2024Q1': [800, 650],
-    'latency_2024Q2': [750, 600],
-    'latency_2024Q3': [720, 580],
-})
-
-result = pd.wide_to_long(
-    df,
-    stubnames=['score', 'latency'],
-    i='model',
-    j='quarter',
-    sep='_',
-    suffix='.+'
-).reset_index()
-
-print(result.sort_values(['model', 'quarter']))
-```
-
-## stack() 与 unstack()
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-df = pd.DataFrame(
-    np.random.randint(70, 95, (3, 4)),
-    index=['GPT-4o', 'Claude', 'Llama'],
-    columns=['MMLU', 'HumanEval', 'MATH', 'GPQA']
-)
-print("=== 原始 DataFrame ===")
-print(df)
+    'GPT-4o': [88.7, 92.0, 76.6],
+    'Claude': [89.2, 93.1, 71.1],
+}, index=['MMLU', 'HumanEval', 'MATH'])
 
 stacked = df.stack()
-print("\n=== stack() 结果 ===")
-print(stacked)
-
 unstacked = stacked.unstack()
-print("\n=== unstack() 还原 ===")
-print(unstacked)
 
-unstacked_level0 = stacked.unstack(level=0)
-print("\n=== 按 level=0 展开 ===")
-print(unstacked_level0)
+print(f"\nStack 后形状: {stacked.shape} (Series)")
+print(stacked.head())
 ```
 
-## LLM 场景：评估报告的数据重塑
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-models = ['GPT-4o', 'Claude-3.5-Sonnet', 'Llama-3.1-70B', 'Qwen2.5-72B', 'DeepSeek-V3']
-metrics = ['MMLU', 'HumanEval', 'MATH', 'GPQA', 'BBH', 'MUSR']
-
-raw_eval = []
-for model in models:
-    for metric in metrics:
-        base = {'GPT-4o': 88, 'Claude-3.5-Sonnet': 89, 'Llama-3.1-70B': 84,
-                'Qwen2.5-72B': 83, 'DeepSeek-V3': 86}.get(model, 80)
-        raw_eval.append({
-            'model': model,
-            'metric': metric,
-            'score': round(base + np.random.randn() * 5, 1),
-            'n_shots': np.random.choice([0, 5]),
-        })
-
-eval_df = pd.DataFrame(raw_eval)
-
-print(f"原始数据: {len(eval_df)} 行 × {len(eval_df.columns)} 列")
-print(eval_df.head(6))
-```
-
-### 步骤一：构建对比矩阵
-
-```python
-matrix = eval_df.pivot_table(
-    index='model',
-    columns='metric',
-    values='score',
-    aggfunc='max'
-)
-
-print("=== 模型 × 指标 对比矩阵 ===")
-print(matrix.round(1))
-
-matrix['mean'] = matrix.mean(axis=1).round(1)
-matrix['rank'] = matrix.drop(columns='mean').mean(axis=1).rank(ascending=False).astype(int)
-print(matrix.sort_values('rank'))
-```
-
-### 步骤二：熔化后绘制趋势图
-
-```python
-melted = eval_df.melt(
-    id_vars=['model', 'n_shots'],
-    var_name='benchmark',
-    value_name='score'
-)
-
-summary = melted.groupby('model')['score'].agg(['mean', 'std', 'min', 'max']).round(2)
-summary.columns = ['平均分', '标准差', '最低分', '最高分']
-print(summary.sort_values('平均分', ascending=False))
-```
-
-### 步骤三：找出各模型最强/最弱项
-
-```python
-def find_extremes(group):
-    best = group.loc[group['score'].idxmax()]
-    worst = group.loc[group['score'].idxmin()]
-    return pd.Series({
-        '最强项': f"{best['metric']} ({best['score']:.1f})",
-        '最弱项': f"{worst['metric']} ({worst['score']:.1f})",
-        '分差': best['score'] - worst['score']
-    })
-
-extremes = eval_df.groupby('model').apply(find_extremes)
-print("\n=== 各模型最强/最弱项 ===")
-print(extremes)
-```
+`stack()` 把列"压入"行索引变成一个多层索引 Series；`unstack()` 反过来把最内层索引展开成列。当你需要在多层索引和扁平结构之间转换时这对方法非常有用。

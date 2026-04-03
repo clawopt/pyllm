@@ -1,90 +1,38 @@
 ---
-title: 时间序列偏移与差分
-description: shift() / tshift() / diff() / pct_change() / LLM 场景：趋势分析与异常检测
+title: shift() 与 diff()：时间偏移与差分
+description: 数据的滞后/前移、环比/同比计算、LLM 场景下的增长率分析
 ---
-# Shift 与 Diff 操作
+# shift() 与 diff()：时间的偏移与变化
 
+`shift()` 把数据沿时间轴向前或向后移动，`diff()` 计算相邻时间点的差值。这两个方法组合起来可以做很多有用的分析。
 
-## shift(): 值偏移
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-df = pd.DataFrame({
-    'date': pd.date_range('2025-03-01', periods=10, freq='D'),
-    'api_calls': [100, 120, 115, 130, 140, 135, 150, 160, 155, 170],
-})
-
-df['prev_day'] = df['api_calls'].shift(1)
-
-df['next_day'] = df['api_calls'].shift(-1)
-
-df['prev_7d'] = df['api_calls'].shift(7)
-
-print(df[['date', 'api_calls', 'prev_day', 'next_day']].head(8))
-```
-
-## diff(): 差分
-
-```python
-import pandas as pd
-
-df = pd.DataFrame({
-    'date': pd.date_range('2025-03-01', periods=10, freq='D'),
-    'api_calls': [100, 120, 115, 130, 140, 135, 150, 160, 155, 170],
-})
-
-df['diff_1'] = df['api_calls'].diff()
-
-df['diff_2'] = df['api_calls'].diff(2)
-
-df['pct_change'] = df['api_calls'].pct_change().round(3)
-
-print(df.round(2).to_string(index=False))
-```
-
-## pct_change(): 变化率
+## shift()：时间偏移
 
 ```python
 import pandas as pd
 import numpy as np
 
-np.random.seed(42)
-
-daily_cost = pd.DataFrame({
-    'date': pd.date_range('2025-03-01', periods=30, freq='D'),
-    'cost_usd': np.cumsum(np.random.uniform(5, 50, 30)),
+df = pd.DataFrame({
+    'date': pd.date_range('2025-01-01', periods=5, freq='D'),
+    'users': [100, 120, 115, 130, 140],
 })
 
-daily_cost['day_over_day'] = daily_cost['cost_usd'].pct_change() * 100
+df['yesterday'] = df['users'].shift(1)
+df['mom_change'] = df['users'] - df['users'].shift(1)
+df['mom_pct'] = (df['users'] / df['users'].shift(1) - 1).round(3)
 
-daily_cost['week_over_week'] = daily_cost['cost_usd'].pct_change(periods=7) * 100
-
-print("=== 费用变化率 ===")
-print(daily_cost[['date', 'cost_usd', 'day_over_day']].round(2).tail(10))
+print(df)
 ```
 
-## 时间索引偏移：tshift() vs shift()
+`shift(1)` 让数据"向下移一格"——今天的数据跑到明天的位置（或者说今天的"昨天"就是上一天的值）。这在计算**环比增长率**（和上一个时间点相比）时是标准操作。
+
+## diff()：差分
 
 ```python
-import pandas as pd
+df['diff_1d'] = df['users'].diff()
+df['pct_change'] = df['users'].pct_change().round(3)
 
-ts = pd.Series(
-    range(5),
-    index=pd.date_range('2025-03-01', periods=5, freq='D')
-)
-
-val_shifted = ts.shift(1)
-
-idx_shifted = ts.shift(1, freq='D')
-
-print("原始:")
-print(ts)
-print("\nshift(1):")
-print(val_shifted)
-print("\nshift(1, freq='D'):")
-print(idx_shifted)
+print(df[['date', 'users', 'diff_1d', 'pct_change']])
 ```
+
+`diff()` 是 `x - x.shift()` 的简写。`pct_change()` 则直接计算百分比变化 `(x - x.shift()) / x.shift()`——在计算日环比、周同比等指标时极其常用。

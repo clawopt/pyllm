@@ -1,142 +1,46 @@
 ---
-title: 时间索引与重采样
-description: set_index() 时间索引 / resample() 降采样 / asfreq() / 滚动窗口统计
+title: 重采样 resample() 与滚动窗口 rolling()
+description: 按时间粒度聚合、移动平均/求和、窗口统计、LLM API 调用量趋势分析
 ---
 # 重采样与滚动窗口
 
+当你有时间序列数据时，两个最常用的操作是：**把数据按更大的时间粒度聚合**（比如从每小时到每天）和**计算滚动统计量**（比如 7 天移动平均）。`resample()` 和 `rolling()` 就是为此设计的。
 
-## 设置时间索引
+## resample()：按时间粒度聚合
 
 ```python
 import pandas as pd
 import numpy as np
 
-np.random.seed(42)
-
+dates = pd.date_range('2025-01-01', periods=720, freq='h')
 df = pd.DataFrame({
-    'timestamp': pd.date_range('2025-03-01', periods=100, freq='h'),
-    'value': np.random.randn(100).cumsum(),
+    'ts': dates,
+    'requests': np.random.poisson(200, 720),
 })
 
-df_indexed = df.set_index('timestamp')
+df = df.set_index('ts')
 
-march_3rd = df_indexed['2025-03-03']
-print(f"3月3日数据: {len(march_3rd)} 条")
-
-week1 = df_indexed['2025-03-01':'2025-03-07']
-print(f"第一周: {len(week1)} 条")
-```
-
-## resample()：降采样（聚合）
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-hourly_data = pd.DataFrame({
-    'timestamp': pd.date_range('2025-03-01', periods=168, freq='h'),
-    'api_calls': np.random.poisson(50, 168),
-    'latency_ms': np.random.exponential(500, 168).astype(int),
-}).set_index('timestamp')
-
-daily = hourly_data.resample('D').agg(
-    total_calls=('api_calls', 'sum'),
-    avg_latency=('latency_ms', 'mean'),
-    max_latency=('latency_ms', 'max'),
-    p95_latency=('latency_ms', lambda x: x.quantile(0.95)),
-).round(1)
-
-print("=== 日粒度汇总 ===")
-print(daily.head(7))
-
-weekly = hourly_data.resample('W').agg(
-    total_calls=('api_calls', 'sum'),
-    avg_latency=('latency_ms', 'mean'),
-)
-print("\n=== 周粒度汇总 ===")
-print(weekly)
-
-monthly = hourly_data.resame('ME').agg(
-    total_calls=('api_calls', 'sum'),
-)
-print(f"\n月总计: {monthly['total_calls'].sum():,} 次")
-```
-
-## 常用重采样频率别名
-
-| 别名 | 含义 | 示例 |
-|------|------|------|
-| `D` | 天 | 每天 |
-| `h` | 小时 | 每小时 |
-| `W` | 周 | 每周日 |
-| `ME` | 月末 | 每月底 |
-| `QE` | 季末 | 每季度末 |
-| `YE` | 年末 | 每年底 |
-| `6h` | 6小时 | 每6小时 |
-| `30min` | 30分钟 | 每30分钟 |
-
-## 升采样与填充
-
-```python
-import pandas as pd
-
-daily_df = pd.DataFrame(
-    {'value': [10, 20, 15, 25]},
-    index=pd.date_range('2025-03-01', periods=4, freq='D')
+daily = df.resample('D').agg(
+    total_requests=('requests', 'sum'),
+    avg_hourly=('requests', 'mean'),
+    peak=('requests', 'max'),
 )
 
-hourly_up = daily_df.resample('h').asfreq()
-print(f"升采样: {len(hourly_up)} 行 (原{len(daily_df)}行)")
-
-ffilled = daily_df.resample('h').ffill()
-
-interpolated = daily_df.resample('h').interpolate(method='linear')
+print(daily.head())
 ```
 
-## 滚动窗口：rolling()
+`resample('D')` 把小时级数据聚合成天级（D=Day）。其他常见频率：`'H'`(小时)、`'W'`(周)、`'ME'`(月末)、`'QE'`(季度末)。配合 `agg()` 可以同时计算多个统计量。
+
+## rolling()：滑动窗口统计
 
 ```python
-import pandas as pd
-import numpy as np
+df['ma_7d'] = df['requests'].rolling(window=7*24).mean()
+df['ma_24h'] = df['requests'].rolling(window=24).mean()
 
-np.random.seed(42)
-
-ts = pd.DataFrame({
-    'value': np.random.randn(100) * 10 + 50,
-}, index=pd.date_range('2025-01-01', periods=100, freq='D'))
-
-ts['ma_7'] = ts['value'].rolling(window=7).mean().round(1)
-
-ts['std_7'] = ts['value'].rolling(window=7).std().round(2)
-
-ts['max_7'] = ts['value'].rolling(window=7).max()
-
-ts['ma_30'] = ts['value'].rolling(window=30).mean().round(1)
-
-print("=== 滚动窗口结果 ===")
-print(ts[['value', 'ma_7', 'std_7']].head(12))
-
-ts['ma_7_min2'] = ts['value'].rolling(window=7, min_periods=2).mean()
+print(df[['requests', 'ma_24h']].head(30))
 ```
 
-## expanding(): 扩展窗口（累计）
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-df = pd.DataFrame({'score': np.random.uniform(70, 95, 20)},
-                  index=pd.date_range('2025-03-01', periods=20, freq='D'))
-
-df['expanding_mean'] = df['score'].expanding().mean().round(2)
-
-df['expanding_max'] = df['score'].expanding().max()
-
-df['expanding_std'] = df['score'].expanding().std().round(3)
-
-print(df.head(10))
-```
+`rolling(window=N)` 创建一个 N 个周期的滑动窗口。注意前 N-1 个位置会是 NaN（因为窗口还没填满）。这在 LLM 场景中常用于：
+- **API 调用量的 7 日移动平均**——平滑日间波动，看清趋势方向
+- **延迟的 P95 滚动值**——检测性能是否在持续恶化
+- **错误率的指数加权移动平均（EWMA）**——对近期数据赋予更高权重

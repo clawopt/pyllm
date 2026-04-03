@@ -1,328 +1,97 @@
 ---
-title: apply() 深度解析与向量化操作
-description: apply() 性能对比、向量化替代方案、transform()、agg() 在 Series 上的用法
+title: apply() 与向量化操作
+description: apply() 的三种调用模式、向量化替代方案的性能对比、transform() 与 agg() 的区别
 ---
-# apply 与向量化
+# apply()：灵活但需要谨慎使用的瑞士军刀
 
+`apply()` 是 Pandas 中最灵活的方法之一——它让你对 Series 或 DataFrame 的每个元素/每行/每列执行任意函数。但这种灵活性是有代价的：**apply() 本质上是一个 Python 级别的循环，比原生向量化操作慢几个数量级**。这一节我们讲清楚什么时候该用 apply、什么时候应该用向量化替代。
 
-## apply() 的三种调用模式
+## 三种调用模式
 
 ### 模式一：Series.apply() —— 逐元素处理
 
 ```python
 import pandas as pd
-import numpy as np
 
 df = pd.DataFrame({
     'prompt': [
         '什么是Transformer',
         '如何训练LLM',
         'BERT和GPT区别',
-        '解释注意力机制',
     ],
 })
 
 df['char_count'] = df['prompt'].apply(len)
-
 df['first_word'] = df['prompt'].apply(lambda x: x.split()[0])
 
-print(df[['prompt', 'char_count', 'first_word']])
+print(df)
 ```
 
-**Series.apply() 的本质**：对 Series 的每个元素执行函数，返回等长的 Series 或标量。
+Series.apply() 对每个元素执行函数，返回等长的 Series。这是最简单也最常用的模式。
 
-### 模式二：DataFrame.apply() —— 逐列或逐行处理
+### 模式二：DataFrame.apply() —— 逐列或逐行
 
 ```python
 import pandas as pd
-import numpy as np
-
-np.random.seed(42)
 
 df = pd.DataFrame({
-    'accuracy': [0.92, 0.88, 0.95, 0.78, 0.91],
-    'recall': [0.85, 0.90, 0.88, 0.72, 0.89],
-    'f1': [0.88, 0.89, 0.91, 0.75, 0.90],
-}, index=['GPT-4o', 'Claude', 'Llama', 'Qwen', 'DeepSeek'])
+    'accuracy': [0.92, 0.88, 0.95],
+    'recall': [0.85, 0.90, 0.88],
+    'f1': [0.88, 0.89, 0.91],
+}, index=['GPT-4o', 'Claude', 'Llama'])
 
-col_ranges = df.apply(lambda col: col.max() - col.min())
+col_range = df.apply(lambda col: col.max() - col.min())
 print("各指标极差:")
-print(col_ranges)
+print(col_range)
 
-df['avg_score'] = df.apply(lambda row: row.mean(), axis=1)
-df['best_metric'] = df.apply(lambda row: row.idxmax(), axis=1)
-
+df['avg'] = df.apply(lambda row: row.mean(), axis=1)
+df['best'] = df.apply(lambda row: row.idxmax(), axis=1)
 print("\n按模型汇总:")
 print(df)
 ```
 
-### 模式三：DataFrame.applymap() / DataFrame.map()（Pandas 2.1+）
+注意 `axis=1` 表示按行（对每一行的所有列做操作），默认 `axis=0` 是按列。这个参数是 `apply()` 最容易搞混的地方——记住 **axis=1 就是"横向看每一行"**。
+
+### 模式三：元素级 map()
 
 ```python
-import pandas as pd
-
-df = pd.DataFrame({
-    'A': [1.2345, 6.7890],
-    'B': [2.3456, 7.8901],
-})
-
-rounded = df.map(lambda x: round(x, 2))
-print(rounded)
-
-formatted = df.map(lambda x: f'{x:.2f}')
-print(formatted)
+grade_map = {'A': 4, 'B': 3, 'C': 2, 'D': 1}
+s = pd.Series(['A', 'B', 'A', 'C'])
+encoded = s.map(grade_map)
+print(encoded)
 ```
 
-## 向量化 vs apply()：性能真相
+`map()` 是 Series 专用的、专门用于"值到值映射"的方法。当你的逻辑就是简单的字典查找时，`map()` 比 `apply(lambda x: dict[x])` 更快也更清晰。
 
-### 基准测试框架
+## 性能对比：为什么能不用 apply 就不用
 
 ```python
 import pandas as pd
 import numpy as np
 import time
 
-n = 100_000
-df = pd.DataFrame({
-    'a': np.random.randn(n),
-    'b': np.random.randn(n),
-    'text': ['hello world python pandas'] * n,
-})
+n = 1_000_000
+s = pd.Series(np.random.randn(n))
+
+start = time.time()
+r_apply = s.apply(lambda x: x * 2 + 1)
+t_apply = time.time() - start
+
+start = time.time()
+r_vec = s * 2 + 1
+t_vec = time.time() - start
+
+print(f"apply(): {t_apply:.4f}s")
+print(f"向量化:   {t_vec:.4f}s")
+print(f"加速:     {t_apply/t_vec:.0f}x")
 ```
 
-### 测试一：数值运算
+典型结果：向量化比 apply 快 **50-200 倍**。原因在于 `apply()` 内部是 Python 循环（每次迭代都要经过 Python 解释器），而向量化操作直接在 C 层面的 NumPy 数组上执行（利用 CPU 的 SIMD 指令并行处理）。
 
-```python
-def bench_numeric():
-    start = time.time()
-    r_apply = df.apply(lambda row: row['a'] + row['b'], axis=1)
-    t_apply = time.time() - start
+所以规则很简单：**如果 Pandas 或 NumPy 有原生的向量化方法来实现同样的逻辑，就不要用 apply()**。常见的向量化替代包括：
+- 数学运算 → 直接用 `+ - * /`
+- 条件判断 → 用 `np.where()` 或 `np.select()`
+- 字符串操作 → 用 `.str` 访问器
+- 类型转换 → 用 `astype()` 或 `pd.to_numeric()`
 
-    start = time.time()
-    r_vec = df['a'] + df['b']
-    t_vec = time.time() - start
-
-    print(f"数值加法 — apply: {t_apply:.4f}s | 向量化: {t_vec:.4f}s | 加速: {t_apply/t_vec:.1f}x")
-
-bench_numeric()
-```
-
-### 测试二：字符串长度
-
-```python
-def bench_string_len():
-    start = time.time()
-    r_apply = df['text'].apply(len)
-    t_apply = time.time() - start
-
-    start = time.time()
-    r_str = df['text'].str.len()
-    t_str = time.time() - start
-
-    print(f"字符串长度 — apply: {t_apply:.4f}s | .str: {t_str:.4f}s | 加速: {t_apply/t_str:.1f}x")
-
-bench_string_len()
-```
-
-### 测试三：条件判断
-
-```python
-def bench_conditional():
-    start = time.time()
-    r_apply = df['a'].apply(lambda x: 'high' if x > 0 else 'low')
-    t_apply = time.time() - start
-
-    start = time.time()
-    r_where = np.where(df['a'] > 0, 'high', 'low')
-    t_where = time.time() - start
-
-    start = time.time()
-    r_cat = pd.Categorical(np.where(df['a'] > 0, 'high', 'low'))
-    t_cat = time.time() - start
-
-    print(f"条件分支 — apply: {t_apply:.4f}s | np.where: {t_where:.4f}s | Categorical: {t_cat:.4f}s")
-
-bench_conditional()
-```
-
-### 性能总结表
-
-| 操作类型 | apply() | 向量化替代 | 典型加速比 |
-|---------|---------|-----------|-----------|
-| 数值加减乘除 | `apply(lambda r: r.a+r.b)` | `df.a + df.b` | **50-200x** |
-| 字符串长度 | `.apply(len)` | `.str.len()` | **3-15x** |
-| 条件判断 | `.apply(lambda x: ...)` | `np.where()` / `pd.case_when()` | **10-100x** |
-| 字符串包含 | `.apply(lambda x: 'kw' in x)` | `.str.contains('kw')` | **5-20x** |
-| 正则提取 | `.apply(re.extract)` | `.str.extract()` | **3-10x** |
-| 复杂多步逻辑 | `.apply(custom_func)` | 无直接替代 | **1x（必须用）** |
-
-**核心原则**：能用内置向量化方法就绝不用 `apply()`。只有当逻辑无法用单行表达式表达时，才考虑 `apply()`。
-
-## transform()：保持形状的分组变换
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-df = pd.DataFrame({
-    'model': ['GPT-4o']*50 + ['Claude']*50 + ['Llama']*50,
-    'latency_ms': np.concatenate([
-        np.random.normal(800, 150, 50),
-        np.random.normal(650, 120, 50),
-        np.random.normal(350, 80, 50),
-    ]),
-})
-
-df['z_score'] = df.groupby('model')['latency_ms'].transform(
-    lambda x: (x - x.mean()) / x.std()
-)
-
-df['pct_rank'] = df.groupby('model')['latency_ms'].transform(
-    lambda x: x.rank(pct=True)
-)
-
-df['deviation_from_mean'] = df.groupby('model')['latency_ms'].transform(
-    lambda x: abs(x - x.mean())
-)
-
-print("=== 各模型延迟标准化结果 ===")
-print(df.groupby('model')[['latency_ms', 'z_score', 'pct_rank']].head(3))
-```
-
-**`transform()` vs `apply()` 的关键区别**：
-
-| 特性 | transform() | apply() |
-|-----|------------|---------|
-| 返回形状 | 必须与输入同长 | 可以是任意形状 |
-| 结果对齐 | 自动索引对齐 | 需要手动处理 |
-| 典型用途 | 标准化/填充/排名 | 聚合/汇总 |
-
-## LLM 场景：批量 API 调用的完整模式
-
-### 带重试和限流的 apply 模板
-
-```python
-import pandas as pd
-import time
-from openai import OpenAI
-
-client = OpenAI()
-
-def safe_llm_call(prompt, max_retries=3, base_delay=1.0):
-    """带指数退避重试的 LLM 调用"""
-    for attempt in range(max_retries):
-        try:
-            response = client.chat.completions.create(
-                model='gpt-4o-mini',
-                messages=[{'role': 'user', 'content': prompt}],
-                temperature=0.0,
-                max_tokens=50,
-            )
-            return {
-                'result': response.choices[0].message.content.strip(),
-                'tokens': response.usage.total_tokens,
-                'status': 'success',
-                'attempts': attempt + 1,
-            }
-        except Exception as e:
-            if attempt < max_retries - 1:
-                wait = base_delay * (2 ** attempt)
-                time.sleep(wait)
-            else:
-                return {
-                    'result': str(e),
-                    'tokens': 0,
-                    'status': f'failed: {type(e).__name__}',
-                    'attempts': max_retries,
-                }
-
-df = pd.DataFrame({
-    'prompt': [
-        '用一句话解释什么是 RAG',
-        '什么是 LoRA 微调',
-        'KV Cache 是什么',
-        '什么是 RLHF',
-    ] * 25,
-})
-
-results_df = df['prompt'].apply(safe_llm_call).apply(pd.Series)
-
-final_df = pd.concat([df, results_df], axis=1)
-
-print(final_df.head(8))
-```
-
-### 并发批处理（asyncio）
-
-```python
-import pandas as pd
-import asyncio
-import aiohttp
-import nest_asyncio
-nest_asyncio.apply()
-
-async def batch_llm_async(prompts, batch_size=10):
-    """异步并发调用 LLM API"""
-    async def call_one(session, prompt):
-        async with session.post(
-            'https://api.openai.com/v1/chat/completions',
-            json={
-                'model': 'gpt-4o-mini',
-                'messages': [{'role': 'user', 'content': prompt}],
-                'temperature': 0.0,
-                'max_tokens': 30,
-            },
-            headers={'Authorization': f'Bearer {API_KEY}'}
-        ) as resp:
-            data = await resp.json()
-            return data['choices'][0]['message']['content'].strip()
-
-    all_results = []
-    async with aiohttp.ClientSession() as session:
-        for i in range(0, len(prompts), batch_size):
-            batch = prompts[i:i+batch_size]
-            tasks = [call_one(session, p) for p in batch]
-            results = await asyncio.gather(*tasks, return_exceptions=True)
-            all_results.extend(results)
-
-    return all_results
-
-
-df = pd.DataFrame({'prompt': ['问题1', '问题2', '问题3'] * 10})
-results = asyncio.run(batch_llm_async(df['prompt'].tolist()))
-df['llm_response'] = results
-print(df.head())
-```
-
-## agg() 在 Series 上的聚合
-
-```python
-import pandas as pd
-import numpy as np
-
-np.random.seed(42)
-
-scores = pd.Series(
-    np.random.uniform(0.6, 0.98, 100),
-    name='accuracy'
-)
-
-stats = scores.agg(['count', 'mean', 'std', 'min', 'median', 'max'])
-print("模型准确率统计:")
-print(stats.round(4))
-
-custom_stats = scores.agg([
-    ('样本数', 'count'),
-    ('平均值', 'mean'),
-    ('标准差', 'std'),
-    ('最小值', 'min'),
-    ('中位数', 'median'),
-    ('最大值', 'max'),
-    ('变异系数', lambda x: x.std() / x.mean()),
-    ('偏度', 'skew'),
-])
-print("\n自定义命名统计:")
-print(custom_stats.round(4))
-```
+只有当你的逻辑确实无法用内置方法表达时（比如调用外部 API、复杂的自定义业务逻辑），才使用 `apply()`。

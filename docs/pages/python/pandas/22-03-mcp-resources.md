@@ -1,165 +1,35 @@
 ---
-title: MCP 资源管理与数据同步
-description: Resource 定义 / 数据集版本管理 / 变更追踪 / 增量更新 / 导入导出
+title: MCP 资源与安全
+description: Resource 定义、权限控制、沙箱执行、生产部署注意事项
 ---
-# MCP 资源管理与版本
+# MCP 安全：不能让 LLM 随意执行代码
 
+上一节的 Server 有一个严重的安全隐患：`query` 工具使用了 `eval()` 来执行任意表达式。如果 LLM 生成了 `df.to_csv('/etc/passwd')` 或 `os.system('rm -rf /')` 这样的恶意代码，后果不堪设想。
 
-## MCP Resource 概念
-
-在 MCP 中，**Resource** 是 LLM 可以引用的数据实体。Pandas DataFrame 是最自然的 Resource 类型：
+## 安全加固方案
 
 ```python
+import ast
 import pandas as pd
-from datetime import datetime
 
+SAFE_BUILTINS = {'pd': pd, 'max': max, 'min': min, 'len': len,
+                 'sum': sum, 'abs': abs, 'round': round}
 
-class MCPResourceManager:
-    """MCP 资源管理器"""
-
-    def __init__(self):
-        self.resources = {}
-        self.versions = {}
-
-    def register_resource(self, uri: str, df: pd.DataFrame,
-                         name: str, mime_type: str = "application/dataframe",
-                         description: str = ""):
-        """注册一个资源"""
-        resource_id = f"pandas://{uri}"
-
-        self.resources[resource_id] = {
-            'id': resource_id,
-            'uri': uri,
-            'name': name,
-            'mime_type': mime_type,
-            'description': description,
-            'data': df.copy(),
-            'created_at': datetime.now(),
-            'updated_at': datetime.now(),
-            'version': 1,
-            'row_count': len(df),
-            'column_count': len(df.columns),
-            'size_bytes': int(df.memory_usage(deep=True).sum()),
-        }
-
-        self.versions[resource_id] = [{
-            'version': 1,
-            'timestamp': datetime.now(),
-            'row_count': len(df),
-            'checksum': pd.util.hash_pandas_object(df) if hasattr(pd.util, 'hash_pandas_object') else hash(str(df.shape)),
-        }]
-
-        print(f"✓ 注册资源: {name} ({len(df):,} 行)")
-        return resource_id
-
-    def list_resources(self):
-        """列出所有资源"""
-        result = []
-        for rid, r in self.resources.items():
-            result.append({
-                'uri': r['uri'],
-                'name': r['name'],
-                'mime_type': r['mime_type'],
-                'rows': r['row_count'],
-                'columns': r['column_count'],
-                'version': r['version'],
-                'description': r.get('description', ''),
-            })
-        return result
-
-    def get_resource(self, uri: str):
-        """获取资源内容"""
-        rid = f"pandas://{uri}"
-        if rid not in self.resources:
-            return None
-
-        r = self.resources[rid]
-        return {
-            'id': rid,
-            'name': r['name'],
-            'data': r['data'].head(100).to_dict(orient='records'),
-            'total_rows': r['row_count'],
-            'columns': list(r['data'].columns),
-            'version': r['version'],
-        }
-
-    def update_resource(self, uri: str, new_df: pd.DataFrame):
-        """更新资源（版本递增）"""
-        rid = f"pandas://{uri}'
-        if rid not in self.resources:
-            return self.register_resource(uri, new_df, name=uri)
-
-        old_r = self.resources[rid]
-        old_r['data'] = new_df.copy()
-        old_r['updated_at'] = datetime.now()
-        old_r['version'] += 1
-        old_r['row_count'] = len(new_df)
-        old_r['column_count'] = len(new_df.columns)
-        old_r['size_bytes'] = int(new_df.memory_usage(deep=True).sum())
-
-        self.versions[rid].append({
-            'version': old_r['version'],
-            'timestamp': datetime.now(),
-            'row_count': len(new_df),
-        })
-
-        print(f"✓ 更新资源 {uri} → v{old_r['version']}")
-        return old_r
-
-    def get_version_history(self, uri: str):
-        """获取资源的版本历史"""
-        rid = f"pandas://{uri}'
-        return self.versions.get(rid, [])
-
-    def diff_versions(self, uri: str, v1=None, v2=None):
-        """比较两个版本的差异"""
-        history = self.get_version_history(uri)
-        if len(history) < 2:
-            return {'error': '需要至少2个版本才能比较'}
-
-        idx1 = (v1 or 1) - 1
-        idx2 = (v2 or len(history)) - 1
-
-        if idx1 < 0 or idx2 >= len(history):
-            return {'error': f'版本范围无效 (共{len(history)}个版本)'}
-
-        h1, h2 = history[idx1], history[idx2]
-        return {
-            'v1': h1['version'], 'v1_time': str(h1['timestamp']),
-            'v1_rows': h1['row_count'],
-            'v2': h2['version'], 'v2_time': str(h2['timestamp']),
-            'v2_rows': h2['row_count'],
-            'delta_rows': h2['row_count'] - h1['row_count'],
-            'total_versions': len(history),
-        }
-
-
-mgr = MCPResourceManager()
-
-eval_data = pd.DataFrame({
-    "model": ["GPT-4o", "Claude", "Llama", "Qwen", "DeepSeek"],
-    "MMLU": [88.7, 89.2, 84.5, 83.5, 86.8],
-    "price": [12.50, 18.00, 0.87, 1.47, 0.42],
-})
-
-rid = mgr.register_resource("eval/benchmarks", eval_data, "模型评估数据")
-
-print("\n=== 资源列表 ===")
-for r in mgr.list_resources():
-    print(f"  {r['name']}: {r['rows']} 行, v{r['version']}")
-
-new_eval = eval_data.copy()
-new_eval.loc[new_eval['model'] == 'GPT-4o', 'MMLU'] = 89.1
-mgr.update_resource("eval/benchmarks", new_eval)
-
-new_eval.loc[new_eval['model'] == 'Claude', 'MMLU'] = 90.0
-mgr.update_resource("eval/benchmarks", new_eval)
-
-print("\n=== 版本历史 ===")
-for v in mgr.get_version_history("eval/benchmarks"):
-    print(f"  v{v['version']}: {str(v['timestamp'])[:19]} | {v['row_count']} 行")
-
-print("\n=== 版本差异 ===")
-diff = mgr.diff_versions("eval/benchmarks")
-print(diff)
+def safe_eval(expr, df):
+    tree = ast.parse(expr, mode='eval')
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.Import, ast.ImportFrom)):
+            raise ValueError("不允许 import")
+        if isinstance(node, ast.Call):
+            if isinstance(node.func, ast.Attribute):
+                if node.func.attr in ('to_csv', 'to_excel', 'system', 'exec'):
+                    raise ValueError(f"禁止调用 {node.func.attr}")
+    return eval(compile(tree, '<string>', 'eval'), {"__builtins__": {}}, {'df': df, **SAFE_BUILTINS})
 ```
+
+这个 `safe_eval()` 做了三件事：
+1. **AST 解析**：在执行前先解析代码的抽象语法树
+2. **黑名单检查**：禁止 import 和危险函数调用（如 `system`、`exec`）
+3. **受限命名空间**：只暴露安全的内置函数，不提供 `__builtins__`
+
+**生产环境的铁律：永远不要对来自 LLM 的输入使用无限制的 `eval()`**。即使你信任 LLM 本身，也要防范 prompt injection 攻击——恶意用户可能通过精心构造的数据内容来诱导 LLM 执行危险操作。

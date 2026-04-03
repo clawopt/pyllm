@@ -2,12 +2,13 @@
 title: isin() / between() 等便捷筛选方法
 description: isin/between/contains/nunique/unique 的使用技巧、性能对比与最佳实践
 ---
-# 便捷过滤函数
+# 便捷筛选工具箱
 
+布尔索引和 `query()` 是通用的筛选框架，但 Pandas 还提供了一组"专用工具"——针对特定筛选模式优化的便捷方法。它们不是必须的（用布尔索引都能实现），但能让代码更简洁、意图更明确。
 
-## isin()：集合成员判断
+## isin()：批量等值判断
 
-### 基础用法
+当你需要判断某列的值是否属于一个已知集合时，`isin()` 比写一堆 `==` 或 `|` 高效得多：
 
 ```python
 import pandas as pd
@@ -15,18 +16,18 @@ import pandas as pd
 df = pd.DataFrame({
     'model': ['GPT-4o', 'Claude', 'Llama', 'Gemini', 'Qwen', 'DeepSeek'],
     'tier': ['frontier', 'frontier', 'open', 'frontier', 'open', 'frontier'],
-    'region': ['US', 'EU', 'CN', 'US', 'CN', 'US'],
 })
-
-frontier_models = df[df['tier'] == 'frontier']
-frontier_v2 = df[df['tier'].isin(['frontier'])]  # 等价但更通用
-not_open = df[~df['tier'].isin(['open'])]
 
 selected = df[df['model'].isin(['GPT-4o', 'Claude', 'Gemini'])]
-print(selected[['model', 'tier']])
+not_open = df[~df['tier'].isin(['open'])]
+
+print(selected)
+print(not_open)
 ```
 
-### LLM 场景：多条件集合过滤
+`~df['tier'].isin(['open'])` 的含义是"不属于 open 类别"。注意 `~` 是按位取反运算符——它把 True 变 False、False 变 True。这在排除特定值时极其常用。
+
+## between()：范围判断的语法糖
 
 ```python
 import pandas as pd
@@ -34,237 +35,69 @@ import numpy as np
 
 np.random.seed(42)
 n = 100_000
-
 df = pd.DataFrame({
-    'source': np.random.choice(['api', 'web', 'export', 'mobile'], n),
-    'language': np.random.choice(['zh', 'en', 'code', 'mixed'], n),
-    'category': np.random.choice(['tech', 'science', 'finance', 'medical', 'legal'], n),
-    'model': np.random.choice(['GPT-4o', 'Claude', 'Llama', 'Gemini', 'Qwen', 'DeepSeek'], n),
-})
-
-source_combos = [
-    ['api', 'en'],      # 英文 API 数据
-    ['api', 'zh'],      # 中文 API 数据
-    ['web', 'code'],     # 网页代码数据
-]
-
-m1 = (
-    df['source'].isin([c[0] for c in source_combos]) &
-    df['language'].isin([c[1] for c in source_combos])
-)
-
-composite_key = df['source'] + '_' + df['language']
-valid_keys = [f"{s}_{l}" for s, l in source_combos]
-m2 = composite_key.isin(valid_keys)
-
-print(f"方法1 结果: {m1.sum():,}")
-print(f"方法2 结果: {m2.sum():,}")
-
-exclude_categories = ['legal']
-clean = df[~df['category'].isin(exclude_categories)]
-
-def stratified_sample(df, group_col, n_per_group=1000, random_state=42):
-    """按类别等量采样"""
-    
-    sampled_dfs = []
-    for name, group in df.groupby(group_col):
-        if len(group) >= n_per_group:
-            sample = group.sample(n=n_per_group, random_state=random_state)
-        else:
-            sample = group  # 样本不够就全部保留
-        
-        sampled_dfs.append(sample)
-        print(f"  {name}: {len(group):,} → {len(sample):,}")
-    
-    return pd.concat(sampledfs, ignore_index=True)
-
-
-sampled = stratified_sample(df, 'category', n_per_group=5000)
-print(f"\n分层采样后: {len(sampled):,}")
-print(sampled['category'].value_counts())
-```
-
-### isin() 性能优化
-
-```python
-import pandas as pd
-import numpy as np
-import time
-
-n = 5_000_000
-np.random.seed(42)
-
-large_df = pd.DataFrame({
-    'val': np.random.randint(0, 10000, n),
-    'cat': np.random.choice(list('ABCDEFGHIJ'), n),
-})
-
-lookup_set = set(range(2000, 3000))
-
-start = time.time()
-for _ in range(5):
-    r_isin = large_df[large_df['val'].isin(lookup_set)]
-t_isin = time.time() - start
-
-idx = pd.Index(large_df['val'])
-start = time.time()
-for _ in range(5):
-    r_idx_isin = large_df[idx.isin(lookup_set)]
-t_idx_isin = time.time() - start
-
-lookup_df = pd.DataFrame({'key': list(lookup_set)})
-start = time.time()
-for _ in range(5):
-    r_merge = large_df.merge(lookup_df, left_on='val', right_on='key', how='inner')
-t_merge = time.time() - start
-
-print(f"{'方法':<12} {'时间':>8} {'相对速度':>10}")
-print(f"{'isin':<12} {t_isin:>7.3f}s {'1.0x':>10}")
-print(f"{'Index.isin':<12} {t_idx_isin:>7.3f}s {t_isin/t_idx_isin:>9.1f}x")
-print(f"{'merge':<12} {t_merge:>7.3f}s {t_isin/t_merge:>9.1f}x")
-
-```
-
-## between()：范围查询
-
-### 数值范围
-
-```python
-import pandas as pd
-import numpy as np
-
-df = pd.DataFrame({
-    'score': np.round(np.random.uniform(0, 100, 1000), 1),
-    'tokens': np.random.randint(10, 5000, 1000),
-    'price': np.round(np.random.uniform(0.5, 50, 1000), 2),
-})
-
-mid_score = df[df['score'].between(40, 60)]       # 包含两端
-expensive = df[df['price'].between(10, 30)]         # 价格区间
-reasonable_length = df[df['tokens'].between(100, 1000)]
-
-manual = df[(df['score'] >= 40) & (df['score'] <= 60)]
-assert len(mid_score) == len(manual)
-
-left_open = df[df['score'].between(40, 60, inclusive='neither')]  # (40, 60)
-right_closed = df[df['score'].between(40, 60, inclusive='right')]  # (40, 60]
-```
-
-### 时间范围
-
-```python
-import pandas as pd
-
-df = pd.DataFrame({
-    'date': pd.date_range('2025-01-01', periods=365, freq='D'),
-    'users': np.random.randint(100, 500, 365).astype(int),
-})
-
-q1_data = df[df['date'].between('2025-01-01', '2025-03-31')]
-
-q2_start = pd.Timestamp('2025-04-01')
-q2_end = pd.Timestamp('2025-06-30')
-q2_data = df[df['date'].between(q2_start, q2_end)]
-
-from datetime import timedelta
-recent_cutoff = pd.Timestamp.now() - timedelta(days=30)
-recent_data = df[df['date'] >= recent_cutoff]
-```
-
-### between + 其他条件组合
-
-```python
-import pandas as pd
-import numpy as np
-
-n = 100_000
-df = pd.DataFrame({
+    'tokens': np.random.randint(10, 4000, n),
     'quality': np.round(np.random.uniform(1, 5, n), 1),
-    'tokens': np.random.randint(20, 2000, n),
-    'price': np.random.uniform(0.1, 15, n),
+    'timestamp': pd.date_range('2025-01-01', periods=n, freq='min'),
 })
 
-premium = df[
-    df['quality'].between(4.0, 5.0) &
-    df['price'].between(1.0, 5.0) &
-    df['tokens'].between(100, 800)
-]
+in_range = df[df['tokens'].between(200, 1500)]
+recent = df[df['timestamp'].between('2025-06-01', '2025-12-31')]
 
-print(f"Premium 数据: {len(premium):,} ({len(premium)/len(df)*100:.1f}%)")
+print(f"Token 在 [200, 1500]: {len(in_range):,} / {len(df):,}")
+print(f"下半年数据: {len(recent):,} / {len(df):,}")
 ```
+
+`between()` 默认包含两端点（即 `>=` 和 `<=`）。如果你需要开区间，可以设置 `inclusive='neither'`。它本质上就是 `(col >= low) & (col <= high)` 的语法糖，但可读性更好。
 
 ## contains()：文本模式匹配
 
-### 与正则结合
+这是 `.str` 访问器下最常用的方法之一，用于在字符串列中搜索子串或正则模式：
 
 ```python
 import pandas as pd
 
 df = pd.DataFrame({
-    'text': [
-        '用户询问了关于 GPT-4o 的价格',
-        'ERROR: connection refused to api.openai.com',
-        '<div class="error">页面加载失败</div>',
-        '正常的问题文本内容',
-        'https://example.com/api/v1/chat/completions',
+    'prompt': [
+        '什么是注意力机制',
+        '如何安装PyTorch',
+        '解释BERT模型',
+        'GPT-4和Claude哪个好',
+        'ERROR: connection timeout',
         '',
-    ]
+        '<html>页面未找到</html>',
+    ],
 })
 
-has_url = df[df['text'].str.contains('http')]
-
-has_domain = df[df['text'].str.contains(r'\.(com|org|io|ai)\b', regex=True)]
-
-no_error = df[~df['text'].str.contains(r'ERROR|error|失败', regex=True, case=False)]
-
-patterns = r'GPT|Claude|Llama|Gemini'
-has_model = df[df['text'].str.contains(patterns, regex=True)]
+has_error = df[df['prompt'].str.contains(r'ERROR|HTTP|<html>', regex=True, case=False)]
+clean = df[
+    df['prompt'].notna() &
+    (df['prompt'].str.len() >= 3) &
+    (~df['prompt'].str.contains(r'ERROR|<html', regex=True))
+].copy()
+print(f"异常数据 {len(has_error)} 条 | 清洗后 {len(clean)} 条")
 ```
 
-## nunique() / unique()：唯一值分析
+注意 `case=False` 让匹配不区分大小写，`regex=True` 启用正则表达式支持。**`na=False` 参数很重要**——如果不加，遇到 NaN 值时 contains 返回 NaN 而非 False，导致后续布尔索引出错。
 
-### 基数分析（决定是否用 category 类型）
+## unique() / nunique()：快速了解列的多样性
+
+这两个方法虽然不直接用于筛选，但在决定筛选策略之前非常有用：
 
 ```python
-import pandas as pd
-import numpy as np
-
-n = 100_000
-df = pd.DataFrame({
-    'user_id': [f'u_{i%50000}' for i in range(n)],
-    'prompt_hash': [f'hash_{i%10000}' for i in range(n)],
-    'quality_label': np.random.choice(['low', 'medium', 'high'], n),
-    'source': np.random.choice(['api', 'web', 'export'], n),
-    'full_text': [f'text_{i}' for i in range(n)],
-})
-
-for col in df.columns:
-    unique_count = df[col].nunique()
+for col in ['source', 'language', 'category']:
+    n_unique = df[col].nunique()
     total = len(df)
-    ratio = unique_count / total
+    ratio = n_unique / total
     
-    if ratio < 0.001:
-        recommendation = "🔥 极低基数 → 强烈建议用 category"
-    elif ratio < 0.05:
-        recommendation = "✅ 低基数 → 推荐 category"
-    elif ratio < 0.5:
-        recommendation = "⚠️ 中基数 → 可用 category"
+    if ratio < 0.05:
+        strategy = "→ 低基数，适合 category + isin"
+    elif ratio > 0.8:
+        strategy = "→ 高基数，适合 contains/between"
     else:
-        recommendation = "❌ 高基数 → 保持原类型"
+        strategy = "→ 中等基数"
     
-    print(f"{col:<18s} {unique_count:>8,}/{total:<8,} "
-          f"({ratio*100:>6.1f}%)  {recommendation}")
+    print(f"{col}: {n_unique:,}/{total:,} ({ratio:.1%}) {strategy}")
 ```
 
-### unique() 获取唯一值列表
-
-```python
-all_sources = df['source'].unique()
-print(all_sources)  # array(['api', 'web', 'export'])
-
-first_appearance = df['quality_label'].unique(return_index=True)
-print(first_appearance)
-
-unique_values = df.drop_duplicates(subset=['user_id'])['user_id']
-print(f"独立用户数: {len(unique_values)}")
-```
+这个分析直接指导你选择哪种筛选方式：低基数列用 `isin()` 最高效，高基数列需要 `contains()` 或数值范围过滤。

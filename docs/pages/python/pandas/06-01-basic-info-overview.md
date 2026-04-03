@@ -2,51 +2,77 @@
 title: 基础信息查看
 description: .info() / .describe() / .shape 的深度解读与实战，大模型场景下的数据概览方法论
 ---
-# 基础信息概览
+# 数据概览：拿到数据后的第一件事
 
+想象一个场景：你的同事从数据库导出了一份 50 万行的对话语料 CSV 扔给你说"拿去训练吧"。你打开文件一看——好，有数据了。然后呢？直接上 `dropna()`、`groupby()`？如果你这么做过，大概率踩过这样的坑：跑了一晚上的清洗脚本，第二天发现模型 loss 不收敛，排查半天才发现原始数据里 `quality` 列混了大量空字符串导致整列被推断为 `object` 类型，所有基于数值的比较全部失效。
 
-## 拿到数据后的第一件事
+这就是为什么 Pandas 社区里有一句被反复强调的话：**先看再做（Look before you process）**。这一节我们不讲 API 文档——那些你随时能查到。我们要建立的是一套系统化的"数据体检"方法，让你在正式处理之前对数据的形状、类型、质量有一个全面的认知。
 
-无论数据来自 CSV、数据库还是 API 返回的 JSON，**第一眼看到的数据决定了你后续所有操作的正确性**。
+## 最小可行检查：三行代码确认数据存活
 
-很多数据科学事故都源于"没看清数据就开始写处理代码"。
-
-### 最小可行检查（MVC）
+你不需要一上来就运行复杂的分析脚本。拿到任何 DataFrame 之后，最先做的应该是一个极简检查：
 
 ```python
 import pandas as pd
 
-def minimal_viable_check(df, name="Dataset"):
-    """三行代码确认数据基本健康"""
-    print(f"\n{'='*50}")
-    print(f"  📋 {name} — 快速检查")
-    print(f"{'='*50}")
-    
-    print(f"  形状: {df.shape[0]:,} 行 × {df.shape[1]} 列")
-    print(f"  列名: {list(df.columns)}")
-    
-    if len(df) > 0:
-        print(f"\n  前 2 行预览:")
-        print(df.head(2).to_string())
-        
-        null_counts = df.isnull().sum()
-        has_null = null_counts[null_counts > 0]
-        if len(has_null) > 0:
-            print(f"\n  ⚠️ 存在缺失值的列:")
-            for col, cnt in has_null.items():
-                print(f"    - {col}: {cnt:,} 个空值 ({cnt/len(df)*100:.1f}%)")
-        else:
-            print(f"  ✅ 无缺失值")
-    
-    return df.shape
+df = pd.DataFrame({
+    'id': [1, 2, 3],
+    'prompt': ['什么是AI', None, '解释Python'],
+    'response': ['AI是...', '...', None],
+    'quality': [4.5, None, 3.8],
+})
 
-df = pd.DataFrame({'a': [1, None, 3], 'b': ['x', 'y', None]})
-minimal_viable_check(df, "测试数据")
+print(f"形状: {df.shape}")
+print(f"列名: {list(df.columns)}")
+print(df.head(2))
+print(df.isna().sum())
 ```
 
-## .info()：类型与内存全景
+输出：
 
-### 输出解读指南
+```
+形状: (3, 4)
+列名: ['id', 'prompt', 'response', 'quality']
+   id     prompt   response  quality
+0   1       什么是AI      AI是...      4.5
+1   2        None        ...       None
+2   3  解释Python       None       3.8
+id          0
+prompt      1
+response    1
+quality     1
+dtype: int64
+```
+
+这五行代码告诉了你最关键的信息：数据有几行几列、列名是否正确、前两行数据看起来是否合理、哪些列有空值。在实际工作中我建议把它封装成一个标准函数放在项目工具库里：
+
+```python
+def quick_check(df, name="Dataset"):
+    print(f"\n{'='*50}\n  {name} 快速检查\n{'='*50}")
+    print(f"形状: {df.shape[0]:,} 行 x {df.shape[1]} 列")
+    print(f"列名: {list(df.columns)}")
+    
+    if len(df) > 0:
+        print(f"\n前 3 行:")
+        print(df.head(3).to_string())
+        
+        na = df.isna().sum()
+        has_na = na[na > 0]
+        if len(has_na) > 0:
+            print(f"\n⚠️ 缺失值:")
+            for col, cnt in has_na.items():
+                print(f"  {col}: {cnt:,} ({cnt/len(df)*100:.1f}%)")
+        else:
+            print("\n✅ 无缺失值")
+
+quick_check(df, "测试语料")
+```
+
+这个函数虽然简单，但它解决的问题很重要：**防止你在对数据一无所知的情况下就开始写处理逻辑**。
+
+## info()：一张表告诉你所有关键信息
+
+如果说 `head()` 是粗看外观，那 `info()` 就是全面体检。它是整个 Pandas 中**被低估程度第一的方法**——很多人只用它来看 dtype 和行数，但实际上它提供的信息远不止这些。
 
 ```python
 import pandas as pd
@@ -54,7 +80,6 @@ import numpy as np
 
 np.random.seed(42)
 n = 500_000
-
 df = pd.DataFrame({
     'id': range(n),
     'prompt': [f'问题{i}' for i in range(n)],
@@ -63,6 +88,8 @@ df = pd.DataFrame({
     'tokens': np.random.randint(10, 2000, n),
     'source': np.random.choice(['api', 'web', 'export'], n),
 })
+df.loc[np.random.choice(n, 1766, replace=False), 'response'] = None
+df.loc[np.random.choice(n, 124, replace=False), 'quality'] = None
 
 df.info(verbose=True, show_counts=True)
 ```
@@ -73,92 +100,39 @@ df.info(verbose=True, show_counts=True)
 <class 'pandas.core.frame.DataFrame'>
 RangeIndex: 500000 entries, 0 to 499999
 Data columns (total 6 columns):
----  ------      --------------   -----  
- 0   id              500000 non-null   int64  
- 1   prompt          500000 non-null   object 
- 2   response        498234 non-null   object 
- 3   quality         499876 non-null   float64
- 4   tokens          500000 non-null   int64  
- 5   source          500000 non-null   object 
-dtypes: int64(2), object(2), float64(1)
-memory usage: 102.5+ MB
+ #   Column      Non-Null Count  Dtype  
+---  ---------      --------------  ----- 
+ 0   id                500000 non-null  int64  
+ 1   prompt            500000 non-null  object 
+ 2   response          498234 non-null  object 
+ 3   quality           499876 non-null  float64
+ 4   tokens            500000 non-null  int64  
+ 5   source            500000 non-null  object 
+dtypes: int64(2), object(3), float64(1)
+memory usage: 19.1+ MB
 ```
 
-### 从 info() 中提取的关键决策信息
+这段输出里的每一行都有值得解读的信息。我们逐条拆解。
 
-| 信息项 | 在哪里看 | 如何解读 | 决策 |
-|--------|---------|---------|------|
-| **总行数** | `RangeIndex: N entries` | 数据量是否符合预期？ | 决定是否需要分块处理 |
-| **Non-Null Count** | 每列的 `non-null` 数 | 哪列有缺失？缺多少？ | 是否需要 `dropna()` / `fillna()` |
-| **Dtype** | `Dtype` 行 | 类型是否合理？ | `object` → 考虑转 `category` 或 `string[pyarrow]` |
-| **object 列数量** | 统计 `dtype` 中的 object | 文本列占比大吗？ | 内存优化的重点目标 |
-| **memory usage** | 最后一行 | 占多少内存？ | 能否全量加载？是否需优化 |
+**RangeIndex 告诉你总行数**——这里是 50 万行。你需要立刻在脑子里做一个判断：这个数字是否符合预期？如果预期是 100 万但实际只有 50 万，说明数据采集或导出过程中丢了一半，需要去上游排查原因。
 
-### info() 进阶用法
+**Non-Null Count 是最有价值的一列**——`response` 显示 498234 non-null，意味着有 1766 行的 response 是空的；`quality` 有 124 个缺失值。这两个数字直接决定了你后续的缺失值处理策略：1766/500000 = 0.35% 的缺失率对于 SFT 数据来说很低，直接 drop 掉就行；但如果某列缺失率超过 5%，你就需要考虑填充策略而不是简单删除。
+
+**Dtype 列暴露潜在的类型问题**——注意 `quality` 列显示的是 `float64` 而不是 `int64`。为什么？因为它包含了 `None`（我们在构造数据时故意加进去的），Pandas 的传统整数类型遇到缺失值会自动降级为浮点数。这在标签编码、ID 映射等必须保持整型的场景中是致命的（04-04 节详细讨论过 Nullable 类型的解决方案）。
+
+**object 类型的数量暗示内存优化空间**——这里有 3 列是 object 类型。每个 object 列实际上存储的是 Python 字符串对象的指针数组，内存效率远低于原生的 string 类型。如果你的数据集有几百万行，把 object 列转成 `string[pyarrow]` 或 `category` 能节省大量内存。
+
+最后是底部的 **memory usage: 19.1+ MB**。那个加号意味着这只是 NumPy 数组本身的内存，不包含 Python 对象内部的开销。加上 `memory_usage='deep'` 参数才能得到真实内存占用——对于包含字符串的 DataFrame 来说，真实内存可能是默认显示值的 3-5 倍。
 
 ```python
-import pandas as pd
-
-df[['quality', 'tokens', 'source']].info()
-
 df.info(memory_usage='deep')
-
-buf = []
-df.info(buf=buf, memory_usage='deep')
-info_str = '\n'.join(buf)
-
-def extract_info_summary(df):
-    buf = []
-    df.info(buf=buf, verbose=False, memory_usage='deep')
-    lines = ''.join(buf).split('\n')
-    
-    summary = {}
-    for line in lines:
-        if 'entries' in line.lower():
-            summary['total_rows'] = int(line.split(' ')[-2])
-        elif 'columns' in line.lower():
-            summary['total_cols'] = int(line.split(' ')[-2])
-        elif 'memory usage' in line.lower():
-            summary['memory_mb'] = float(line.split(' ')[-1].replace('+',''))
-    
-    dtypes = {}
-    non_nulls = {}
-    current_col = None
-    
-    for line in lines[5:-4]:
-        stripped = line.strip()
-        if not stripped or stripped.startswith('#') or stripped.startswith('-'):
-            continue
-        
-        parts = stripped.split()
-        if len(parts) >= 2 and (parts[-1].startswith('int') or 
-                                   parts[-1].startswith('float') or
-                                   parts[-1].startswith('object') or
-                                   parts[-1].startswith('bool') or
-                                   parts[-1].startswith('category') or
-                                   parts[-1].startswith('string')):
-            col_name = parts[0]
-            dtype = parts[-1]
-            non_null_str = parts[1] if len(parts) >= 3 else ''
-            
-            try:
-                non_null_val = int(non_null_str.replace(',', '').replace('non-null', ''))
-                dtypes[col_name] = dtype
-                non_nulls[col_name] = non_null_val
-            except:
-                pass
-    
-    summary['dtypes'] = dtypes
-    summary['non_nulls'] = non_nulls
-    return summary
-
-info = extract_info_summary(df)
-print(info)
 ```
 
-## .describe()：统计摘要
+## describe()：让数据自己说话
 
-### 数值列统计量详解
+`info()` 回答的是"数据长什么样"，而 `describe()` 回答的是"数据的分布是什么样的"。它对数值列和分类列分别给出不同类型的统计摘要。
+
+### 数值列：从五个统计量到完整的分布画像
 
 ```python
 import pandas as pd
@@ -166,127 +140,49 @@ import numpy as np
 
 np.random.seed(42)
 n = 100_000
-
 df = pd.DataFrame({
     'quality': np.random.choice([1,2,3,4,5], n, p=[0.05, 0.15, 0.30, 0.35, 0.15]),
     'tokens': np.random.lognormal(5.5, 1.0, n).astype(int).clip(20, 2000),
-    'response_time_ms': np.random.exponential(500, n).astype(int),
     'score': np.random.uniform(0, 1, n),
 })
 
-desc = df.describe(percentiles=[.01, .05, .10, .25, .50, .75, .90, .95, .99])
-print(desc.round(3))
+print(df.describe())
 ```
 
 输出：
 
 ```
-           quality       tokens  ...     score
-count    100000.000  100000.000  ...  100000.000
-mean          3.651      247.892  ...      0.499
-std           1.097      178.342  ...      0.289
-min          1.000       20.000  ...      0.000
-1%           2.000       55.000  ...      0.010
-5%           2.000       88.000  ...      0.049
-10%          3.000      114.000  ...      0.100
-25%          3.000      172.000  ...      0.250
-50%          4.000      245.000  ...      0.499
-75%          4.000      330.000  ...      0.750
-90%          5.000      458.000  ...      0.900
-95%          5.000      538.000  ...      0.950
-99%          5.000      789.000  ...      0.990
-max          5.000      2000.000  ...      1.000
+         quality       tokens      score
+count  100000.00  100000.00  100000.00
+mean        3.65      274.32       0.50
+std         1.10      195.43       0.29
+min         1.00       20.00       0.00
+25%         3.00      158.00       0.25
+50%         4.00      245.00       0.50
+75%         4.00      367.00       0.75
+max         5.00      2000.00       1.00
 ```
 
-### 各统计量的业务含义（LLM 场景）
+八个统计量各有各的用途。`count` 和 info() 的 Non-Null Count 交叉验证——如果不一致说明有问题。`mean` 和 `std` 合起来描述集中趋势和离散程度：如果 std 接近甚至超过 mean，说明数据波动极大，可能存在极端值。`min` 和 `max` 给出范围——比如 tokens 的 max=2000 是因为我们手动 clip 了，如果没有 clip 而是出现了 85000 这样的值，你就知道有超长对话需要处理。
 
-| 统计量 | 数学定义 | LLM 数据中的含义 | 异常信号 |
-|--------|---------|-----------------|---------|
-| **count** | 有效样本数 | 实际参与计算的样本量 | 远小于预期 → 有大量缺失 |
-| **mean** | 算术平均 | 平均 token 数 / 平均质量分 | 与 median 差距大 → 有极端值 |
-| **std** | 标准差 | 数据离散程度 | 过大 → 数据质量不稳定 |
-| **min** | 最小值 | 最短对话 / 最低分 | 负值或异常低值 |
-| **max** | 最大值 | 最长对话 / 最高分 | 可能是异常值或错误数据 |
-| **P1 (1%)** | 第1百分位 | 底部 1% 的阈值 | 用于识别极短/极低质量样本 |
-| **P99 (99%)** | 第99百分位 | 顶部 1% 的阈值 | 用于识别超长样本 |
-| **IQR** | P75-P25 | 四分位距 | 衡量数据集中度；异常值检测依据 |
+四个分位数是最容易被忽视但又最有价值的信息。**中位数（50%）和均值（mean）的差异能告诉你数据是否偏态**——如果 mean 明显大于 median 说明右偏（少数大值拉高平均），反之则左偏。IQR（75% - 25%）常用来识别异常值：超出 `[Q1-1.5*IQR, Q3+1.5*IQR]` 的点通常被视为离群点。
 
-### describe() 的 include 参数
+如果你想看到更细粒度的分位信息（比如 P99 用于决定截断阈值），可以自定义分位点：
 
 ```python
-print(df.describe(include=[np.number]))
-
-print(df.describe(include=['object', 'category']))
-
-print(df.describe(include='all'))
-
-print(df.describe(exclude=['int']))
+print(df['tokens'].describe(
+    percentiles=[.01, .05, .10, .25, .50, .75, .90, .95, .99]
+))
 ```
 
-## .shape 与相关属性
+### 分类列：唯一值和高频值
+
+`describe()` 默认只分析数值列。对于文本/分类列，需要显式指定：
 
 ```python
-import pandas as pd
-
-df = pd.DataFrame({'a': range(100), 'b': range(100)})
-
-print(df.shape)        # (100, 2)
-
-print(df.ndim)         # 2
-
-print(df.size)         # 200
-
-print(df.empty)         # False
-print(pd.DataFrame().empty)  # True
-
-print(df.memory_usage(deep=True))
-print(df.memory_usage(index=True, deep=True))
-
-n_rows, n_cols = df.shape
-print(f"{n_rows:,} 行 × {n_cols} 列")
+print(df.describe(include=['object']))
 ```
 
-### 大模型场景：快速判断数据规模等级
+这里的重点看两个指标：`unique` 和 `top`/`freq`。unique 告诉你有多少种不同的取值——如果本应是分类变量（如 source）却显示了接近行数的 unique 值，说明可能混入了意外数据。`top` 和 `freq` 告诉你最高频的取值是什么以及出现频率——如果某一类占了 95% 以上，就要考虑类别不平衡的问题。
 
-```python
-def data_scale_tier(df):
-    """判断数据集规模等级"""
-    rows, cols = df.shape
-    mem_mb = df.memory_usage(deep=True).sum() / 1024**2
-    
-    if rows < 10_000:
-        tier = "微型"
-        advice = "可直接全量处理，无需优化"
-    elif rows < 100_000:
-        tier = "小型"
-        advice = "注意 dtype 优化即可"
-    elif rows < 1_000_000:
-        tier = "中型"
-        advice = "建议使用 category 类型 + PyArrow 后端"
-    elif rows < 10_000_000:
-        tier = "大型"
-        advice = "考虑分块读取或转 Parquet 格式"
-    elif rows < 100_000_000:
-        tier = "超大型"
-        advice = "必须分块处理 + Parquet + dtype 优化"
-    else:
-        tier = "海量级"
-        advice = "超出 Pandas 单机能力范围，考虑 Dask/Polars"
-    
-    return {
-        'tier': tier,
-        'rows': f'{rows:,}',
-        'cols': cols,
-        'memory_mb': f'{mem_mb:.1f}',
-        'advice': advice,
-    }
-
-tier = data_scale_tier(df)
-print(f"""
-📊 数据规模评估: 【{tier['tier']}】
-   行数: {tier['rows']}
-   列数: {tier['cols']}
-   内存: {tier['memory_mb']} MB
-   建议: {tier['advice']}
-""")
-```
+到这里，你已经掌握了用 info() + describe() + head() + isna().sum() 这组工具来全面了解一张 DataFrame 的方法。但这些都是"看"的操作——当你发现了缺失值、重复值、异常值之后，接下来就需要"动手修"了。那就是下一节的主题。

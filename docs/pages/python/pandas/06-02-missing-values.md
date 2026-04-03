@@ -2,57 +2,58 @@
 title: 缺失值识别与统计
 description: .isnull() / .isna() 的使用、缺失值分布分析、可视化缺失模式、大模型语料中的空值处理策略
 ---
-# 缺失值检测与分析
+# 缺失值：沉默的数据质量杀手
 
+在 LLM 数据处理的实际工作中，缺失值是最常见也最容易被忽视的问题。它不会像语法错误那样抛出异常让你立刻注意到，也不会像类型错误那样导致程序崩溃——它只是静静地待在那里，让你的聚合统计产生偏差，让模型学到错误的模式，让评估结果变得不可信。
 
-## 缺失值的来源与类型
+这一节我们从缺失值的来源说起，讲清楚 Pandas 中几种"缺失"表示的区别，然后给出系统化的检测和处理方法。
 
-在 LLM 数据处理中，缺失值（Missing Values）无处不在：
+## 缺失值从哪里来
 
-| 来源 | 典型场景 | 缺失原因 |
-|------|---------|---------|
-| **数据采集** | API 超时返回空响应 | `timeout` → 空字段 |
-| **用户行为** | 用户跳过必填项 | 提交了空白表单 |
-| **系统错误** | 数据管道断裂 | ETL 中间步骤失败写入 NULL |
-| **业务逻辑** | 某些字段不适用 | 非代码类对话无 "code" 字段 |
-| **标注过程** | 标注员跳过困难样本 | 困难样本标记为"无法判断" |
+在 LLM 语料中，缺失值的来源比你想象的要多：
 
-### Pandas 中的两种"缺失"
+- **API 超时或失败**：调用模型 API 生成 response 时超时了，该字段被写入空值
+- **数据采集中断**：爬虫抓取过程中网络波动，部分字段没抓到
+- **JSON 解析异常**：原始 JSON 里某个字段不存在（比如非代码类对话没有 `code` 字段）
+- **标注流程遗漏**：标注员跳过了困难的样本，标记为"无法判断"
+- **ETL 管道断裂**：中间某一步骤失败但仍然写入了不完整的记录
+
+理解来源很重要，因为不同的来源对应不同的处理策略。API 超时导致的空 response 应该直接丢弃（重新生成就行），而 ETL 管道问题导致的缺失可能需要修复管道后重新跑一遍。
+
+## Pandas 里的"缺失"不止一种
+
+这是最容易混淆的地方。Pandas 中有三种不同的"空"：
 
 ```python
 import pandas as pd
+import numpy as np
 
-s = pd.Series([1, None, np.nan, pd.NA, 'missing'])
+s = pd.Series([1, None, np.nan, pd.NA, '', 'None', 'missing'])
 print(s)
+print(f"\ndtype: {s.dtype}")
 ```
 
-**关键区别**：
-- `np.nan`：仅存在于 float 列，会"传染"整型变浮点型
-- `pd.NA` / `<NA>`：Pandas 的统一缺失值表示，保持原始 dtype
-- 空字符串 `' '` 或 `'None'`：**不是缺失值**，是有效数据！
+输出：
 
-## isnull() 与 isna()
+```
+0         1
+1      <NA>
+2       NaN
+3      <NA>
+4           
+5      None
+6    missing
+dtype: object
+```
 
-### 功能完全相同
+逐个解释：`None` 是 Python 原生的空对象，`np.nan` 是 NumPy 的浮点型 NaN（Not a Number），`pd.NA` 是 Pandas 的统一缺失值标量，空字符串 `''` 和 `'None'`/`'missing'` **不是缺失值而是有效的字符串数据**。
+
+关键区别在于它们对 dtype 的影响不同。当 `None` 或 `pd.NA` 出现在整数列中时，如果使用 Nullable 类型（`Int64`），整列保持为整型；但如果使用传统的 `int64`，整列会静默降级为 `float64`——这就是为什么 04-04 节强烈推荐使用 Nullable 类型。
+
+## 检测缺失值：isna() 和它的伙伴们
 
 ```python
 import pandas as pd
-import numpy as np
-
-s = pd.Series([1, None, 3, np.nan])
-
-print(s.isnull())   # [False, True, False, True]
-print(s.isna())      # [False, True, False, True]  # 完全等价
-print(s.notnull())  # [True, False, True, False]  # 取反
-```
-
-**推荐使用 `.isna()` 和 `.notna()`**——更短且语义更清晰。
-
-### 在 DataFrame 上使用
-
-```python
-import pandas as pd
-import numpy as np
 
 df = pd.DataFrame({
     'id': [1, 2, 3, 4, 5],
@@ -61,182 +62,148 @@ df = pd.DataFrame({
     'quality': [4.5, None, 3.8, 4.2, None],
 })
 
+print(df.isna())
+```
+
+输出：
+
+```
+   id  prompt  response  quality
+0  False   False     False   False
+1  False    True     False    True
+2  False   False     False   False
+3  False    True     False   False
+4  False   False     True    True
+```
+
+`isna()` 返回一个和原 DataFrame 同形状的布尔矩阵，每个位置标明是否为缺失值。在实际使用中最常见的操作是对这个布尔矩阵求和来得到每列的缺失数量：
+
+```python
 print(df.isna().sum())
-
-print(df.isna().sum(axis=1))
-
-complete_rows = df[df.notna().all(axis=1)]
-print(f"完整行: {len(complete_rows)} / {len(df)}")
-
-any_missing = df[df.isna().any(axis=1)]
-print(f"含缺失行: {len(any_missing)}")
 ```
 
-## 缺失值统计与分析
+输出：
 
-### 基础统计
+```
+id          0
+prompt      2
+response    1
+quality     2
+dtype: int64
+```
+
+一行代码就告诉你每列有多少个空值。更进一步，你可以同时看数量和占比：
+
+```python
+missing = df.isna().sum()
+pct = (df.isna().mean() * 100).round(2)
+print(pd.concat([missing, pct], axis=1, keys=['count', 'pct(%)']))
+```
+
+输出：
+
+```
+          count  pct(%)
+id            0     0.00
+prompt        2    40.00
+response      1    20.00
+quality       2    40.00
+```
+
+除了按列统计，你还可以按行来看哪些行是完整的、哪些行有缺失：
+
+```python
+complete = df[df.notna().all(axis=1)]
+incomplete = df[df.isna().any(axis=1)]
+
+print(f"完整行: {len(complete)} / {len(df)}")
+print(f"含缺失行: {len(incomplete)} / {len(df)}")
+```
+
+`notna().all(axis=1)` 的含义是：每一列都不是 NA → 这一行是完全的。`isna().any(axis=1)` 的含义是：至少有一列是 NA → 这一行有缺失。
+
+## 一个容易忽略的问题：伪装成正常数据的缺失值
+
+`isna()` 只能检测标准的缺失值（NaN/None/NA）。但在真实数据里，缺失值经常以其他形式出现：
 
 ```python
 import pandas as pd
-import numpy as np
 
-n = 100_000
-np.random.seed(42)
-
-df = pd.DataFrame({
-    'conversation_id': range(n),
-    'prompt': [f'问题{i}' for i in range(n)],
-    'response': [f'回答{i}' for i in range(n)],
-    'quality': np.random.choice([None] + list(range(1,6)), n),
-    'turn_count': np.random.choice([None] + list(range(1,10)), n),
-    'source': np.random.choice(['api', 'web', 'export'], n),
+dirty = pd.DataFrame({
+    'text': ['hello', '', 'world', 'N/A', 'null', '-', '  ', 'normal'],
+    'score': ['95', 'bad', '88', '#N/A', '77', '', '82', '90'],
 })
 
-missing_summary = pd.DataFrame({
-    '总行数': len(df),
-    '非空数': df.notna().sum(),
-    '缺失数': df.isna().sum(),
-    '缺失率(%)': (df.isna().mean() * 100).round(2),
-}).T
-
-print(missing_summary)
+print(dirty)
+print("\n标准 isna 检测:")
+print(dirty.isna().sum())
 ```
 
-### 缺失模式分析（Missing Pattern）
+输出显示 isna 认为所有数据都是完整的——但实际上 `text` 列有空字符串 `''`、`'N/A'`、`'null'`、`'-'`、`'  '`（纯空格），`score` 列有 `'bad'` 和 `'#N/A'` 这些非法值。这些全部逃过了 `isna()` 的检测。
+
+解决方案是用 `na_values` 参数在读取时就统一映射，或者事后手动检测：
 
 ```python
-def analyze_missing_patterns(df):
-    """分析缺失值的模式和关联性"""
+def detect_hidden_missing(df):
+    placeholders = ['', 'N/A', 'NA', 'null', 'none', 'NULL',
+                     '-', '#N/A', '#REF!', 'nan', 'undefined']
+    results = {}
     
-    print("=" * 60)
-    print("  🔍 缺失值模式分析")
-    print("=" * 60)
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            mask = df[col].str.strip().isin(placeholders) | (df[col] == '') | (df[col].str.len() == 0)
+            count = mask.sum()
+            if count > 0:
+                results[col] = count
     
-    missing_matrix = df.isna()
-    co_occurrence = missing_matrix.T @ missing_matrix
-    np.fill_diagonal(co_occurrence.values, 0)
-    
-    print("\n【缺失共现矩阵】(数值越大 = 越容易同时缺失):")
-    co_df = pd.DataFrame(co_occurrence,
-                        index=co_occurrence.columns,
-                        columns=co_occurrence.columns)
-    print(co_df)
-    
-    if hasattr(df.index, 'to_series'):
-        idx = df.index.to_series()
-        if pd.api.types.is_datetime_like(idx):
-            df['_temp_date'] = idx.dt.date
-            by_date = df.groupby('_temp_date').apply(lambda x: x.isna().sum())
-            print(f"\n【按日期的缺失趋势】:")
-            print(by_date.head(20))
-            del df['_temp_date']
-    
-    print(f"\n【缺失机制初步判断】")
-    for col in df.select_dtypes(include=[np.number]).columns:
-        s = df[col]
-        non_null = s.dropna()
-        
-        if len(non_null) > 10:
-            corr_with_others = {}
-            for other_col in df.select_dtypes(include=[np.number]).columns:
-                if other_col != col:
-                    valid_pair = df[[col, other_col]].dropna()
-                    if len(valid_pair) > 5:
-                        corr = valid_pair[col].corr(valid_pair[other_col])
-                        corr_with_others[other_col] = round(corr, 3)
-            
-            max_corr_key = max(corr_with_others, key=corr_with_others.get, default=(None, 0))
-            max_corr_val = corr_with_others[max_corr_key] if max_corr_key else 0
-            
-            if abs(max_corr_val) > 0.3:
-                mechanism = f"MNAR (与 {max_corr_key} 相关={max_corr_val})"
-            elif abs(max_corr_val) < 0.1:
-                mechanism = "MCAR (完全随机)"
-            else:
-                mechanism = "MAR (随机但与其他变量相关)"
-            
-            print(f"  {col}: {mechanism}")
-    
-    return co_df
+    return results
 
-patterns = analyze_missing_patterns(df)
+hidden = detect_hidden_missing(dirty)
+print(f"伪装的缺失值: {hidden}")
 ```
 
-输出示例：
+这种检测函数建议作为数据加载后的第一步检查——它能发现那些 `isna()` 看不到但同样会破坏后续分析的脏数据。
 
-```
-============================================================
-  🔍 缺失值模式分析
-============================================================
+## 缺失机制判断：MCAR / MAR / MNAR
 
-【缺失共现矩阵】(数值越大 = 越容易同时缺失):
-           response  quality  turn_count
-response       214       1980       189
-quality        1980     4988       1654
-turn_count     1654      1654       1766
+知道"有哪些缺失"之后，下一步是判断"为什么缺失"。统计学上把缺失机制分为三类：
 
-【缺失机制初步判断】
-  quality: MCAR (完全随机)
-  response: MNAR (与 quality 相关=0.342)
-  turn_count: MAR (随机但与其他变量相关)
-```
+- **MCAR（Missing Completely At Random）**：完全随机缺失，缺失与否和任何变量无关。比如硬盘突然坏道导致恰好丢失了几条记录。
+- **MAR（Missing At Random）**：随机缺失，但缺失概率与其他已观测变量有关。比如新用户的对话更可能缺少 quality 字段（因为还没来得及评分）。
+- **MNAR（Missing Not At Random）**：非随机缺失，缺失本身有含义。比如低质量对话的 response 更可能是空的（用户不满意所以没回复）。
 
-**三种缺失机制的应对策略**：
+判断缺失机制的意义在于它决定了你的处理方式：MCAR 可以放心删除或简单填充；MNAR 则需要特别小心——直接删除会引入偏差，填充也需要考虑缺失本身的含义。
 
-| 机制 | 特征 | 推荐处理方式 |
-|------|------|-----------|
-| **MCAR** (完全随机缺失) | 缺失与任何变量无关 | 直接删除或均值填充 |
-| **MAR** (随机缺失) | 缺失取决于已观测变量 | 分组后填充 / 模型预测填充 |
-| **MNAR** (非随机缺失) | 缺失本身有含义 | 单独建模或作为单独类别 |
-
-## 缺失值可视化
+一个简单的经验判断方法是看缺失列和其他列的相关性：
 
 ```python
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
+def guess_missing_mechanism(df, target_col):
+    numeric = df.select_dtypes(include=['number']).columns
+    correlations = {}
+    
+    for col in numeric:
+        if col != target_col:
+            valid = df[[target_col, col]].dropna()
+            if len(valid) > 10:
+                is_missing = df[target_col].isna()
+                corr = is_missing.corr(df[col])
+                if not np.isnan(corr):
+                    correlations[col] = round(corr, 3)
+    
+    max_corr_col = max(correlations, key=correlations.get) if correlations else None
+    max_corr_val = correlations.get(max_corr_col, 0) if max_corr_col else 0
+    
+    if abs(max_corr_val) > 0.3:
+        return f"可能 MNAR — 与 '{max_corr_col}' 相关性={max_corr_val}"
+    elif abs(max_corr_val) < 0.1:
+        return "可能 MCAR — 与其他变量无明显关联"
+    else:
+        return f"可能 MAR — 弱相关 (最强: {max_corr_col}={max_corr_val})"
 
-plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei']
-plt.rcParams['axes.unicode_minus'] = False
-
-def visualize_missing(df, figsize=(14, 6)):
-    fig, axes = plt.subplots(1, 2, figsize=figsize)
-    
-    ax1 = axes[0]
-    sns.heatmap(
-        df.isna(),
-        cbar=False,
-        cmap='YlOrRd',
-        yticklabels=False,
-        ax=ax1,
-    )
-    ax1.set_title('缺失值分布热力图\n(黄色=有缺失)')
-    
-    ax2 = axes[1]
-    missing_pct = (df.isna().sum() / len(df) * 100).sort_values(ascending=False)
-    
-    bars = ax2.barh(missing_pct.index, missing_pct.values, color='#FF6B6B')
-    ax2.axvline(x=5, color='red', linestyle='--', label='5% 警戒线')
-    
-    for bar, val in zip(bars, missing_pct.values):
-        ax2.text(val + 0.5, bar.get_y() + bar.get_height()/2,
-                f'{val:.1f}%', va='center', fontsize=9)
-    
-    ax2.set_xlabel('缺失率 (%)')
-    ax2.set_title('各列缺失率')
-    ax2.legend()
-    
-    plt.tight_layout()
-    plt.savefig('missing_analysis.png', dpi=150, bbox_inches='tight')
-    plt.show()
-    return fig
-
-np.random.seed(42)
-demo_df = pd.DataFrame({
-    'A': np.random.choice([1, 2, 3, None], 5000, p=[.3,.3,.3,.1]),
-    'B': np.random.choice(['x','y',z', None], 5000, p=[.25,.25,.25,.25]),
-    'C': np.random.randn(5000),
-})
-visualize_missing(demo_df)
+mechanism = guess_missing_mechanism(df, 'response')
+print(f"response 缺失机制: {mechanism}")
 ```
+
+这个函数通过计算"某列是否缺失"这个布尔向量与其他数值列的相关系数来判断缺失是否随机。如果相关性很强（>0.3），说明缺失不是随机的，需要谨慎处理。
+
+到这里我们已经覆盖了缺失值的检测和分析。下一节我们来看另一个数据质量杀手：重复值——它在 LLM 训练数据中的危害经常被严重低估。

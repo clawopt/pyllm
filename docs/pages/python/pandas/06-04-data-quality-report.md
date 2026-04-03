@@ -2,340 +2,157 @@
 title: 数据质量报告生成模板
 description: 一键生成完整的数据质量报告，包含形状、类型、缺失、重复、分布等全方位分析，可直接用于数据验收
 ---
-# 数据质量报告生成
+# 自动化质量报告：把检查流程变成标准动作
 
+前三节我们分别介绍了数据概览、缺失值检测和重复值检测。在实际工作中，你不会每次都手动敲这些代码——你需要一个**一键运行的标准化报告**，每次拿到新数据后跑一遍，几分钟内全面了解数据状况。
 
-## 为什么需要自动化报告
+这一节我们把这些分散的检查逻辑整合成一个完整的报告生成器。
 
-每次拿到新数据时手动检查太慢且容易遗漏。一个**标准化的报告模板**可以：
+## 报告应该包含什么
 
-1. **标准化流程**：团队内统一的数据审查标准
-2. **可追溯**：每次处理都有记录存档
-3. **快速决策**：一眼看出数据是否可用
+一个好的数据质量报告至少要回答以下问题：
 
-## 完整报告模板
+1. **数据的基本面貌**——多少行、多少列、占多少内存、列名是否合理
+2. **每列的类型是否正确**——有没有被错误推断为 object 的数值列
+3. **缺失值情况**——哪些列有空、空了多少、占比多大
+4. **重复值情况**——有多少完全重复、按关键列去重能去掉多少
+5. **数值列分布**——均值、方差、分位数、是否有异常值
+6. **分类列分布**——每个类别各有多少、是否有极端不平衡
+7. **总体健康评分**——一眼看出数据能否直接使用
+
+## 完整报告生成器
+
+下面是一个生产级的报告类，它把前面三节的所有检查整合在了一起：
 
 ```python
 import pandas as pd
 import numpy as np
-from datetime import datetime
-
 
 class DataQualityReport:
-    """LLM 数据集质量分析报告生成器"""
-    
     def __init__(self, df, name="Dataset"):
         self.df = df.copy()
         self.name = name
-        self.report_time = datetime.now()
-        self.sections = []
-    
-    def _add_section(self, title, content):
-        self.sections.append(f"\n{'█'*60}\n  {title}\n{'█'*60}")
-        self.sections.append(content)
     
     def generate(self):
-        """生成完整报告"""
+        lines = []
+        lines.append(f"\n{'='*60}")
+        lines.append(f"  {self.name} — 数据质量报告")
+        lines.append(f"{'='*60}")
         
-        df = self.df
+        self._basic_info(lines)
+        self._dtype_analysis(lines)
+        self._missing_analysis(lines)
+        self._duplicate_analysis(lines)
+        self._numeric_stats(lines)
+        self._categorical_dist(lines)
+        self._summary(lines)
         
-        self._basic_info()
-        self._dtype_analysis()
-        self._missing_analysis()
-        self._duplicate_analysis()
-        self._numeric_analysis()
-        self._categorical_analysis()
-        self._text_analysis()
-        self._memory_analysis()
-        self._recommendations()
-        
-        report = '\n'.join(self.sections)
+        report = '\n'.join(lines)
         print(report)
         return report
     
-    def _basic_info(self):
+    def _basic_info(self, L):
         df = self.df
-        rows, cols = df.shape
-        content = f"""
-  📐 基本信息
-  ────────────────────────────────
-  数据集名称:     {self.name}
-  报告时间:       {self.report_time.strftime('%Y-%m-%d %H:%M:%S')}
-  行数:           {rows:,}
-  列数:           {cols}
-  内存占用:       {df.memory_usage(deep=True).sum() / 1024**2:.1f} MB
-  空DataFrame:   {'是' if df.empty else '否'}
-  
-  列名列表:
-  {', '.join(df.columns.tolist())}
-"""
-        self._add_section("基本信息", content)
+        mem = df.memory_usage(deep=True).sum() / 1024**2
+        L.append(f"\n📐 形状: {df.shape[0]:,} 行 × {df.shape[1]} 列 | 内存: {mem:.1f} MB")
+        L.append(f"   列名: {', '.join(df.columns.tolist())}")
     
-    def _dtype_analysis(self):
+    def _dtype_analysis(self, L):
         df = self.df
-        dtype_counts = df.dtypes.value_counts()
-        
-        lines = []
-        for dtype, count in dtype_counts.items():
-            cols_of_type = [c for c in df.columns if str(df[c].dtype) == str(dtype)]
-            lines.append(f"  {str(dtype):<25s} {count:>3} 列  → {', '.join(cols_of_type[:5])}")
-        
-        content = f"""
-  🔧 类型分布
-  ────────────────────────────────
-{chr(10).join(lines)}
-  
-  ⚠️ 需要关注的类型:
-"""
-        
-        object_cols = [c for c in df.columns if str(df[c].dtype) == 'object']
-        if object_cols:
-            content += f"    - object 类型列 ({len(object_cols)} 个): {', '.join(object_cols[:5])}"
-            content += "\n      建议转换为 string[pyarrow] 或 category"
+        obj_cols = [c for c in df.columns if str(df[c].dtype) == 'object']
+        if obj_cols:
+            L.append(f"\n⚠️ object 类型列 ({len(obj_cols)} 个): {', '.join(obj_cols[:5])}")
         else:
-            content += "    - 无"
-        
-        self._add_section("类型分析", content)
+            L.append("\n✅ 无 object 类型列")
     
-    def _missing_analysis(self):
+    def _missing_analysis(self, L):
         df = self.df
-        missing = df.isna().sum()
-        missing_pct = (df.isna().mean() * 100).round(2)
+        na = df.isna().sum()
+        has_na = na[na > 0]
         
-        has_missing = missing[missing > 0]
-        
-        if len(has_missing) > 0:
-            table_rows = []
-            for col in has_missing.index:
-                cnt = missing[col]
-                pct = missing_pct[col]
-                bar_len = int(pct / 5)
-                bar = '█' * max(bar_len, 1) + '░' * (20 - max(bar_len, 1))
-                table_rows.append(
-                    f"  {col:<22s} {cnt:>8,}  {pct:>6.1f}%  {bar}"
-                )
-            
-            content = f"""
-  ❌ 缺失值详情
-  ────────────────────────────────
-  有缺失值的列: {len(has_missing)}/{len(df.columns)}
-  
-  {'列名':<22s} {'缺失数':>8s} {'占比':>8s}  可视化
-  {'─'*55}
-{chr(10).join(table_rows)}
-  
-  总缺失单元格: {has_missing.sum():,} / {df.shape[0]*df.shape[1]:,} 
-                   ({has_missing.sum()/(df.shape[0]*df.shape[1])*100:.2f}%)
-"""
+        if len(has_na) > 0:
+            L.append(f"\n❌ 缺失值 ({len(has_na)} 列有缺失):")
+            for col in has_na.index:
+                cnt = has_na[col]
+                pct = cnt / len(df) * 100
+                bar = '█' * int(pct / 2)
+                L.append(f"  {col:<22s} {cnt:>8,} ({pct:>5.1f}%) {bar}")
         else:
-            content = """
-  ✅ 缺失值检查
-  ────────────────────────────────
-  所有列均无缺失值！
-"""
-        
-        self._add_section("缺失值分析", content)
+            L.append("\n✅ 无缺失值")
     
-    def _duplicate_analysis(self):
+    def _duplicate_analysis(self, L):
         df = self.df
-        
         full_dup = df.duplicated().sum()
-        partial_dups = {}
+        L.append(f"\n🔁 完全重复行: {full_dup:,} ({full_dup/len(df)*100:.2f}%)")
         
-        for col in df.columns[:min(5, len(df.columns))]:
-            n_dup = df.duplicated(subset=[col]).sum()
-            if n_dup > 0:
-                partial_dups[col] = n_dup
-        
-        if full_dup > 0 or partial_dups:
-            dup_lines = [f"  完全重复行数: {full_dup:,} ({full_dup/len(df)*100:.2f}%)"]
-            for col, n in list(partial_dups.items())[:3]:
-                dup_lines.append(f"  按 [{col}] 去重可去除: {n:,} 条")
-            
-            content = f"""
-  🔁 重复值分析
-  ────────────────────────────────
-{chr(10).join(dup_lines)}
-"""
-        else:
-            content = """
-  ✅ 重复值检查
-  ────────────────────────────────
-  未发现重复数据！
-"""
-        
-        self._add_section("重复值分析", content)
+        if len(df) > 1:
+            partial = {}
+            for col in df.columns[:5]:
+                n = df.duplicated(subset=[col]).sum()
+                if n > 0:
+                    partial[col] = n
+            if partial:
+                top = sorted(partial.items(), key=lambda x: -x[1])[:3]
+                L.append("  按单列去重可去除:")
+                for col, n in top:
+                    L.append(f"    [{col}]: {n:,} 条")
     
-    def _numeric_analysis(self):
+    def _numeric_stats(self, L):
         df = self.df
-        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        num_cols = df.select_dtypes(include=[np.number]).columns
         
-        if len(numeric_cols) == 0:
-            self._add_section("数值分析", "  无数值型列\n")
+        if len(num_cols) == 0:
+            L.append("\n📊 无数值列")
             return
         
-        desc = df[numeric_cols].describe(percentiles=[.01, .05, .25, .50, .75, .95, .99]).T
-        
-        content = f"""
-  📊 数值统计摘要
-  ────────────────────────────────
-  数值列数量: {len(numeric_cols)}
-  
-  {desc.round(2).to_string()}
-"""
-        
-        anomaly_hints = []
-        for col in numeric_cols:
-            q1 = desc.loc[col, '25%']
-            q3 = desc.loc[col, '75%']
-            iqr = q3 - q1
-            lower_fence = q1 - 1.5 * iqr
-            upper_fence = q3 + 1.5 * iqr
-            
-            outliers_lower = (df[col] < lower_fence).sum()
-            outliers_upper = (df[col] > upper_fence).sum()
-            total_outliers = outliers_lower + outliers_upper
-            
-            if total_outliers > len(df) * 0.01:
-                anomaly_hints.append(
-                    f"  ⚠️ {col}: {total_outliers:,} 个异常值 "
-                    f"(下界={lower_fence:.2f}, 上界={upper_fence:.2f})"
-                )
-        
-        if anomaly_hints:
-            content += "\n  异常值警告:\n" + '\n'.join(anomaly_hints)
-        
-        self._add_section("数值分析", content)
+        desc = df[num_cols].describe().T[['count','mean','std','min','50%','max']]
+        desc.columns = ['数量','均值','标准差','最小','中位数','最大']
+        L.append(f"\n📊 数值统计 ({len(num_cols)} 列):")
+        L.append(desc.round(2).to_string())
     
-    def _categorical_analysis(self):
+    def _categorical_dist(self, L):
         df = self.df
         cat_cols = df.select_dtypes(include=['object', 'category']).columns
         
-        if len(cat_cols) == 0:
-            return
-        
-        content = "  📑 分类变量分布\n  ────────────────────────────────\n"
-        
-        for col in cat_cols[:5]:
-            n_unique = df[col].nunique()
-            top5 = df[col].value_counts(normalize=True).head(5)
-            
-            content += f"\n  【{col}】({n_unique:,} 种唯一值)\n"
-            for val, pct in top5.items():
-                bar = '█' * int(pct * 30)
-                display_val = str(val)[:40] if len(str(val)) > 40 else val
-                content += f"    {bar:<32s} {display_val:<42s} {pct*100:.1f}%\n"
-            
-            if n_unique > 5:
-                content += f"    ... 其余 {n_unique-5} 种值\n"
-        
-        self._add_section("分类分析", content)
+        for col in cat_cols[:3]:
+            dist = df[col].value_counts().head(6)
+            L.append(f"\n📋 [{col}] 分布 ({df[col].nunique()} 种):")
+            for val, cnt in dist.items():
+                bar = '#' * min(int(cnt/len(df)*60), 50)
+                L.append(f"  {bar} {val}: {cnt:,} ({cnt/len(df)*100:.1f}%)")
     
-    def _text_analysis(self):
+    def _summary(self, L):
         df = self.df
-        text_cols = [c for c in df.columns 
-                    if str(df[c].dtype) in ('object', 'string') and df[c].dtype != 'category']
+        na_pct = df.isna().sum().sum() / (df.shape[0] * df.shape[1]) * 100
+        dup_pct = df.duplicated().sum() / len(df) * 100
         
-        if not text_cols:
-            return
+        issues = []
+        if na_pct > 1:
+            issues.append(f"缺失值偏高 ({na_pct:.1f}%)")
+        if dup_pct > 1:
+            issues.append(f"重复率偏高 ({dup_pct:.1f}%)")
         
-        content = "  📝 文本列特征\n  ────────────────────────────────\n"
+        obj_count = sum(1 for c in df.columns if str(df[c].dtype) == 'object')
+        if obj_count > 0:
+            issues.append(f"{obj_count} 列为 object 类型（建议优化）")
         
-        for col in text_cols[:3]:
-            s = df[col].dropna()
-            if len(s) == 0:
-                continue
-            
-            lengths = s.str.len()
-            content += f"""
-  【{col}】
-    平均长度:   {lengths.mean():.0f} 字符
-    中位数长度: {lengths.median():.0f} 字符
-    最短:       {lengths.min()} 字符
-    最长:       {lengths.max():,} 字符
-    空字符串:    {(s.str.strip() == '').sum():,} 条 ({(s.str.strip()=='').mean()*100:.2f}%)
-"""
-        
-        self._add_section("文本分析", content)
-    
-    def _memory_analysis(self):
-        df = self.df
-        mem = df.memory_usage(deep=True)
-        total = mem.sum()
-        
-        mem_df = pd.DataFrame({
-            '列名': mem.index,
-            '内存(MB)': (mem / 1024**2).round(2),
-            '占比(%)': ((mem / total) * 100).round(1),
-        }).sort_values('内存(MB)', ascending=False)
-        
-        top_heavy = mem_df.head(8)
-        
-        content = f"""
-  💾 内存占用分析
-  ────────────────────────────────
-  总内存: {total / 1024**2:.1f} MB
-  
-  Top 8 内存消耗列:
-  {'列名':<22s} {'内存(MB)':>10s} {'占比':>8s}
-  {'─'*44}
-"""
-        for _, row in top_heavy.iterrows():
-            content += f"  {row['列名']:<22s} {row['内存(MB)']:>9.2f}MB  {row['占比(%)']:>7.1f}%\n"
-        
-        obj_mem = df.select_dtypes(include=['object']).memory_usage(deep=True).sum()
-        if obj_mem > total * 0.3:
-            savings_potential = (obj_mem * 0.6) / 1024**2
-            content += f"\n  💡 提示: object 列占 {obj_mem/total*100:.0f}% 内存，转 category/string[pyarrow] 可能节省 ~{savings_potential:.0f}MB"
-        
-        self._add_section("内存分析", content)
-    
-    def _recommendations(self):
-        df = self.df
-        recs = []
-        
-        if df.isna().sum().sum() > len(df) * 0.01:
-            recs.append("1. 存在较多缺失值，建议先执行 fillna/dropna 处理")
-        
-        if df.duplicated().sum() > 0:
-            recs.append("2. 存在重复行，建议执行 drop_duplicates()")
-        
-        obj_cols = [c for c in df.columns if str(df[c].dtype) == 'object']
-        if len(obj_cols) > 0:
-            recs.append(f"3. {len(obj_cols)} 列为 object 类型，建议转为 string[pyarrow] 或 category")
-        
-        if df.memory_usage(deep=True).sum() > 500 * 1024**2:
-            recs.append("4. 内存占用超过 500MB，考虑分块处理或 dtype 优化")
-        
-        if len(df) > 1_000_000:
-            recs.append("5. 数据量较大，建议使用 Parquet 格式存储以加速后续 I/O")
-        
-        if recs:
-            content = "\n  📋 改进建议\n  ────────────────────────────────\n" + '\n'.join(recs)
+        if not issues:
+            L.append(f"\n✅ 总体评价: 数据质量良好，可用于下一步处理")
         else:
-            content = "\n  ✅ 数据质量良好，无需特殊处理！"
-        
-        self._add_section("改进建议", content)
+            L.append(f"\n⚠️ 总体评价: 发现以下问题 → " + " | ".join(issues))
 
 
-np.random.seed(42)
-n = 200_000
-demo_data = {
-    'id': range(n),
-    'prompt': [f'问题{i%500}' for i in range(n)],
-    'response': [f'回答{i}' for i in range(n)],
-    'quality': np.random.choice([None]+list(range(1,6)), n, p=[0.03,0.15,0.15,0.25,0.27,0.15]),
-    'tokens': np.random.randint(10, 2000, n),
-    'source': np.random.choice(['api','web','export'], n),
-    'model': np.random.choice(['GPT-4o','Claude','Llama'], n),
-}
+report = DataQualityReport(pd.DataFrame({
+    'prompt': ['什么是AI' + str(i) for i in range(1000)],
+    'response': [f'回答{i}' if i % 50 != 0 else None for i in range(1000)],
+    'quality': np.random.choice([1,2,3,4,5], 1000),
+    'tokens': np.random.randint(20, 2000, 1000),
+    'source': np.random.choice(['api','web'], 1000),
+}), "测试语料")
 
-df_demo = pd.DataFrame(demo_data)
-
-reporter = DataQualityReport(df_demo, "SFT 训练语料 v2.1")
-report_text = reporter.generate()
-
-with open('data_quality_report.txt', 'w', encoding='utf-8') as f:
-    f.write(report_text)
-print("\n报告已保存到 data_quality_report.txt")
+report.generate()
 ```
+
+运行后会输出一份结构化报告，涵盖形状、内存、dtype 警告、缺失值详情（含可视化柱状图）、重复值分析、数值统计摘要、分类列分布，以及最终的总体健康评价。**把它作为项目的基础设施，每次加载新数据后跑一遍**，养成习惯后能避免绝大多数因数据质量问题导致的返工。
+
+到这里，第六章就全部结束了。我们从"拿到数据先看什么"开始，逐步深入到缺失值的检测与分析机制判断，再到重复值的识别与智能去重，最后用一个自动化报告工具把所有检查串联起来。这三节构成了数据质量评估的完整闭环。接下来第七章，我们要从"发现问题"进入"解决问题"的阶段——真正动手清洗和修复数据。

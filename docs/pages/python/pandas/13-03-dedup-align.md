@@ -1,76 +1,36 @@
 ---
-title: 数据去重合并与连接实战
-description: 去重后合并 / 多源数据对齐 / SFT 数据集整合 / API 日志关联分析
+title: 去重与对齐
+description: drop_duplicates 在合并后的使用、reindex 对齐索引、align 方法族
 ---
-# 去重与对齐
+# 合并后的数据整理
 
+多个 DataFrame 拼接之后，经常需要做两件事：去重（因为不同来源的数据可能有重复记录）和对齐（确保索引或列的一致性）。
 
-## 去重后再合并
+## 拼接后去重
+
+```python
+import pandas as pd
+
+df1 = pd.DataFrame({'id': [1, 2, 3], 'val': ['a', 'b', 'c']})
+df2 = pd.DataFrame({'id': [3, 4, 5], 'val': ['c', 'd', 'e']})
+
+combined = pd.concat([df1, df2], ignore_index=True)
+print(f"拼接后: {len(combined)} 行")
+
+deduped = combined.drop_duplicates(subset=['id'], keep='first')
+print(f"去重后: {len(deduped)} 行")
+```
+
+注意 `keep='first'` 保留第一次出现的记录。如果你希望按某个优先级列来决定保留哪条，可以先排序再去重——我们在 07-02 节详细讨论过这个模式。
+
+## reindex()：强制对齐
 
 ```python
 import pandas as pd
 
-source_a = pd.DataFrame({
-    'id': [1, 2, 3, 4],
-    'value': [10, 20, 30, 40],
-})
-
-source_b = pd.DataFrame({
-    'id': [3, 4, 5, 6],
-    'score': [80, 90, 70, 60],
-})
-
-merged = pd.merge(
-    source_a.drop_duplicates('id'),
-    source_b.drop_duplicates('id'),
-    on='id',
-    how='outer',
-    indicator=True,
-)
-print(merged)
+s = pd.Series([10, 20, 30], index=['a', 'b', 'c'])
+aligned = s.reindex(['a', 'b', 'c', 'd', 'e'])
+print(aligned)
 ```
 
-## 多源数据对齐
-
-```python
-import pandas as pd
-import numpy as np
-
-class DataAligner:
-    """多数据源对齐工具"""
-
-    @staticmethod
-    def align_columns(dfs, fill_value=np.nan):
-        """统一所有 DataFrame 的列"""
-        all_cols = set()
-        for df in dfs:
-            all_cols.update(df.columns)
-
-        aligned = []
-        for df in dfs:
-            missing_cols = all_cols - set(df.columns)
-            if missing_cols:
-                for col in missing_cols:
-                    df[col] = fill_value
-            aligned.append(df[sorted(all_cols)])
-        return aligned
-
-    @staticmethod
-    def safe_concat(dfs, **kwargs):
-        """安全拼接（自动对齐列）"""
-        aligned = DataAligner.align_columns(dfs)
-        return pd.concat(aligned, ignore_index=True, **kwargs)
-
-
-df1 = pd.DataFrame({'model': ['A', 'B'], 'score': [88, 92], 'latency': [800, 650]})
-df2 = pd.DataFrame({'model': ['C', 'D'], 'score': [84, 83], 'cost': [2.5, 0.27]})
-df3 = pd.DataFrame({'model': ['E', 'F'], 'latency': [350, 400], 'cost': [0.14, 0.27]})
-
-aligned_dfs = DataAligner.align_columns([df1, df2, df3])
-for i, adf in enumerate(aligned_dfs):
-    print(f"DataFrame {i+1} 列: {list(adf.columns)}")
-
-combined = DataAligner.safe_concat([df1, df2, df3])
-print(f"\n对齐后合并: {len(combined)} 行 × {len(combined.columns)} 列")
-print(combined.fillna('-').to_string(index=False))
-```
+`reindex()` 让 Series 或 DataFrame 的索引变成你指定的样子——原来没有的索引位置会填 NaN。这在合并来自不同源、行标签不完全一致的数据时非常有用。
