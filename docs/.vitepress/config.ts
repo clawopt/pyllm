@@ -23,7 +23,7 @@ export default defineConfig({
           {base: '/pages/python/numpy/', items: sidebarNumPy()},
       '/pages/python/pandas/':
           {base: '/pages/python/pandas/', items: sidebarPandas()},
-      '/pages/llm/': {base: '/pages/llm/', items: sidebarLLM()},
+      '/pages/llm/': {base: '/pages/llm/', items: sidebarLangChain()},
       '/pages/database/': {base: '/pages/database/', items: sidebarDatabase()},
       '/pages/ai-coding/':
           {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()}
@@ -63,17 +63,15 @@ function nav(): DefaultTheme
         items: [
           {text: 'Python核心教程', link: '/pages/python/core/00-intro'},
           {text: 'NumPy教程', link: '/pages/python/numpy/01-00-numpy-intro'},
-          {text: 'Pandas教程', link: '/pages/python/pandas/'},
+          {text: 'Pandas教程', link: '/pages/python/pandas/01-01-what-is-pandas'},
         ]
       },
       {
         text: 'LLM',
         activeMatch: '/pages/llm/',
         items: [
-          {text: 'LangChain教程', link: '/pages/llm/langchain/'}, {
-            text: 'Hugging Face Transformers教程',
-            link: '/pages/llm/transformers/'
-          },
+          {text: 'LangChain教程', link: '/pages/llm/langchain/01-01-llm-limitations'}, 
+          {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/'},
           {text: 'Ollama教程', link: '/pages/llm/ollama/'},
           {text: 'vLLM教程', link: '/pages/llm/vllm/'},
           {text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/'}
@@ -463,17 +461,150 @@ sidebarNumPy():
     }
 
 function
-sidebarLLM():
+sidebarLangChain():
     DefaultTheme
     .SidebarItem[] {
       return [{
-        text: 'LLM',
+        text: 'LangChain学习指南',
         items: [
-          {text: 'LangChain教程', link: 'langchain/'},
-          {text: 'Hugging Face Transformers教程', link: 'transformers/'},
-          {text: 'Ollama教程', link: 'ollama/'},
-          {text: 'vLLM教程', link: 'vllm/'},
-          {text: 'PyTorch Lightning教程', link: 'pytorch-lightning/'}
+          {
+            text: '第1章 为什么需要 LangChain', 
+            collapsed: false, 
+            items: [
+            {text: '1.1 大模型的能力边界与痛点', link: '01-01-llm-limitations'},
+            {text: '1.2 编排框架与设计哲学', link: '01-02-orchestration-and-design'},
+            {text: '1.3 同类框架对比与选型', link: '01-03-framework-comparison'},
+            {text: '1.4 v1.0 新特性概览', link: '01-04-v1-new-features'}
+          ]},
+          {
+            text: '第2章 环境搭建与第一次运行', 
+            collapsed: false, 
+            items: [
+            {text: '2.1 开发环境准备', link: '02-01-environment-setup'},
+            {text: '2.2 安装 LangChain 与生态工具', link: '02-02-installation'},
+            {text: '2.3 模型接入实战', link: '02-03-model-connection'},
+            {text: '2.4 第一个 LangChain 应用', link: '02-04-first-app'}
+          ]},
+          {
+            text: '第3章 模型 I/O — 与 LLM 对话的基础', 
+            collapsed: false, 
+            items: [
+            {text: '3.1 模型类型：LLM vs. 聊天模型', link: '03-01-model-types'},
+            {text: '3.2 输入管理：提示模板的多种玩法', link: '03-02-prompt-templates'},
+            {text: '3.3 输出处理：解析器的妙用', link: '03-03-output-parsers'},
+            {text: '3.4 实战：构建可配置参数的情感分析器', link: '03-04-sentiment-analyzer-practice'}
+          ]},
+          {
+            text: '第4章 检索增强生成 (RAG) — 连接私有知识库', 
+            collapsed: false, 
+            items: [
+            {text: '4.1 RAG 为什么成为刚需？基本原理与架构', link: '04-01-rag-principles'},
+            {text: '4.2 文档加载器：从 PDF、网页、Notion 等读取', link: '04-02-document-loaders'},
+            {text: '4.3 文本分割：语义切分策略', link: '04-03-text-splitting'},
+            {text: '4.4 向量存储与嵌入模型', link: '04-04-vector-storage'},
+            {text: '4.5 检索器：相似度搜索与高级策略', link: '04-05-retrieval'},
+            {text: '4.6 实战：公司内部文档问答机器人', link: '04-06-rag-qa-bot'}
+          ]},
+          {
+            text: '第5章 记忆 — 让对话拥有上下文', 
+            collapsed: false, 
+            items: [
+            {text: '5.1 为什么需要记忆：无状态模型的局限', link: '05-01-why-memory'},
+            {text: '5.2 LangChain 记忆组件全景', link: '05-02-memory-overview'},
+            {text: '5.3 常用记忆类型实战', link: '05-03-memory-practice'},
+            {text: '5.4 实战：构建有记忆的智能对话助手', link: '05-04-chat-assistant-practice'}
+          ]},
+          {
+            text: '第6章 多模态交互 — 支持图像与语音', 
+            collapsed: false, 
+            items: [
+            {text: '6.1 多模态模型入门：从文本到视觉', link: '06-01-multimodal-intro'},
+            {text: '6.2 图像理解：让 LLM "看"图片', link: '06-02-image-understanding'},
+            {text: '6.3 语音交互：语音转文字与文字转语音', link: '06-03-speech-interaction'},
+            {text: '6.4 实战：构建多模态智能助手', link: '06-04-multimodal-assistant-practice'}
+          ]},
+          {
+            text: '第7章 LCEL — 新的链式语法', 
+            collapsed: false, 
+            items: [
+            {text: '7.1 为什么需要 LCEL？声明式 vs 命令式', link: '07-01-lcel-intro'},
+            {text: '7.2 LCEL 的核心原语：Runnable 接口', link: '07-02-runnable-interface'},
+            {text: '7.3 管道操作符与并行化（RunnableParallel）', link: '07-03-pipe-parallel'},
+            {text: '7.4 条件分支与路由（RunnableBranch）', link: '07-04-branch-routing'},
+            {text: '7.5 实战：用 LCEL 重构复杂问答链', link: '07-05-lcel-refactor'}
+          ]},
+          {
+            text: '第8章 智能体 — 让 AI 自主规划与执行任务', 
+            collapsed: false, 
+            items: [
+            {text: '8.1 Agent 是什么：从 Chain 到自主决策', link: '08-01-agent-concepts'},
+            {text: '8.2 Tool（工具）：给 AI 装上手和脚', link: '08-02-tools'},
+            {text: '8.3 ReAct 模式：构建你的第一个 Agent', link: '08-03-react-agent'},
+            {text: '8.4 高级代理模式：多代理协作与长期记忆', link: '08-04-advanced-agent-patterns'},
+            {text: '8.5 实战：构建自动研究助理 Agent', link: '08-05-auto-research-assistant'}
+          ]},
+          {
+            text: '第9章 流式、异步与中间件', 
+            collapsed: false, 
+            items: [
+            {text: '9.1 流式输出的价值与实现', link: '09-01-streaming'},
+            {text: '9.2 异步编程：提升应用的并发能力', link: '09-02-async'},
+            {text: '9.3 中间件：横切关注点（日志、限流、重试、审核）', link: '09-03-middleware'},
+            {text: '9.4 回调机制：深入 LangChain 内部运行流程', link: '09-04-callbacks'},
+            {text: '9.5 实战：为应用添加"对话审核"中间件', link: '09-05-moderated-chat'}
+          ]},
+          {
+            text: '第10章 项目一：智能客服系统',
+            collapsed: false,
+            items: [
+            {text: '10.1 需求分析与技术选型', link: '10-01-requirement-analysis'},
+            {text: '10.2 利用 RAG 加载产品知识库', link: '10-02-rag-knowledge-base'},
+            {text: '10.3 设计多轮对话的意图识别与分流', link: '10-03-intent-routing'},
+            {text: '10.4 集成人工接管（Handoff）机制', link: '10-04-human-handoff'}
+          ]},
+          {
+            text: '第11章 项目二：代码分析助手',
+            collapsed: false,
+            items: [
+            {text: '11.1 加载代码仓库并构建代码知识库', link: '11-01-code-repo-loading'},
+            {text: '11.2 实现代码解释、Bug 定位与单元测试生成', link: '11-02-code-analysis'},
+            {text: '11.3 利用代理调用代码执行工具', link: '11-03-code-agent-tools'}
+          ]},
+          {
+            text: '第12章 项目三：数据分析 Agent',
+            collapsed: false,
+            items: [
+            {text: '12.1 连接数据库（SQL 数据库）', link: '12-01-sql-database'},
+            {text: '12.2 设计 Text-to-SQL 代理', link: '12-02-text-to-sql-agent'},
+            {text: '12.3 让代理生成数据图表（Pandas + Matplotlib）', link: '12-03-data-visualization'},
+            {text: '12.4 输出洞察报告', link: '12-04-insight-report'}
+          ]},
+          {
+            text: '第13章 评估与可观测性',
+            collapsed: false,
+            items: [
+            {text: '13.1 为什么要评估 RAG 和代理？', link: '13-01-why-evaluate'},
+            {text: '13.2 评估指标：准确率、忠实度、答案相关性', link: '13-02-evaluation-metrics'},
+            {text: '13.3 LangSmith 实战：追踪、调试与性能评估', link: '13-03-langsmith-practice'},
+            {text: '13.4 离线评估与持续回归测试', link: '13-04-offline-eval'}
+          ]},
+          {
+            text: '第14章 部署与扩展',
+            collapsed: false,
+            items: [
+            {text: '14.1 将 LangChain 应用封装为 API 服务（FastAPI）', link: '14-01-fastapi-service'},
+            {text: '14.2 容器化部署：Docker + Kubernetes', link: '14-02-docker-k8s'},
+            {text: '14.3 向量数据库的生产环境考量（Milvus、Pinecone）', link: '14-03-vector-db-prod'},
+            {text: '14.4 成本优化：缓存策略与模型路由', link: '14-04-cost-optimization'}
+          ]},
+          {
+            text: '第15章 安全与限制',
+            collapsed: false,
+            items: [
+            {text: '15.1 提示词注入攻击与防御', link: '15-01-prompt-injection'},
+            {text: '15.2 敏感数据泄露风险', link: '15-02-data-leakage'},
+            {text: '15.3 代理的权限控制与沙箱', link: '15-03-agent-sandbox'}
+          ]}
         ]
       }]
     }

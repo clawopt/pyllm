@@ -108,7 +108,7 @@ const categories = [
     icon: '🤖',
     title: 'LLM',
     courses: [
-      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/' },
+      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/01-01-llm-limitations' },
       { name: 'Hugging Face Transformers', desc: 'Transformer模型与应用', link: '/pages/llm/transformers/' },
       { name: 'Ollama教程', desc: '本地部署大语言模型', link: '/pages/llm/ollama/' },
       { name: 'vLLM教程', desc: '高效推理与服务部署', link: '/pages/llm/vllm/' },
