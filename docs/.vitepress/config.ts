@@ -23,7 +23,10 @@ export default defineConfig({
           {base: '/pages/python/numpy/', items: sidebarNumPy()},
       '/pages/python/pandas/':
           {base: '/pages/python/pandas/', items: sidebarPandas()},
-      '/pages/llm/': {base: '/pages/llm/', items: sidebarLangChain()},
+      '/pages/llm/':
+          {base: '/pages/llm/', items: sidebarLangChain()},
+      '/pages/llm/llamaindex/':
+          {base: '/pages/llm/llamaindex/', items: sidebarLlamaIndex()},
       '/pages/database/': {base: '/pages/database/', items: sidebarDatabase()},
       '/pages/ai-coding/':
           {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()}
@@ -71,6 +74,8 @@ function nav(): DefaultTheme
         activeMatch: '/pages/llm/',
         items: [
           {text: 'LangChain教程', link: '/pages/llm/langchain/01-01-llm-limitations'}, 
+          {text: 'LlamaIndex教程', link: '/pages/llm/llamaindex/'},
+          {text: 'LangGraph教程', link: '/pages/llm/langgraph/'},
           {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/'},
           {text: 'Ollama教程', link: '/pages/llm/ollama/'},
           {text: 'vLLM教程', link: '/pages/llm/vllm/'},
@@ -1085,3 +1090,126 @@ sidebarPandas(): DefaultTheme.SidebarItem[] {
     },
   ]
 }
+
+function
+sidebarLlamaIndex():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'LlamaIndex 教程',
+        items: [
+          {
+            text: '第1章 LlamaIndex 快速入门',
+            collapsed: false,
+            items: [
+              {text: '为什么需要 LlamaIndex', link: '01-01-why-llamaindex'},
+              {text: '安装与环境配置', link: '01-02-installation-and-setup'},
+              {text: '第一个 RAG 应用', link: '01-03-first-rag-app'},
+              {text: '与 LangChain RAG 对比', link: '01-04-vs-langchain-comparison'},
+              {text: '核心概念预览', link: '01-05-core-concepts-preview'},
+            ]
+          },
+          {
+            text: '第2章 数据连接器 Connectors',
+            collapsed: false,
+            items: [
+              {text: '统一数据接入体系', link: '02-01-connectors-overview'},
+              {text: '文件连接器', link: '02-02-file-connectors'},
+              {text: '数据库连接器', link: '02-03-database-connectors'},
+              {text: 'API 连接器', link: '02-04-api-connectors'},
+              {text: '云服务连接器', link: '02-05-cloud-connectors'},
+              {text: '自定义连接器', link: '02-06-custom-connectors'},
+              {text: '多源数据融合', link: '02-07-multi-source-fusion'},
+            ]
+          },
+          {
+            text: '第3章 文档加载与解析',
+            collapsed: false,
+            items: [
+              {text: '解析挑战与策略', link: '03-01-parsing-challenges'},
+              {text: 'Node 解析器详解', link: '03-02-node-parsers'},
+              {text: '层次化解析', link: '03-03-hierarchical-parsing'},
+              {text: '自定义解析策略', link: '03-04-custom-parsing-strategies'},
+              {text: '解析质量评估', link: '03-05-parsing-evaluation'},
+            ]
+          },
+          {
+            text: '第4章 索引策略进阶',
+            collapsed: false,
+            items: [
+              {text: 'VectorStoreIndex 深度解析', link: '04-01-vectorstore-index-deep-dive'},
+              {text: '其他索引类型', link: '04-02-other-index-types'},
+              {text: '索引组合', link: '04-03-index-composition'},
+              {text: '向量存储后端', link: '04-04-vector-store-backends'},
+              {text: '持久化与更新', link: '04-05-persistence-and-updates'},
+            ]
+          },
+          {
+            text: '第5章 高级检索技术',
+            collapsed: false,
+            items: [
+              {text: '混合检索 Hybrid Search', link: '05-01-hybrid-retrieval'},
+              {text: '重排序 Reranking', link: '05-02-reranking'},
+              {text: 'HyDE 与查询变换', link: '05-03-hyde-and-query-transform'},
+              {text: '后处理 Postprocessing', link: '05-04-postprocessing'},
+              {text: '检索最佳实践', link: '05-05-retrieval-best-practices'},
+            ]
+          },
+          {
+            text: '第6章 查询引擎 Query Engine',
+            collapsed: false,
+            items: [
+              {text: '查询引擎架构', link: '06-01-query-engine-architecture'},
+              {text: 'RetrieverQueryEngine', link: '06-02-retriever-query-engine'},
+              {text: 'ChatEngine 多轮对话', link: '06-03-chat-engine'},
+              {text: '自定义查询引擎', link: '04-custom-query-engine'},
+              {text: '流式输出与异步', link: '06-05-streaming-and-async'},
+            ]
+          },
+          {
+            text: '第7章 响应合成 Response Synthesis',
+            collapsed: false,
+            items: [
+              {text: '合成面临的挑战', link: '07-1-synthesis-challenges'},
+              {text: '合成模式深度剖析', link: '07-2-synthesis-modes-deep-dive'},
+              {text: '自定义合成器', link: '07-3-custom-synthesizer'},
+              {text: '结构化输出', link: '07-4-structured-output'},
+              {text: '合成质量优化', link: '07-5-synthesis-quality-optimization'},
+            ]
+          },
+          {
+            text: '第8章 评估与调试',
+            collapsed: false,
+            items: [
+              {text: '评估体系概览', link: '08-01-evaluation-overview'},
+              {text: '检索质量评估', link: '08-02-retrieval-evaluation'},
+              {text: '生成质量评估', link: '08-3-generation-evaluation'},
+              {text: '调试与可观测性', link: '08-4-debugging-and-observability'},
+              {text: '完整评估工作流与生产实践', link: '08-5-evaluation-pipeline-and-ci'},
+            ]
+          },
+          {
+            text: '第9章 项目一：企业知识库问答系统',
+            collapsed: false,
+            items: [
+              {text: '项目概述与需求分析', link: '09-01-project-overview-and-requirements'},
+              {text: '系统架构设计', link: '09-02-system-architecture-design'},
+              {text: '核心模块实现', link: '09-03-core-module-implementation'},
+              {text: 'API 服务与前后端集成', link: '09-04-api-and-frontend'},
+              {text: '部署运维与性能优化', link: '09-05-deployment-and-optimization'},
+            ]
+          },
+          {
+            text: '第10章 项目二：多模态 RAG 应用',
+            collapsed: false,
+            items: [
+              {text: '多模态 RAG 概述与场景分析', link: '10-01-multimodal-rag-overview'},
+              {text: '多模态数据接入与解析', link: '10-02-multimodal-data-ingestion'},
+              {text: '多模态检索与融合', link: '10-03-multimodal-retrieval'},
+              {text: '多模态问答引擎实现', link: '10-04-multimodal-qa-engine'},
+              {text: '前端展示与部署', link: '10-05-frontend-and-deployment'},
+            ]
+          },
+        ]
+      }]
+    }
