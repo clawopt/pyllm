@@ -6,6 +6,11 @@ export default defineConfig({
 
   base: '/pyllm/',
   cleanUrls: true,
+  vite: {
+    build: {
+      chunkSizeWarningLimit: 50000,
+    },
+  },
   head: [[
     'link', {rel: 'icon', href: '/pyllm/pyllm-logo.svg', type: 'image/svg+xml'}
   ]],
@@ -27,6 +32,10 @@ export default defineConfig({
           {base: '/pages/llm/', items: sidebarLangChain()},
       '/pages/llm/llamaindex/':
           {base: '/pages/llm/llamaindex/', items: sidebarLlamaIndex()},
+      '/pages/llm/langgraph/':
+          {base: '/pages/llm/langgraph/', items: sidebarLangGraph()},
+      '/pages/llm/transformers/':
+          {base: '/pages/llm/transformers/', items: sidebarTransformers()},
       '/pages/database/': {base: '/pages/database/', items: sidebarDatabase()},
       '/pages/ai-coding/':
           {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()}
@@ -74,9 +83,9 @@ function nav(): DefaultTheme
         activeMatch: '/pages/llm/',
         items: [
           {text: 'LangChain教程', link: '/pages/llm/langchain/01-01-llm-limitations'}, 
-          {text: 'LlamaIndex教程', link: '/pages/llm/llamaindex/'},
-          {text: 'LangGraph教程', link: '/pages/llm/langgraph/'},
-          {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/'},
+          {text: 'LlamaIndex教程', link: '/pages/llm/llamaindex/01-01-why-llamaindex'},
+          {text: 'LangGraph教程', link: '/pages/llm/langgraph/01-01-why-langgraph'},
+          {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/01-01-from-rnn-to-transformer'},
           {text: 'Ollama教程', link: '/pages/llm/ollama/'},
           {text: 'vLLM教程', link: '/pages/llm/vllm/'},
           {text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/'}
@@ -610,6 +619,247 @@ sidebarLangChain():
             {text: '15.2 敏感数据泄露风险', link: '15-02-data-leakage'},
             {text: '15.3 代理的权限控制与沙箱', link: '15-03-agent-sandbox'}
           ]}
+        ]
+      }]
+    }
+
+function
+sidebarLangGraph():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'LangGraph 教程',
+        items: [
+          {
+            text: '第1章 LangGraph 核心概念入门',
+            collapsed: false,
+            items: [
+              {text: '为什么需要 LangGraph', link: '01-01-why-langgraph'},
+              {text: '第一个有状态的图', link: '01-02-first-stateful-graph'},
+              {text: 'LangChain Agent vs LangGraph', link: '01-03-vs-langchain-agent'},
+              {text: '核心概念全景', link: '01-4-core-concepts-overview'},
+              {text: '工具链与调试', link: '01-5-tooling-and-debugging'}
+            ]
+          },
+          {
+            text: '第2章 状态机与图编程',
+            collapsed: false,
+            items: [
+              {text: '状态设计模式', link: '02-01-state-design-patterns'},
+              {text: '节点编程模式', link: '02-2-node-programming-patterns'},
+              {text: '边路由与拓扑结构', link: '02-3-edge-routing-and-topology'},
+              {text: '子图与组合模式', link: '02-04-subgraphs-and-composition'},
+              {text: '实战模式与最佳实践', link: '02-5-practical-patterns-and-best-practices'}
+            ]
+          },
+          {
+            text: '第3章 条件路由深度解析',
+            collapsed: false,
+            items: [
+              {text: '条件边原理与实现', link: '03-01-conditional-edges-deep-dive'},
+              {text: '多层条件路由', link: '03-02-multi-layer-routing'},
+              {text: 'LLM 驱动的动态路由', link: '03-03-dynamic-routing-with-llm'},
+              {text: '路由测试与调试', link: '03-04-testing-and-routing'},
+              {text: '路由模式总结', link: '03-05-routing-patterns-summary'}
+            ]
+          },
+          {
+            text: '第4章 人机协作 (Human-in-the-Loop)',
+            collapsed: false,
+            items: [
+              {text: '中断机制基础', link: '04-01-interrupt-basics'},
+              {text: '审批工作流', link: '04-2-approval-workflows'},
+              {text: '高级中断模式', link: '04-3-advanced-interrupt-patterns'},
+              {text: '构建交互式应用', link: '04-4-building-interactive-apps'},
+              {text: 'HITL 模式总结', link: '04-5-hitl-summary'}
+            ]
+          },
+          {
+            text: '第5章 循环与迭代模式',
+            collapsed: false,
+            items: [
+              {text: '自反思循环', link: '05-01-self-reflection-loops'},
+              {text: '重试与容错', link: '05-2-retry-and-fault-tolerance'},
+              {text: '循环状态与性能', link: '05-3-loop-state-and-performance'},
+              {text: '高级循环模式', link: '05-4-advanced-loop-patterns'},
+              {text: '循环模式总结', link: '05-5-loop-patterns-summary'}
+            ]
+          },
+          {
+            text: '第6章 子图与模块化架构',
+            collapsed: false,
+            items: [
+              {text: '子图架构设计', link: '06-1-subgraph-architecture'},
+              {text: '子图状态映射', link: '06-2-subgraph-state-mapping'},
+              {text: '子图测试策略', link: '06-3-subgraph-testing'},
+              {text: '动态子图选择', link: '06-4-dynamic-subgraph-selection'},
+              {text: '子图工程指南', link: '06-5-subgraph-summary'}
+            ]
+          },
+          {
+            text: '第7章 持久化与时间旅行',
+            collapsed: false,
+            items: [
+              {text: '检查点基础', link: '07-01-checkpointing-basics'},
+              {text: '时间旅行调试', link: '07-2-time-travel-debugging'},
+              {text: '持久化后端', link: '07-3-persistence-backends'},
+              {text: '检查点与中断协同', link: '07-4-checkpoint-and-interrupt'},
+              {text: '生产环境最佳实践', link: '07-5-persistence-summary'}
+            ]
+          },
+          {
+            text: '第8章 多智能体协作',
+            collapsed: false,
+            items: [
+              {text: '多Agent 概览', link: '08-1-multi-agent-overview'},
+              {text: '主管 (Supervisor) 模式', link: '08-2-supervisor-pattern'},
+              {text: 'Map-Reduce 模式', link: '08-3-map-reduce-pattern'},
+              {text: '交接 (Handoff) 模式', link: '08-4-handoff-pattern'},
+              {text: '多Agent 总结', link: '08-5-multi-agent-summary'}
+            ]
+          },
+          {
+            text: '第9章 项目一：智能客服工单系统',
+            collapsed: false,
+            items: [
+              {text: '项目概述与需求分析', link: '09-01-project-overview-and-requirements'},
+              {text: '核心模块实现', link: '09-02-core-module-implementation'},
+              {text: 'API 服务与前端', link: '09-03-api-and-frontend'},
+              {text: '部署与优化', link: '09-04-deployment-and-optimization'},
+              {text: '监控与分析', link: '09-05-monitoring-and-analytics'}
+            ]
+          },
+          {
+            text: '第10章 项目二：自主研究助手 Agent',
+            collapsed: false,
+            items: [
+              {text: '项目概述与需求分析', link: '10-01-project-overview-and-requirements'},
+              {text: '核心模块实现', link: '10-02-core-module-implementation'},
+              {text: '多步推理与工具调用', link: '10-03-multi-step-reasoning-and-tools'},
+              {text: '结果整合与展示', link: '10-04-result-integration-and-presentation'},
+              {text: '部署与扩展', link: '10-05-deployment-and-extension'}
+            ]
+          }
+        ]
+      }]
+    }
+
+function
+sidebarTransformers():
+    DefaultTheme
+    .SidebarItem[] {
+      return [{
+        text: 'Hugging Face Transformers 教程',
+        items: [
+          {
+            text: '第1章 Transformer 原理与架构入门',
+            collapsed: false,
+            items: [
+              {text: '1.1 从 RNN 到 Transformer', link: '01-01-from-rnn-to-transformer'},
+              {text: '1.2 Self-Attention 机制深度拆解', link: '01-02-self-attention-deep-dive'},
+              {text: '1.3 Encoder-Decoder 架构全景', link: '01-03-encoder-decoder-architecture'},
+              {text: '1.4 Encoder/Decoder 变体', link: '01-04-encoder-decoder-variants'},
+              {text: '1.5 HF 生态概览与快速上手', link: '01-05-hf-ecosystem-and-quickstart'}
+            ]
+          },
+          {
+            text: '第2章 Tokenizer 文本到模型的桥梁',
+            collapsed: false,
+            items: [
+              {text: '2.1 分词算法演进史', link: '02-01-tokenization-algorithm-evolution'},
+              {text: '2.2 HF Tokenizer 核心API', link: '02-02-hf-tokenizer-core-api'},
+              {text: '2.3 多语言与多模态 Tokenizer', link: '02-03-multilingual-and-multimodal-tokenizer'},
+              {text: '2.4 性能优化与自定义', link: '02-04-performance-optimization-and-custom-tokenizer'}
+            ]
+          },
+          {
+            text: '第3章 Model 核心组件与架构',
+            collapsed: false,
+            items: [
+              {text: '3.1 Config 模型的DNA', link: '03-01-config-model-dna'},
+              {text: '3.2 Model 的层级结构', link: '03-02-model-layer-hierarchy'},
+              {text: '3.3 前向传播全过程追踪', link: '03-03-forward-pass-tracing'},
+              {text: '3.4 核心模块源码级解读', link: '03-04-source-code-deep-dive'},
+              {text: '3.5 GPT 架构细节与KV Cache', link: '03-05-gpt-architecture-and-kv-cache'},
+              {text: '3.6 模型初始化与权重加载', link: '03-06-model-init-and-weight-loading'}
+            ]
+          },
+          {
+            text: '第4章 Pipeline 高阶 API 速通',
+            collapsed: false,
+            items: [
+              {text: '4.1 Pipeline 基础与内置任务', link: '04-01-pipeline-basics-and-tasks'},
+              {text: '4.2 Pipeline 高级配置', link: '04-02-pipeline-advanced-config'},
+              {text: '4.3 自定义 Pipeline', link: '04-03-custom-pipeline'},
+              {text: '4.4 Pipeline 性能优化', link: '04-04-pipeline-performance'}
+            ]
+          },
+          {
+            text: '第5章 数据集与数据处理',
+            collapsed: false,
+            items: [
+              {text: '5.1 Datasets 库核心功能', link: '05-01-datasets-core'},
+              {text: '5.2 数据预处理流水线', link: '05-02-data-preprocessing-pipeline'},
+              {text: '5.3 数据增强与清洗', link: '05-03-data-augmentation-and-cleaning'},
+              {text: '5.4 自定义数据集', link: '05-04-custom-dataset'}
+            ]
+          },
+          {
+            text: '第6章 模型微调 Fine-Tuning',
+            collapsed: false,
+            items: [
+              {text: '6.1 微调的基本概念与策略', link: '06-01-finetuning-concepts-and-strategies'},
+              {text: '6.2 Trainer API 入门', link: '06-02-trainer-api-getting-started'},
+              {text: '6.3 训练过程监控与调试', link: '06-03-training-monitoring-and-debugging'},
+              {text: '6.4 Sequence Classification 微调实战', link: '06-04-complete-finetuning-template'},
+              {text: '6.5 高级训练技术', link: '06-05-advanced-training-techniques'},
+              {text: '6.6 评估与部署', link: '06-06-evaluation-and-deployment'}
+            ]
+          },
+          {
+            text: '第7章 参数高效微调 PEFT',
+            collapsed: false,
+            items: [
+              {text: '7.1 PEFT 概述与 LoRA 原理与实现', link: '07-01-peft-overview-and-lora'},
+              {text: '7.2 其他 PEFT 方法 Adapter/Prefix/(IA)³', link: '07-02-adapter-and-other-peft-methods'},
+              {text: '7.3 不同任务类型的 PEFT 配置策略', link: '07-03-different-task-peft-configs'},
+              {text: '7.4 Adapter 合并与切换', link: '07-04-adapter-merging-and-switching'},
+              {text: '7.5 PEFT 生产最佳实践', link: '07-05-peft-production-best-practices'}
+            ]
+          },
+          {
+            text: '第8章 文本生成与解码策略',
+            collapsed: false,
+            items: [
+              {text: '8.1 文本生成基础 从 Logits 到 Token', link: '08-01-text-generation-basics'},
+              {text: '8.2 高级解码策略', link: '08-02-advanced-decoding-strategies'},
+              {text: '8.3 长度控制与重复控制', link: '08-03-length-repetition-control'},
+              {text: '8.4 推测解码与 MoE', link: '08-04-speculative-decoding-and-moe'},
+              {text: '8.5 自定义生成策略', link: '08-05-custom-generation-strategies'}
+            ]
+          },
+          {
+            text: '第9章 模型压缩与推理优化',
+            collapsed: false,
+            items: [
+              {text: '9.1 模型量化基础', link: '09-01-model-quantization'},
+              {text: '9.2 知识蒸馏 Knowledge Distillation', link: '09-02-knowledge-distillation'},
+              {text: '9.3 模型剪枝 Pruning', link: '09-03-model-pruning'},
+              {text: '9.4 推理加速引擎', link: '09-04-inference-engines'},
+              {text: '9.5 系统级优化', link: '09-05-system-level-optimization'}
+            ]
+          },
+          {
+            text: '第10章 多模态与前沿方向',
+            collapsed: false,
+            items: [
+              {text: '10.1 视觉 Transformer ViT', link: '10-01-vision-transformer'},
+              {text: '10.2 音频语音模型', link: '10-02-audio-speech-models'},
+              {text: '10.3 多模态融合', link: '10-03-multimodal-fusion'},
+              {text: '10.4 视频理解', link: '10-04-video-understanding'},
+              {text: '10.5 新兴架构 Mamba/RWKV/MoE/RoPE v2', link: '10-05-emerging-architectures'}
+            ]
+          }
         ]
       }]
     }

@@ -29,7 +29,7 @@ touch .env
 
 写入以下内容：
 
-```env
+```properties
 # .env 文件 —— 存放敏感信息，不要提交到 Git
 OPENAI_API_KEY=sk-your-key-here
 ```
