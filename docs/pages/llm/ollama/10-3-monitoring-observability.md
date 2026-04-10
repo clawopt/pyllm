@@ -1595,11 +1595,11 @@ docker compose -f docker-compose.monitoring.yml up -d
 
 | 组件 | 地址 | 用途 |
 |------|------|------|
-| **Grafana** | http://localhost:3000 | 可视化大盘 (admin/admin_change_me) |
-| **Prometheus** | http://localhost:9090 | 指标查询与告警状态 |
-| **Alertmanager** | http://localhost:9093 | 告警管理与静默 |
-| **Loki** | http://localhost:3100 | 日志查询 API |
-| **Jaeger** | http://localhost:16686 | 链路追踪视图 |
+| **Grafana** | `http://localhost:3000` | 可视化大盘 (admin/admin_change_me) |
+| **Prometheus** | `http://localhost:9090` | 指标查询与告警状态 |
+| **Alertmanager** | `http://localhost:9093` | 告警管理与静默 |
+| **Loki** | `http://localhost:3100` | 日志查询 API |
+| **Jaeger** | `http://localhost:16686` | 链路追踪视图 |
 
 ---
 
