@@ -99,8 +99,8 @@ const categories = [
     icon: '🐍',
     title: 'Python',
     courses: [
-      { name: 'Python核心教程', desc: 'Python编程基础与核心概念', link: '/pages/python/core/00-intro' },
-      { name: 'NumPy教程', desc: '科学计算与数组操作', link: '/pages/python/numpy/01-00-numpy-intro' },
+      { name: 'Python核心教程', desc: 'Python编程基础与核心概念', link: '/pages/python/core/' },
+      { name: 'NumPy教程', desc: '科学计算与数组操作', link: '/pages/python/numpy/' },
       { name: 'Pandas教程', desc: '数据分析与处理', link: '/pages/python/pandas/' }
     ]
   },
@@ -108,13 +108,13 @@ const categories = [
     icon: '🤖',
     title: 'LLM',
     courses: [
-      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/01-01-llm-limitations' },
-      { name: 'LlamaIndex教程', desc: '数据框架与RAG进阶', link: '/pages/llm/llamaindex/01-01-why-llamaindex' },
-      { name: 'LangGraph教程', desc: '有状态Agent工作流编排', link: '/pages/llm/langgraph/01-01-why-langgraph' },
-      { name: 'Hugging Face Transformers', desc: 'Transformer模型与应用', link: '/pages/llm/transformers/01-01-from-rnn-to-transformer' },
+      { name: 'LangChain教程', desc: '构建LLM应用链', link: '/pages/llm/langchain/' },
+      { name: 'LlamaIndex教程', desc: '数据框架与RAG进阶', link: '/pages/llm/llamaindex/' },
+      { name: 'LangGraph教程', desc: '有状态Agent工作流编排', link: '/pages/llm/langgraph/' },
+      { name: 'Hugging Face Transformers', desc: 'Transformer模型与应用', link: '/pages/llm/transformers/' },
       { name: 'Ollama教程', desc: '本地部署大语言模型', link: '/pages/llm/ollama/' },
       { name: 'vLLM教程', desc: '高效推理与服务部署', link: '/pages/llm/vllm/' },
-      { name: 'PyTorch Lightning教程', desc: '快速训练深度学习模型', link: '/pages/llm/pytorch-lightning/' }
+      { name: 'PyTorch教程', desc: '快速训练深度学习模型', link: '/pages/llm/pytorch/' }
     ]
   },
   {
@@ -125,8 +125,6 @@ const categories = [
       { name: 'Milvus教程', desc: '向量数据库与相似度搜索', link: '/pages/database/milvus/' },
       { name: 'Chroma教程', desc: '轻量级向量数据库', link: '/pages/database/chroma/' },
       { name: 'Faiss教程', desc: 'Facebook相似性搜索', link: '/pages/database/faiss/' },
-      { name: 'DuckDB教程', desc: '分析型嵌入式数据库', link: '/pages/database/duckdb/' },
-      { name: 'LanceDB教程', desc: '向量数据库的新选择', link: '/pages/database/lancedb/' }
     ]
   },
   {

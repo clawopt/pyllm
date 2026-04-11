@@ -28,17 +28,34 @@ export default defineConfig({
           {base: '/pages/python/numpy/', items: sidebarNumPy()},
       '/pages/python/pandas/':
           {base: '/pages/python/pandas/', items: sidebarPandas()},
-      '/pages/llm/':
-          {base: '/pages/llm/', items: sidebarLangChain()},
+      '/pages/llm/langchain/':
+          {base: '/pages/llm/langchain/', items: sidebarLangChain()},
       '/pages/llm/llamaindex/':
           {base: '/pages/llm/llamaindex/', items: sidebarLlamaIndex()},
       '/pages/llm/langgraph/':
           {base: '/pages/llm/langgraph/', items: sidebarLangGraph()},
       '/pages/llm/transformers/':
           {base: '/pages/llm/transformers/', items: sidebarTransformers()},
-      '/pages/database/': {base: '/pages/database/', items: sidebarDatabase()},
-      '/pages/ai-coding/':
-          {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()}
+      '/pages/llm/ollama/':
+          {base: '/pages/llm/ollama/', items: sidebarOllama()},
+      '/pages/llm/vllm/':
+          {base: '/pages/llm/vllm/', items: sidebarVllm()},
+      '/pages/llm/pytorch/':
+          {base: '/pages/llm/pytorch/', items: sidebarPytorch()},
+      '/pages/database/chroma/':
+          {base: '/pages/database/chroma/', items: sidebarChroma()},
+      '/pages/database/faiss/':
+          {base: '/pages/database/faiss/', items: sidebarFaiss()},
+      '/pages/database/milvus/':
+          {base: '/pages/database/milvus/', items: sidebarMilvus()},
+      '/pages/database/pgvector/':
+          {base: '/pages/database/pgvector/', items: sidebarPgvector()},
+      '/pages/ai-coding/openclaw/':
+          {base: '/pages/ai-coding/openclaw/', items: sidebarAICoding()},
+      '/pages/ai-coding/opencode/':
+          {base: '/pages/ai-coding/opencode/', items: sidebarOpenCode()},
+      '/pages/ai-coding/deepseek/':
+          {base: '/pages/ai-coding/deepseek/', items: sidebarDeepSeek()}
     },
 
     footer: {message: '基于 MIT 许可发布', copyright: '版权所有 © 2024-至今'},
@@ -73,22 +90,22 @@ function nav(): DefaultTheme
         text: 'Python',
         activeMatch: '/pages/python/',
         items: [
-          {text: 'Python核心教程', link: '/pages/python/core/00-intro'},
-          {text: 'NumPy教程', link: '/pages/python/numpy/01-00-numpy-intro'},
-          {text: 'Pandas教程', link: '/pages/python/pandas/01-01-what-is-pandas'},
+          {text: 'Python核心教程', link: '/pages/python/core/'},
+          {text: 'NumPy教程', link: '/pages/python/numpy/'},
+          {text: 'Pandas教程', link: '/pages/python/pandas/'},
         ]
       },
       {
         text: 'LLM',
         activeMatch: '/pages/llm/',
         items: [
-          {text: 'LangChain教程', link: '/pages/llm/langchain/01-01-llm-limitations'}, 
-          {text: 'LlamaIndex教程', link: '/pages/llm/llamaindex/01-01-why-llamaindex'},
-          {text: 'LangGraph教程', link: '/pages/llm/langgraph/01-01-why-langgraph'},
-          {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/01-01-from-rnn-to-transformer'},
+          {text: 'LangChain教程', link: '/pages/llm/langchain/'}, 
+          {text: 'LlamaIndex教程', link: '/pages/llm/llamaindex/'},
+          {text: 'LangGraph教程', link: '/pages/llm/langgraph/'},
+          {text: 'Hugging Face Transformers教程',link: '/pages/llm/transformers/'},
           {text: 'Ollama教程', link: '/pages/llm/ollama/'},
           {text: 'vLLM教程', link: '/pages/llm/vllm/'},
-          {text: 'PyTorch Lightning教程', link: '/pages/llm/pytorch-lightning/'}
+          {text: 'PyTorch教程', link: '/pages/llm/pytorch/'}
         ]
       },
       {
@@ -99,8 +116,6 @@ function nav(): DefaultTheme
           {text: 'Milvus教程', link: '/pages/database/milvus/'},
           {text: 'Chroma教程', link: '/pages/database/chroma/'},
           {text: 'Faiss教程', link: '/pages/database/faiss/'},
-          {text: 'DuckDB教程', link: '/pages/database/duckdb/'},
-          {text: 'LanceDB教程', link: '/pages/database/lancedb/'}
         ]
       },
       {
@@ -241,6 +256,779 @@ sidebarPython():
         ]
       }]
     }
+
+function sidebarOllama(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'Ollama 教程',
+    items: [
+      {
+        text: '第1章 Ollama 入门与快速上手',
+        collapsed: false,
+        items: [
+          {text: '为什么需要本地运行大模型', link: '01-01-why-local-llm'},
+          {text: '安装与环境准备', link: '01-02-installation-and-setup'},
+          {text: '第一个模型：运行与对话', link: '01-03-first-model-and-conversation'},
+          {text: '模型管理基础', link: '01-04-model-management'}
+        ]
+      },
+      {
+        text: '第2章 API 服务与编程接入',
+        collapsed: false,
+        items: [
+          {text: '启动 API 服务', link: '02-01-starting-api-service'},
+          {text: 'RESTful API 完整指南', link: '02-02-restful-api-guide'},
+          {text: 'Python 接入实战', link: '02-03-python-integration'},
+          {text: 'JavaScript / TypeScript 接入', link: '02-04-javascript-typescript-integration'},
+          {text: '其他语言接入速查', link: '02-05-other-languages-integration'}
+        ]
+      },
+      {
+        text: '第3章 模型生态与选择指南',
+        collapsed: false,
+        items: [
+          {text: 'Ollama 模型库全景', link: '03-01-ollama-library-overview'},
+          {text: '模型命名与 Tag 规范', link: '03-02-model-naming-tag-spec'},
+          {text: '如何为任务选择最佳模型', link: '03-3-task-based-model-selection'},
+          {text: '模型安全性与合规', link: '03-4-security-compliance'}
+        ]
+      },
+      {
+        text: '第4章 Modelfile 与自定义模型',
+        collapsed: false,
+        items: [
+          {text: 'Modelfile 基础语法', link: '04-01-modelfile-basics'},
+          {text: 'SYSTEM 提示词工程', link: '04-02-system-prompt-engineering'},
+          {text: 'PARAMETER 调优艺术', link: '04-03-parameter-tuning'},
+          {text: 'ADAPTER：LoRA 适配器加载', link: '04-04-lora-adapter-loading'},
+          {text: '从零创建自定义 GGUF 模型', link: '04-5-custom-gguf-conversion'}
+        ]
+      },
+      {
+        text: '第5章 多模态能力',
+        collapsed: false,
+        items: [
+          {text: '图像理解模型', link: '05-1-image-understanding'},
+          {text: '视频理解', link: '05-2-video-understanding'},
+          {text: '多模态实战项目', link: '05-3-multimodal-projects'}
+        ]
+      },
+      {
+        text: '第6章 Embedding 模型与 RAG',
+        collapsed: false,
+        items: [
+          {text: 'Embedding 模型入门', link: '06-1-embedding-fundamentals'},
+          {text: '向量数据库集成', link: '06-2-vector-database-integration'},
+          {text: '完整 RAG 系统实战', link: '06-3-complete-rag-system'},
+          {text: '高级 RAG 技术', link: '06-4-advanced-rag'}
+        ]
+      },
+      {
+        text: '第7章 LangChain / LlamaIndex 集成',
+        collapsed: false,
+        items: [
+          {text: 'LangChain + Ollama', link: '07-1-langchain-integration'},
+          {text: 'LlamaIndex + Ollama', link: '07-2-llamaindex-integration'},
+          {text: '其他框架集成速查', link: '07-3-other-frameworks'},
+          {text: '生产级集成架构', link: '07-4-production-architecture'}
+        ]
+      },
+      {
+        text: '第8章 性能优化与资源管理',
+        collapsed: false,
+        items: [
+          {text: '硬件层面的优化', link: '08-1-hardware-optimization'},
+          {text: '推理参数调优', link: '08-2-inference-parameter-tuning'},
+          {text: '并发与吞吐优化', link: '08-3-concurrency-throughput'},
+          {text: '模型预加载与热管理', link: '08-4-preload-thermal'},
+          {text: '量化深度指南', link: '08-5-quantization-guide'}
+        ]
+      },
+      {
+        text: '第9章 Web UI 与工具生态',
+        collapsed: false,
+        items: [
+          {text: 'Open WebUI', link: '09-1-open-webui'},
+          {text: 'Ollama WebUI（官方）', link: '09-2-official-webui'},
+          {text: '第三方工具生态', link: '09-3-third-party-tools'},
+          {text: 'IDE 集成', link: '09-4-ide-integrations'}
+        ]
+      },
+      {
+        text: '第10章 企业部署与运维',
+        collapsed: false,
+        items: [
+          {text: 'Docker 部署深度实践', link: '10-1-docker-deployment'},
+          {text: '安全加固', link: '10-2-security-hardening'},
+          {text: '监控与可观测性', link: '10-3-monitoring-observability'},
+          {text: '高可用与扩展', link: '10-4-high-availability-scaling'},
+          {text: '成本分析与优化', link: '10-5-cost-analysis-tco'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarVllm(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'vLLM 教程',
+    items: [
+      {
+        text: '第1章 vLLM 入门',
+        collapsed: false,
+        items: [
+          {text: '为什么需要 vLLM', link: '01-01-why-vllm'},
+          {text: '安装与环境搭建', link: '01-02-installation-setup'},
+          {text: '启动第一个模型服务', link: '01-03-first-model-service'},
+          {text: '项目结构与配置', link: '01-04-project-structure'}
+        ]
+      },
+      {
+        text: '第2章 PagedAttention 核心原理',
+        collapsed: false,
+        items: [
+          {text: 'KV Cache 的问题', link: '02-01-kv-cache-problem'},
+          {text: 'PagedAttention 设计思想', link: '02-02-pagedattention-design'},
+          {text: 'PagedAttention 实现细节', link: '02-03-pagedattention-implementation'},
+          {text: '性能分析', link: '02-04-performance-analysis'}
+        ]
+      },
+      {
+        text: '第3章 连续批处理调度',
+        collapsed: false,
+        items: [
+          {text: '从静态到连续批处理', link: '03-01-static-to-continuous'},
+          {text: '调度器机制', link: '03-2-scheduler-mechanism'},
+          {text: '抢占与资源管理', link: '03-3-preemption-resource'},
+          {text: '调度器调优', link: '03-4-scheduler-tuning'}
+        ]
+      },
+      {
+        text: '第4章 API 服务',
+        collapsed: false,
+        items: [
+          {text: 'API 服务器启动与配置', link: '04-01-api-server-startup'},
+          {text: 'Chat Completions API', link: '04-02-chat-completions-api'},
+          {text: 'Completions 与 Embeddings', link: '04-03-completions-embeddings'},
+          {text: '其他 API 端点', link: '04-04-other-apis'},
+          {text: '离线推理', link: '04-05-offline-inference'}
+        ]
+      },
+      {
+        text: '第5章 离线推理引擎',
+        collapsed: false,
+        items: [
+          {text: 'LLM 直接推理', link: '05-01-llm-direct-inference'},
+          {text: '高效批处理', link: '05-02-efficient-batch-processing'},
+          {text: '特殊推理场景', link: '05-03-special-inference-scenarios'}
+        ]
+      },
+      {
+        text: '第6章 分布式推理',
+        collapsed: false,
+        items: [
+          {text: '张量并行', link: '06-01-tensor-parallelism'},
+          {text: '流水线并行', link: '06-02-pipeline-parallelism'},
+          {text: '多节点部署', link: '06-03-multi-node-deployment'},
+          {text: '性能基准测试', link: '06-04-performance-benchmark'},
+          {text: '硬件选型指南', link: '06-05-hardware-selection'}
+        ]
+      },
+      {
+        text: '第7章 量化与压缩',
+        collapsed: false,
+        items: [
+          {text: '量化基础', link: '07-01-quantization-basics'},
+          {text: 'AWQ 量化', link: '07-02-awq'},
+          {text: 'GPTQ 及其他方法', link: '07-03-gptq-other-methods'},
+          {text: '量化方案对比', link: '07-04-quantization-comparison'}
+        ]
+      },
+      {
+        text: '第8章 LoRA 动态服务',
+        collapsed: false,
+        items: [
+          {text: 'LoRA 基础', link: '08-01-lora-basics'},
+          {text: 'LoRA 服务化', link: '08-02-lora-serving'},
+          {text: 'LoRA 最佳实践', link: '08-03-lora-best-practices'}
+        ]
+      },
+      {
+        text: '第9章 框架集成',
+        collapsed: false,
+        items: [
+          {text: 'LangChain + vLLM', link: '09-01-langchain-vllm'},
+          {text: 'LlamaIndex + vLLM', link: '09-02-llamaindex-vllm'},
+          {text: '其他框架集成', link: '09-03-other-frameworks'},
+          {text: '生产级架构', link: '09-04-production-architecture'}
+        ]
+      },
+      {
+        text: '第10章 生产部署',
+        collapsed: false,
+        items: [
+          {text: 'Docker 部署', link: '10-01-docker-deployment'},
+          {text: 'Kubernetes 部署', link: '10-02-kubernetes'},
+          {text: '监控与告警', link: '10-03-monitoring'},
+          {text: '高可用方案', link: '10-04-high-availability'},
+          {text: '性能调优', link: '10-05-performance-tuning'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarPytorch(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'PyTorch Lightning 教程',
+    items: [
+      {
+        text: '第1章 PyTorch 核心基础',
+        collapsed: false,
+        items: [
+          {text: '为什么选择 PyTorch', link: '01-01-why-pytorch'},
+          {text: '张量操作', link: '01-02-tensor-operations'},
+          {text: '自动微分 Autograd', link: '01-03-autograd'},
+          {text: 'nn.Module 神经网络模块', link: '01-04-nn-module'},
+          {text: 'MiniGPT 项目实战', link: '01-05-minigpt-project'}
+        ]
+      },
+      {
+        text: '第2章 数据加载与预处理',
+        collapsed: false,
+        items: [
+          {text: 'Dataset 与 DataLoader', link: '02-01-dataset-dataloader'},
+          {text: 'Collate Function', link: '02-02-collate-function'},
+          {text: '高效数据处理', link: '02-03-efficient-data-processing'},
+          {text: '完整数据管道', link: '02-04-complete-pipeline'}
+        ]
+      },
+      {
+        text: '第3章 Transformer 架构实现',
+        collapsed: false,
+        items: [
+          {text: '单头注意力', link: '03-01-single-head-attention'},
+          {text: '多头注意力', link: '03-02-multi-head-attention'},
+          {text: '前馈网络块', link: '03-03-feed-forward-block'},
+          {text: '位置编码', link: '03-04-positional-encoding'},
+          {text: 'GPT 模型组装', link: '03-05-gpt-model'}
+        ]
+      },
+      {
+        text: '第4章 训练循环与优化',
+        collapsed: false,
+        items: [
+          {text: '训练循环', link: '04-01-training-loop'},
+          {text: '优化器', link: '04-02-optimizer'},
+          {text: '学习率调度与梯度管理', link: '04-03-lr-scheduler-gradient'},
+          {text: '训练监控与调试', link: '04-04-monitoring-debugging'}
+        ]
+      },
+      {
+        text: '第5章 PyTorch Lightning 入门',
+        collapsed: false,
+        items: [
+          {text: 'Lightning 第一个模型', link: '05-01-lightning-first-model'},
+          {text: '生命周期回调', link: '05-02-lifecycle-callbacks'},
+          {text: 'Lightning 进阶', link: '05-03-advanced-lightning'},
+          {text: 'Lightning GPT 实战', link: '05-04-lightning-gpt-practice'}
+        ]
+      },
+      {
+        text: '第6章 模型微调',
+        collapsed: false,
+        items: [
+          {text: 'Trainer API', link: '06-01-trainer-api'},
+          {text: 'PEFT 与 LoRA', link: '06-02-peft-lora'},
+          {text: '量化与 QLoRA', link: '06-03-quantization-qlora'},
+          {text: '三种方法对比', link: '06-04-three-methods-comparison'},
+          {text: '评估与导出', link: '06-05-evaluation-export'}
+        ]
+      },
+      {
+        text: '第7章 分布式训练',
+        collapsed: false,
+        items: [
+          {text: 'DDP 分布式数据并行', link: '07-01-ddp'},
+          {text: 'FSDP 全分片数据并行', link: '07-02-fsdp'},
+          {text: 'DeepSpeed 集成', link: '07-03-deepspeed'},
+          {text: '分布式实战', link: '07-04-distributed-practice'}
+        ]
+      },
+      {
+        text: '第8章 模型优化与导出',
+        collapsed: false,
+        items: [
+          {text: 'torch.compile', link: '08-01-torch-compile'},
+          {text: '模型量化', link: '08-02-model-quantization'},
+          {text: '模型导出', link: '08-03-model-export'},
+          {text: '性能分析', link: '08-04-performance-analysis'}
+        ]
+      },
+      {
+        text: '第9章 模型服务与 MLOps',
+        collapsed: false,
+        items: [
+          {text: '模型服务化', link: '09-01-model-serving'},
+          {text: '监控', link: '09-2-monitoring'},
+          {text: 'MLOps 生命周期', link: '09-3-mlops-lifecycle'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarOpenCode(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'OpenCode 教程',
+    items: [
+      {
+        text: '第1章 OpenCode 简介',
+        collapsed: false,
+        items: [
+          {text: '什么是 OpenCode', link: '01-01-what-is-opencode'},
+          {text: '架构概览', link: '01-02-architecture'},
+          {text: '快速上手', link: '01-03-quick-start'}
+        ]
+      },
+      {
+        text: '第2章 安装与配置',
+        collapsed: false,
+        items: [
+          {text: '安装', link: '02-01-installation'},
+          {text: '配置文件详解', link: '02-02-configuration'},
+          {text: '模型提供商', link: '02-03-model-providers'}
+        ]
+      },
+      {
+        text: '第3章 TUI 界面与交互',
+        collapsed: false,
+        items: [
+          {text: 'TUI 界面详解', link: '03-01-tui-interface'},
+          {text: '文件引用与上下文', link: '03-02-file-references'},
+          {text: 'Agent 工具', link: '03-03-agent-tools'}
+        ]
+      },
+      {
+        text: '第4章 模型选择与优化',
+        collapsed: false,
+        items: [
+          {text: '模型选择策略', link: '04-01-model-selection'},
+          {text: 'Ollama 本地模型', link: '04-02-ollama-local'},
+          {text: 'Auto Compact 上下文管理', link: '04-03-auto-compact'}
+        ]
+      },
+      {
+        text: '第5章 MCP 协议集成',
+        collapsed: false,
+        items: [
+          {text: '什么是 MCP', link: '05-01-what-is-mcp'},
+          {text: 'MCP 配置', link: '05-02-mcp-configuration'},
+          {text: 'MCP GitHub 集成', link: '05-03-mcp-github'},
+          {text: 'MCP 数据库与浏览器', link: '05-04-mcp-database-browser'}
+        ]
+      },
+      {
+        text: '第6章 编码工作流',
+        collapsed: false,
+        items: [
+          {text: '代码生成', link: '06-01-code-generation'},
+          {text: '调试', link: '06-02-debugging'},
+          {text: 'Git 工作流', link: '06-03-git-workflow'}
+        ]
+      },
+      {
+        text: '第7章 团队协作',
+        collapsed: false,
+        items: [
+          {text: 'AGENTS.md', link: '07-01-agents-md'},
+          {text: '自定义命令', link: '07-02-custom-commands'},
+          {text: '多会话管理', link: '07-03-multi-session'}
+        ]
+      },
+      {
+        text: '第8章 安全与限制',
+        collapsed: false,
+        items: [
+          {text: '安全考量', link: '08-01-security'},
+          {text: '团队标准化', link: '08-02-team-standardization'},
+          {text: '局限性与替代方案', link: '08-03-limitations-alternatives'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarDeepSeek(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'DeepSeek 教程',
+    items: [
+      {
+        text: '第1章 DeepSeek 简介',
+        collapsed: false,
+        items: [
+          {text: '什么是 DeepSeek', link: '01-01-what-is-deepseek'},
+          {text: '模型家族', link: '01-02-model-family'},
+          {text: '架构解析', link: '01-03-architecture'}
+        ]
+      },
+      {
+        text: '第2章 快速上手',
+        collapsed: false,
+        items: [
+          {text: '注册与 API Key', link: '02-01-register-api-key'},
+          {text: 'Hello World', link: '02-02-hello-world'},
+          {text: 'Web 应用', link: '02-03-web-app'}
+        ]
+      },
+      {
+        text: '第3章 Chat Completions API',
+        collapsed: false,
+        items: [
+          {text: 'Chat Completions', link: '03-01-chat-completions'},
+          {text: '流式输出', link: '03-02-streaming-tokens'},
+          {text: 'JSON Output', link: '03-03-json-output'},
+          {text: 'FIM 前缀补全', link: '03-04-fim-prefix'}
+        ]
+      },
+      {
+        text: '第4章 R1 推理模式',
+        collapsed: false,
+        items: [
+          {text: '思维模式', link: '04-01-thinking-mode'},
+          {text: '推理 vs 非推理', link: '04-02-reasoning-vs-non-reasoning'},
+          {text: 'Max Tokens 管理', link: '04-03-max-tokens'}
+        ]
+      },
+      {
+        text: '第5章 Agent 与 RAG',
+        collapsed: false,
+        items: [
+          {text: 'Function Calling', link: '05-01-function-calling'},
+          {text: '构建 Agent', link: '05-02-build-agent'},
+          {text: 'RAG 实践', link: '05-03-rag-practice'}
+        ]
+      },
+      {
+        text: '第6章 代码智能',
+        collapsed: false,
+        items: [
+          {text: '代码生成', link: '06-01-code-generation'},
+          {text: '调试', link: '06-02-debugging'},
+          {text: 'CI/CD', link: '06-03-cicd'}
+        ]
+      },
+      {
+        text: '第7章 本地部署',
+        collapsed: false,
+        items: [
+          {text: '蒸馏模型', link: '07-01-distill-models'},
+          {text: 'Ollama 部署', link: '07-02-ollama'},
+          {text: 'vLLM 部署', link: '07-03-vllm'}
+        ]
+      },
+      {
+        text: '第8章 企业实践',
+        collapsed: false,
+        items: [
+          {text: '成本优化', link: '08-01-cost-optimization'},
+          {text: '企业部署', link: '08-02-enterprise-deployment'},
+          {text: '局限性与替代方案', link: '08-03-limitations-alternatives'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarChroma(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'Chroma 教程',
+    items: [
+      {
+        text: '第1章 为什么需要向量数据库',
+        collapsed: false,
+        items: [
+          {text: '为什么需要向量数据库', link: '01-01-why-vector-db'},
+          {text: '核心概念概览', link: '01-02-concepts-overview'},
+          {text: '安装与 Hello World', link: '01-03-installation-hello-world'}
+        ]
+      },
+      {
+        text: '第2章 数据管理',
+        collapsed: false,
+        items: [
+          {text: 'CRUD 操作', link: '02-01-crud-operations'},
+          {text: 'Collection 管理', link: '02-02-collection-management'},
+          {text: '元数据最佳实践', link: '02-03-metadata-best-practices'}
+        ]
+      },
+      {
+        text: '第3章 嵌入与分块',
+        collapsed: false,
+        items: [
+          {text: 'Embedding Function', link: '03-01-embedding-function'},
+          {text: '分块策略', link: '03-02-chunking-strategies'},
+          {text: '归一化与距离度量', link: '03-03-normalization-distance-metrics'}
+        ]
+      },
+      {
+        text: '第4章 查询与过滤',
+        collapsed: false,
+        items: [
+          {text: '查询深度解析', link: '04-01-query-deep-dive'},
+          {text: 'Where 过滤语法', link: '04-02-where-filter-syntax'},
+          {text: '重排序', link: '04-03-reranking'}
+        ]
+      },
+      {
+        text: '第5章 RAG 实战',
+        collapsed: false,
+        items: [
+          {text: 'RAG 架构', link: '05-01-rag-architecture'},
+          {text: 'PDF 问答 Demo', link: '05-02-pdf-qa-demo'},
+          {text: '记忆层', link: '05-03-memory-layer'}
+        ]
+      },
+      {
+        text: '第6章 生产运维',
+        collapsed: false,
+        items: [
+          {text: '持久化存储', link: '06-01-persistence-storage'},
+          {text: '性能调优', link: '06-02-performance-tuning'},
+          {text: '并发', link: '06-03-concurrency'},
+          {text: '监控运维', link: '06-04-monitoring-ops'}
+        ]
+      },
+      {
+        text: '第7章 选型与生态',
+        collapsed: false,
+        items: [
+          {text: '选型指南', link: '07-01-selection-guide'},
+          {text: '框架集成', link: '07-02-framework-integration'},
+          {text: '局限性与替代方案', link: '07-03-limitations-alternatives'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarFaiss(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'FAISS 教程',
+    items: [
+      {
+        text: '第1章 FAISS 入门',
+        collapsed: false,
+        items: [
+          {text: '什么是 FAISS', link: '01-01-what-is-faiss'},
+          {text: '安装', link: '01-02-installation'},
+          {text: 'Hello World', link: '01-03-hello-world'}
+        ]
+      },
+      {
+        text: '第2章 核心抽象',
+        collapsed: false,
+        items: [
+          {text: 'Index 抽象', link: '02-01-index-abstraction'},
+          {text: '距离度量', link: '02-02-distance-metrics'},
+          {text: '向量 ID 映射', link: '02-03-vector-id-mapping'}
+        ]
+      },
+      {
+        text: '第3章 索引类型',
+        collapsed: false,
+        items: [
+          {text: 'Flat 暴力索引', link: '03-01-flat-index'},
+          {text: 'IVF 倒排索引', link: '03-02-ivf-index'},
+          {text: 'HNSW 图索引', link: '03-03-hnsw-index'}
+        ]
+      },
+      {
+        text: '第4章 量化压缩',
+        collapsed: false,
+        items: [
+          {text: '为什么需要量化', link: '04-01-why-quantization'},
+          {text: 'PQ 乘积量化', link: '04-02-pq-quantization'},
+          {text: 'OPQ 优化乘积量化', link: '04-03-opq-quantization'},
+          {text: 'SQ 标量量化', link: '04-04-sq-quantization'}
+        ]
+      },
+      {
+        text: '第5章 GPU 加速与高级功能',
+        collapsed: false,
+        items: [
+          {text: 'GPU 加速', link: '05-01-gpu-acceleration'},
+          {text: '复合索引', link: '05-02-composite-index'},
+          {text: '批量搜索', link: '05-03-batch-search'},
+          {text: '序列化', link: '05-04-serialization'}
+        ]
+      },
+      {
+        text: '第6章 RAG 实战',
+        collapsed: false,
+        items: [
+          {text: 'RAG 架构', link: '06-01-rag-architecture'},
+          {text: 'RAG Demo', link: '06-02-rag-demo'},
+          {text: 'FAISS + pgvector 混合', link: '06-03-faiss-pgvector-hybrid'}
+        ]
+      },
+      {
+        text: '第7章 选型与生态',
+        collapsed: false,
+        items: [
+          {text: 'FAISS 作为引擎', link: '07-01-faiss-as-engine'},
+          {text: 'FAISS vs 向量数据库', link: '07-02-faiss-vs-databases'},
+          {text: '局限性与未来', link: '07-03-limitations-future'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarMilvus(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'Milvus 教程',
+    items: [
+      {
+        text: '第1章 Milvus 入门',
+        collapsed: false,
+        items: [
+          {text: '什么是 Milvus', link: '01-01-what-is-milvus'},
+          {text: '架构概览', link: '01-02-architecture'},
+          {text: '安装与连接', link: '01-03-installation-connection'}
+        ]
+      },
+      {
+        text: '第2章 Schema 与数据模型',
+        collapsed: false,
+        items: [
+          {text: 'Collection 与 Schema', link: '02-01-collection-schema'},
+          {text: '字段类型', link: '02-02-field-types'},
+          {text: '距离度量', link: '02-03-distance-metrics'}
+        ]
+      },
+      {
+        text: '第3章 数据操作',
+        collapsed: false,
+        items: [
+          {text: '数据插入', link: '03-01-data-insertion'},
+          {text: '向量搜索', link: '03-02-vector-search'},
+          {text: '标量过滤', link: '03-03-scalar-filtering'},
+          {text: '查询/更新/删除', link: '03-04-query-update-delete'}
+        ]
+      },
+      {
+        text: '第4章 索引管理',
+        collapsed: false,
+        items: [
+          {text: '索引概览', link: '04-01-index-overview'},
+          {text: 'HNSW 索引', link: '04-02-hnsw-index'},
+          {text: '量化索引', link: '04-03-quantization-index'},
+          {text: '索引选择与调优', link: '04-04-index-selection-tuning'}
+        ]
+      },
+      {
+        text: '第5章 高级功能',
+        collapsed: false,
+        items: [
+          {text: '分区管理', link: '05-01-partition-management'},
+          {text: '多向量搜索', link: '05-02-multi-vector-search'},
+          {text: '动态字段与 JSON', link: '05-03-dynamic-field-json'},
+          {text: '一致性与持久化', link: '05-04-consistency-persistence'}
+        ]
+      },
+      {
+        text: '第6章 RAG 实战',
+        collapsed: false,
+        items: [
+          {text: 'RAG 架构', link: '06-01-rag-architecture'},
+          {text: 'PDF 问答 Demo', link: '06-02-pdf-qa-demo'},
+          {text: '多租户', link: '06-03-multi-tenant'}
+        ]
+      },
+      {
+        text: '第7章 生产部署',
+        collapsed: false,
+        items: [
+          {text: '集群部署', link: '07-01-cluster-deployment'},
+          {text: '性能监控', link: '07-02-performance-monitoring'},
+          {text: '局限性与替代方案', link: '07-03-limitations-alternatives'}
+        ]
+      }
+    ]
+  }]
+}
+
+function sidebarPgvector(): DefaultTheme.SidebarItem[] {
+  return [{
+    text: 'PG Vector 教程',
+    items: [
+      {
+        text: '第1章 PostgreSQL 基础',
+        collapsed: false,
+        items: [
+          {text: '什么是 PostgreSQL', link: '01-01-what-is-postgresql'},
+          {text: '安装与连接', link: '01-02-installation-connection'},
+          {text: 'SQL CRUD 基础', link: '01-03-sql-crud-basics'}
+        ]
+      },
+      {
+        text: '第2章 PostgreSQL 进阶',
+        collapsed: false,
+        items: [
+          {text: '索引与查询优化', link: '02-01-indexes-query-optimization'},
+          {text: 'JSONB 半结构化数据', link: '02-02-jsonb-semistructured'},
+          {text: '事务与并发', link: '02-03-transactions-concurrency'}
+        ]
+      },
+      {
+        text: '第3章 pgvector 入门',
+        collapsed: false,
+        items: [
+          {text: '什么是 pgvector', link: '03-01-what-is-pgvector'},
+          {text: '安装与 Hello World', link: '03-02-installation-hello-world'},
+          {text: '向量数据类型', link: '03-03-vector-data-type'}
+        ]
+      },
+      {
+        text: '第4章 向量 CRUD',
+        collapsed: false,
+        items: [
+          {text: '向量 CRUD', link: '04-01-vector-crud'},
+          {text: '混合查询', link: '04-02-hybrid-query'},
+          {text: 'Python CRUD 封装', link: '04-03-python-crud-wrapper'}
+        ]
+      },
+      {
+        text: '第5章 索引与性能',
+        collapsed: false,
+        items: [
+          {text: '为什么需要向量索引', link: '05-01-why-vector-index'},
+          {text: 'IVFFlat 索引', link: '05-02-ivfflat-index'},
+          {text: 'HNSW 索引', link: '05-03-hnsw-index'},
+          {text: '索引选择与调优', link: '05-04-index-selection-tuning'}
+        ]
+      },
+      {
+        text: '第6章 RAG 实战',
+        collapsed: false,
+        items: [
+          {text: 'RAG 架构', link: '06-01-rag-architecture'},
+          {text: 'PDF 问答 Demo', link: '06-02-pdf-qa-demo'},
+          {text: '记忆与用户画像', link: '06-03-memory-user-profile'}
+        ]
+      },
+      {
+        text: '第7章 生产部署',
+        collapsed: false,
+        items: [
+          {text: '生产部署', link: '07-01-production-deployment'},
+          {text: '性能监控', link: '07-02-performance-monitoring'},
+          {text: '局限性与替代方案', link: '07-03-limitations-alternatives'}
+        ]
+      }
+    ]
+  }]
+}
 
 function
 sidebarNumPy():
@@ -860,23 +1648,6 @@ sidebarTransformers():
               {text: '10.5 新兴架构 Mamba/RWKV/MoE/RoPE v2', link: '10-05-emerging-architectures'}
             ]
           }
-        ]
-      }]
-    }
-
-function
-sidebarDatabase():
-    DefaultTheme
-    .SidebarItem[] {
-      return [{
-        text: '数据库',
-        items: [
-          {text: 'PG Vector教程', link: 'pgvector/'},
-          {text: 'Milvus教程', link: 'milvus/'},
-          {text: 'Chroma教程', link: 'chroma/'},
-          {text: 'Faiss教程', link: 'faiss/'},
-          {text: 'DuckDB教程', link: 'duckdb/'},
-          {text: 'LanceDB教程', link: 'lancedb/'}
         ]
       }]
     }

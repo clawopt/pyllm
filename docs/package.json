@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "vitepress dev",
-    "build": "vitepress build",
+    "build": "NODE_OPTIONS='--max-old-space-size=8192' vitepress build",
     "preview": "vitepress preview",
     "kill": "bash -c 'lsof -ti:8085 | xargs kill -9 || true'",
     "restart": "npm run kill && npm run build && npm run preview -- --port 8085",
