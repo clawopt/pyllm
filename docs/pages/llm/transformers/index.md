@@ -1,3 +1,14 @@
+---
+title: "Transformers教程 - Hugging Face模型与应用实战 | PyLLM"
+description: "Hugging Face Transformers完整教程：Tokenizer、Model架构、Pipeline、数据集处理、微调Fine-Tuning、PEFT LoRA、量化压缩、多模态"
+head:
+  - meta: {name: 'keywords', content: 'Transformers,HuggingFace,微调,PEFT,LoRA,量化,多模态'}
+  - meta: {property: 'og:title', content: 'Transformers教程 - Hugging Face模型与应用实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'Hugging Face Transformers完整教程：Tokenizer、Model架构、Pipeline、数据集处理、微调Fine-Tuning、PEFT LoRA、量化压缩、多模态'}
+  - meta: {name: 'twitter:title', content: 'Transformers教程 - Hugging Face模型与应用实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'Hugging Face Transformers完整教程：Tokenizer、Model架构、Pipeline、数据集处理、微调Fine-Tuning、PEFT LoRA、量化压缩、多模态'}
+---
+
 # Hugging Face Transformers 教程大纲
 
 ---

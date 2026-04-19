@@ -1,3 +1,14 @@
+---
+title: "NumPy教程 - 科学计算与LLM数组操作实战 | PyLLM"
+description: "NumPy科学计算完整教程：ndarray、形状操作、索引切片、广播机制、线性代数、8个LLM实战项目（自注意力、LoRA、困惑度）"
+head:
+  - meta: {name: 'keywords', content: 'NumPy,ndarray,数组操作,广播,线性代数,自注意力,LoRA'}
+  - meta: {property: 'og:title', content: 'NumPy教程 - 科学计算与LLM数组操作实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'NumPy科学计算完整教程：ndarray、形状操作、索引切片、广播机制、线性代数、8个LLM实战项目（自注意力、LoRA、困惑度）'}
+  - meta: {name: 'twitter:title', content: 'NumPy教程 - 科学计算与LLM数组操作实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'NumPy科学计算完整教程：ndarray、形状操作、索引切片、广播机制、线性代数、8个LLM实战项目（自注意力、LoRA、困惑度）'}
+---
+
 # NumPy 教程大纲
 
 ---

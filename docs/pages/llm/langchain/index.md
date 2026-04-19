@@ -1,3 +1,14 @@
+---
+title: "LangChain教程 - LLM应用开发编排框架实战 | PyLLM"
+description: "LangChain LLM应用开发完整教程：模型I/O、RAG检索增强、记忆机制、LCEL链式语法、Agent智能体、流式异步、评估调试、生产部署"
+head:
+  - meta: {name: 'keywords', content: 'LangChain,LLM,RAG,Agent,LCEL,提示模板,向量检索,智能体'}
+  - meta: {property: 'og:title', content: 'LangChain教程 - LLM应用开发编排框架实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'LangChain LLM应用开发完整教程：模型I/O、RAG检索增强、记忆机制、LCEL链式语法、Agent智能体、流式异步、评估调试、生产部署'}
+  - meta: {name: 'twitter:title', content: 'LangChain教程 - LLM应用开发编排框架实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'LangChain LLM应用开发完整教程：模型I/O、RAG检索增强、记忆机制、LCEL链式语法、Agent智能体、流式异步、评估调试、生产部署'}
+---
+
 # LangChain 教程大纲
 
 ---

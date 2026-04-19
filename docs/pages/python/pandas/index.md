@@ -1,3 +1,14 @@
+---
+title: "Pandas教程 - 数据分析与LLM数据处理实战 | PyLLM"
+description: "Pandas数据分析完整教程：数据清洗、筛选转换、分组聚合、RAG知识库、PandasAI、LangChain Agent、MCP Server、Polars迁移"
+head:
+  - meta: {name: 'keywords', content: 'Pandas,数据分析,RAG,PandasAI,LangChain,MCP,Polars'}
+  - meta: {property: 'og:title', content: 'Pandas教程 - 数据分析与LLM数据处理实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'Pandas数据分析完整教程：数据清洗、筛选转换、分组聚合、RAG知识库、PandasAI、LangChain Agent、MCP Server、Polars迁移'}
+  - meta: {name: 'twitter:title', content: 'Pandas教程 - 数据分析与LLM数据处理实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'Pandas数据分析完整教程：数据清洗、筛选转换、分组聚合、RAG知识库、PandasAI、LangChain Agent、MCP Server、Polars迁移'}
+---
+
 # Pandas 教程大纲
 
 ---

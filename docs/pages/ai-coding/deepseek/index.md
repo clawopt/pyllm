@@ -1,3 +1,14 @@
+---
+title: "DeepSeek 教程 - 开源大模型API与本地部署实战 | PyLLM"
+description: "DeepSeek开源大模型完整教程：V3/R1双模型线、Chat Completions API、R1推理模式、Function Calling、RAG实战、Ollama/vLLM本地部署、成本优化与企业实践"
+head:
+  - meta: {name: 'keywords', content: 'DeepSeek,DeepSeek V3,DeepSeek R1,开源大模型,API,推理模式,Function Calling,RAG,本地部署'}
+  - meta: {property: 'og:title', content: 'DeepSeek 教程 - 开源大模型API与本地部署实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'DeepSeek开源大模型完整教程：V3/R1双模型线、Chat Completions API、R1推理模式、Function Calling、RAG实战、Ollama/vLLM本地部署、成本优化与企业实践'}
+  - meta: {name: 'twitter:title', content: 'DeepSeek 教程 - 开源大模型API与本地部署实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'DeepSeek开源大模型完整教程：V3/R1双模型线、Chat Completions API、R1推理模式、Function Calling、RAG实战、Ollama/vLLM本地部署、成本优化与企业实践'}
+---
+
 # DeepSeek 教程大纲
 
 > **开源、低价、强推理——DeepSeek，用 1/30 的价格跑出 GPT-4 级别的代码和推理能力**

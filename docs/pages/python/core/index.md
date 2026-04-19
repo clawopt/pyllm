@@ -1,3 +1,14 @@
+---
+title: "Python核心教程 - 面向大模型开发的编程基础 | PyLLM"
+description: "Python编程核心教程：数据类型、函数、数据结构、面向对象、并发编程，面向LLM开发场景，从入门到实战"
+head:
+  - meta: {name: 'keywords', content: 'Python,编程基础,面向对象,并发编程,数据结构,函数'}
+  - meta: {property: 'og:title', content: 'Python核心教程 - 面向大模型开发的编程基础 | PyLLM'}
+  - meta: {property: 'og:description', content: 'Python编程核心教程：数据类型、函数、数据结构、面向对象、并发编程，面向LLM开发场景，从入门到实战'}
+  - meta: {name: 'twitter:title', content: 'Python核心教程 - 面向大模型开发的编程基础 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'Python编程核心教程：数据类型、函数、数据结构、面向对象、并发编程，面向LLM开发场景，从入门到实战'}
+---
+
 # Python 核心教程大纲
 
 ---

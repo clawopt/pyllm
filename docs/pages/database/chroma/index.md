@@ -1,3 +1,14 @@
+---
+title: "Chroma教程 - 轻量级向量数据库与RAG实战 | PyLLM"
+description: "Chroma向量数据库完整教程：CRUD操作、Embedding函数、分块策略、查询过滤、RAG架构实战、持久化存储、性能调优"
+head:
+  - meta: {name: 'keywords', content: 'Chroma,向量数据库,RAG,Embedding,语义搜索,向量检索'}
+  - meta: {property: 'og:title', content: 'Chroma教程 - 轻量级向量数据库与RAG实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'Chroma向量数据库完整教程：CRUD操作、Embedding函数、分块策略、查询过滤、RAG架构实战、持久化存储、性能调优'}
+  - meta: {name: 'twitter:title', content: 'Chroma教程 - 轻量级向量数据库与RAG实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'Chroma向量数据库完整教程：CRUD操作、Embedding函数、分块策略、查询过滤、RAG架构实战、持久化存储、性能调优'}
+---
+
 # Chroma 向量数据库教程大纲
 
 > **面向 LLM 时代的向量存储方案——从本地原型到生产级 RAG 引擎**

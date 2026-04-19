@@ -1,3 +1,14 @@
+---
+title: "pgvector教程 - PostgreSQL向量扩展与RAG实战 | PyLLM"
+description: "PostgreSQL pgvector向量扩展完整教程：SQL CRUD、向量数据类型、IVFFlat/HNSW索引、混合查询、RAG架构实战、生产部署"
+head:
+  - meta: {name: 'keywords', content: 'pgvector,PostgreSQL,向量搜索,IVFFlat,HNSW,混合查询,RAG'}
+  - meta: {property: 'og:title', content: 'pgvector教程 - PostgreSQL向量扩展与RAG实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'PostgreSQL pgvector向量扩展完整教程：SQL CRUD、向量数据类型、IVFFlat/HNSW索引、混合查询、RAG架构实战、生产部署'}
+  - meta: {name: 'twitter:title', content: 'pgvector教程 - PostgreSQL向量扩展与RAG实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'PostgreSQL pgvector向量扩展完整教程：SQL CRUD、向量数据类型、IVFFlat/HNSW索引、混合查询、RAG架构实战、生产部署'}
+---
+
 # PGVector 向量数据库教程大纲
 
 > **当关系型数据库遇上向量搜索——PostgreSQL + pgvector，用你最熟悉的 SQL 做语义检索**

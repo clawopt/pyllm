@@ -1,19 +1,34 @@
 import {defineConfig, type DefaultTheme} from 'vitepress'
 
+const BASE = process.env.BASE_URL || '/pyllm/'
+
 export default defineConfig({
   title: 'PyLLM',
   description: 'Python与大模型开发教程，从入门到实战',
 
-  base: '/pyllm/',
+  base: BASE,
   cleanUrls: true,
+  sitemap: {
+    hostname: 'https://pyllm.com',
+    lastmodDateOnly: false
+  },
   vite: {
     build: {
       chunkSizeWarningLimit: 50000,
     },
   },
-  head: [[
-    'link', {rel: 'icon', href: '/pyllm/pyllm-logo.svg', type: 'image/svg+xml'}
-  ]],
+  head: [
+    ['link', {rel: 'icon', href: '/pyllm-logo.svg', type: 'image/svg+xml'}],
+    ['meta', {name: 'keywords', content: 'Python,LLM,大模型,LangChain,RAG,PyTorch,Transformers,Ollama,vLLM,DeepSeek,教程'}],
+    ['meta', {name: 'author', content: 'PyLLM'}],
+    ['meta', {property: 'og:type', content: 'website'}],
+    ['meta', {property: 'og:site_name', content: 'PyLLM'}],
+    ['meta', {property: 'og:locale', content: 'zh_CN'}],
+    ['meta', {name: 'twitter:card', content: 'summary_large_image'}],
+    ['meta', {name: 'twitter:site', content: '@pyllm'}],
+    ['meta', {name: 'baidu-site-verification', content: 'pyllm'}],
+    ['meta', {name: 'google-site-verification', content: 'pyllm'}],
+  ],
 
   themeConfig: {
     logo: '/pyllm-logo.svg',

@@ -1,3 +1,14 @@
+---
+title: "PyTorch Lightning教程 - 深度学习模型训练实战 | PyLLM"
+description: "PyTorch Lightning深度学习训练完整教程：张量操作、Transformer实现、训练循环、Lightning框架、PEFT LoRA微调、分布式训练、模型导出"
+head:
+  - meta: {name: 'keywords', content: 'PyTorch,Lightning,深度学习,Transformer,LoRA,分布式训练,模型微调'}
+  - meta: {property: 'og:title', content: 'PyTorch Lightning教程 - 深度学习模型训练实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'PyTorch Lightning深度学习训练完整教程：张量操作、Transformer实现、训练循环、Lightning框架、PEFT LoRA微调、分布式训练、模型导出'}
+  - meta: {name: 'twitter:title', content: 'PyTorch Lightning教程 - 深度学习模型训练实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'PyTorch Lightning深度学习训练完整教程：张量操作、Transformer实现、训练循环、Lightning框架、PEFT LoRA微调、分布式训练、模型导出'}
+---
+
 # PyTorch 教程大纲
 
 ---

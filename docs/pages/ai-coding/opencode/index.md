@@ -1,3 +1,14 @@
+---
+title: "OpenCode教程 - 终端AI编程Agent实战 | PyLLM"
+description: "OpenCode终端AI编程Agent教程：TUI界面、Plan/Build模式、MCP协议、Agent工具、Ollama本地模型、Auto Compact、AGENTS.md、团队协作"
+head:
+  - meta: {name: 'keywords', content: 'OpenCode,AI编程,终端Agent,MCP,Ollama,代码生成'}
+  - meta: {property: 'og:title', content: 'OpenCode教程 - 终端AI编程Agent实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'OpenCode终端AI编程Agent教程：TUI界面、Plan/Build模式、MCP协议、Agent工具、Ollama本地模型、Auto Compact、AGENTS.md、团队协作'}
+  - meta: {name: 'twitter:title', content: 'OpenCode教程 - 终端AI编程Agent实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'OpenCode终端AI编程Agent教程：TUI界面、Plan/Build模式、MCP协议、Agent工具、Ollama本地模型、Auto Compact、AGENTS.md、团队协作'}
+---
+
 # OpenCode 教程大纲
 
 > **终端里的 AI 编程搭档——OpenCode，开源、多模型、MCP 可扩展的 AI Coding Agent**

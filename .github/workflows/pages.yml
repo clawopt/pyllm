@@ -33,6 +33,8 @@ jobs:
         run: npm ci
       - name: Build with VitePress
         working-directory: docs
+        env:
+          BASE_URL: /pyllm/
         run: npm run build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

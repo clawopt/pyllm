@@ -1,0 +1,42 @@
+# PyLLM
+
+> Python 与大模型开发教程平台，从入门到生产部署
+
+## 介绍
+
+PyLLM 是面向开发者的 Python 与大模型（LLM）实战教程平台。每个教程都包含：原理讲解、完整 API 接口、实战场景、性能优化和常见误区。所有教程均有左侧导航栏，支持章节级浏览。
+
+## 教程列表
+
+### Python 基础
+
+- [Python 核心教程](/pages/python/core/) — 数据类型、函数、数据结构、面向对象、并发编程
+- [NumPy 教程](/pages/python/numpy/) — 科学计算、数组操作、8 个 LLM 实战（自注意力、LoRA、困惑度）
+- [Pandas 教程](/pages/python/pandas/) — 数据分析、RAG 知识库、PandasAI、LangChain Agent、MCP Server
+
+### LLM 开发
+
+- [LangChain 教程](/pages/llm/langchain/) — LLM 应用编排框架：RAG、Agent、LCEL、记忆、流式、部署
+- [LlamaIndex 教程](/pages/llm/llamaindex/) — RAG 数据框架：数据连接器、索引策略、高级检索、查询引擎
+- [LangGraph 教程](/pages/llm/langgraph/) — 有状态 Agent 工作流：状态机、条件路由、人机协作、多智能体
+- [Transformers 教程](/pages/llm/transformers/) — Hugging Face：Tokenizer、Model、微调、PEFT、量化、多模态
+- [Ollama 教程](/pages/llm/ollama/) — 本地大模型：API 服务、Modelfile、RAG、性能优化、企业部署
+- [vLLM 教程](/pages/llm/vllm/) — 高效推理：PagedAttention、分布式推理、量化、Kubernetes 部署
+- [PyTorch Lightning 教程](/pages/llm/pytorch/) — 深度学习训练：Transformer 实现、LoRA 微调、分布式训练
+
+### 向量数据库
+
+- [pgvector 教程](/pages/database/pgvector/) — PostgreSQL 向量扩展：IVFFlat/HNSW 索引、混合查询、RAG
+- [Milvus 教程](/pages/database/milvus/) — 分布式向量数据库：Schema、索引、多向量搜索、集群部署
+- [Chroma 教程](/pages/database/chroma/) — 轻量级向量数据库：CRUD、Embedding、RAG 实战
+- [FAISS 教程](/pages/database/faiss/) — 向量搜索库：IVF/HNSW、量化、GPU 加速、RAG
+
+### AI 编程
+
+- [OpenCode 教程](/pages/ai-coding/opencode/) — 终端 AI 编程 Agent：TUI、MCP、Agent 工具、团队协作
+- [DeepSeek 教程](/pages/ai-coding/deepseek/) — 开源大模型：V3/R1 API、推理模式、Function Calling、本地部署
+- [OpenClaw 教程](/pages/ai-coding/openclaw/) — AI 编程助手：部署、技能系统、RAG、多 Agent
+
+## 可选：详细内容
+
+每个教程的大纲页（index.md）包含完整的章节规划和每节要点，建议从大纲页开始浏览。

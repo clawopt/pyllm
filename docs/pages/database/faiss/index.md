@@ -1,3 +1,14 @@
+---
+title: "FAISS教程 - Facebook十亿级向量搜索库实战 | PyLLM"
+description: "FAISS向量搜索库完整教程：Index抽象、IVF/HNSW索引、PQ/OPQ量化、GPU加速、复合索引、RAG实战、序列化"
+head:
+  - meta: {name: 'keywords', content: 'FAISS,向量搜索,近似最近邻,IVF,HNSW,量化,GPU加速'}
+  - meta: {property: 'og:title', content: 'FAISS教程 - Facebook十亿级向量搜索库实战 | PyLLM'}
+  - meta: {property: 'og:description', content: 'FAISS向量搜索库完整教程：Index抽象、IVF/HNSW索引、PQ/OPQ量化、GPU加速、复合索引、RAG实战、序列化'}
+  - meta: {name: 'twitter:title', content: 'FAISS教程 - Facebook十亿级向量搜索库实战 | PyLLM'}
+  - meta: {name: 'twitter:description', content: 'FAISS向量搜索库完整教程：Index抽象、IVF/HNSW索引、PQ/OPQ量化、GPU加速、复合索引、RAG实战、序列化'}
+---
+
 # FAISS 向量搜索库教程大纲
 
 > **不是数据库，是搜索引擎——FAISS，用 C++ 的速度做十亿级向量检索**
