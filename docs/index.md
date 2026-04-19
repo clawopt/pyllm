@@ -1,4 +1,5 @@
 ---
+layout: home
 title: "PyLLM - Python与大模型开发教程"
 description: "PyLLM 是面向开发者的 Python 与大模型（LLM）实战教程平台，涵盖 LangChain、LlamaIndex、RAG、PyTorch、Transformers、Ollama、vLLM、DeepSeek 等核心技术，从入门到生产部署。"
 head:
