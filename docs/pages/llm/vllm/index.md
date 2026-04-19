@@ -2,16 +2,25 @@
 title: "vLLM教程 - 高效LLM推理与服务部署实战 | PyLLM"
 description: "vLLM高效推理引擎完整教程：PagedAttention原理、连续批处理、API服务、分布式推理、AWQ/GPTQ量化、LoRA服务、Kubernetes部署"
 head:
-  - meta: {name: 'keywords', content: 'vLLM,推理引擎,PagedAttention,分布式推理,量化,Kubernetes,LoRA'}
-  - meta: {property: 'og:title', content: 'vLLM教程 - 高效LLM推理与服务部署实战 | PyLLM'}
-  - meta: {property: 'og:description', content: 'vLLM高效推理引擎完整教程：PagedAttention原理、连续批处理、API服务、分布式推理、AWQ/GPTQ量化、LoRA服务、Kubernetes部署'}
-  - meta: {name: 'twitter:title', content: 'vLLM教程 - 高效LLM推理与服务部署实战 | PyLLM'}
-  - meta: {name: 'twitter:description', content: 'vLLM高效推理引擎完整教程：PagedAttention原理、连续批处理、API服务、分布式推理、AWQ/GPTQ量化、LoRA服务、Kubernetes部署'}
+  - - meta
+    - name: keywords
+      content: vLLM,推理引擎,PagedAttention,分布式推理,量化,Kubernetes,LoRA
+  - - meta
+    - property: og:title
+      content: vLLM教程 - 高效LLM推理与服务部署实战 | PyLLM
+  - - meta
+    - property: og:description
+      content: vLLM高效推理引擎完整教程：PagedAttention原理、连续批处理、API服务、分布式推理、AWQ/GPTQ量化、LoRA服务、Kubernetes部署
+  - - meta
+    - name: twitter:title
+      content: vLLM教程 - 高效LLM推理与服务部署实战 | PyLLM
+  - - meta
+    - name: twitter:description
+      content: vLLM高效推理引擎完整教程：PagedAttention原理、连续批处理、API服务、分布式推理、AWQ/GPTQ量化、LoRA服务、Kubernetes部署
 ---
 
 # vLLM 教程大纲
 
----
 
 ## 总体设计思路
 

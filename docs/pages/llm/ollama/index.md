@@ -2,16 +2,25 @@
 title: "Ollama教程 - 本地大模型运行与部署实战 | PyLLM"
 description: "Ollama本地大模型运行完整教程：安装配置、API服务、Modelfile自定义、多模态、Embedding与RAG、LangChain集成、性能优化、企业部署"
 head:
-  - meta: {name: 'keywords', content: 'Ollama,本地大模型,LLM部署,Modelfile,RAG,量化,API服务'}
-  - meta: {property: 'og:title', content: 'Ollama教程 - 本地大模型运行与部署实战 | PyLLM'}
-  - meta: {property: 'og:description', content: 'Ollama本地大模型运行完整教程：安装配置、API服务、Modelfile自定义、多模态、Embedding与RAG、LangChain集成、性能优化、企业部署'}
-  - meta: {name: 'twitter:title', content: 'Ollama教程 - 本地大模型运行与部署实战 | PyLLM'}
-  - meta: {name: 'twitter:description', content: 'Ollama本地大模型运行完整教程：安装配置、API服务、Modelfile自定义、多模态、Embedding与RAG、LangChain集成、性能优化、企业部署'}
+  - - meta
+    - name: keywords
+      content: Ollama,本地大模型,LLM部署,Modelfile,RAG,量化,API服务
+  - - meta
+    - property: og:title
+      content: Ollama教程 - 本地大模型运行与部署实战 | PyLLM
+  - - meta
+    - property: og:description
+      content: Ollama本地大模型运行完整教程：安装配置、API服务、Modelfile自定义、多模态、Embedding与RAG、LangChain集成、性能优化、企业部署
+  - - meta
+    - name: twitter:title
+      content: Ollama教程 - 本地大模型运行与部署实战 | PyLLM
+  - - meta
+    - name: twitter:description
+      content: Ollama本地大模型运行完整教程：安装配置、API服务、Modelfile自定义、多模态、Embedding与RAG、LangChain集成、性能优化、企业部署
 ---
 
 # Ollama 教程大纲
 
----
 
 ## 总体设计思路
 

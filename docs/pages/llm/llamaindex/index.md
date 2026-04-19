@@ -2,16 +2,25 @@
 title: "LlamaIndex教程 - RAG数据框架与检索增强实战 | PyLLM"
 description: "LlamaIndex RAG数据框架完整教程：数据连接器、文档解析、索引策略、高级检索、查询引擎、响应合成、评估调试、多模态RAG"
 head:
-  - meta: {name: 'keywords', content: 'LlamaIndex,RAG,数据框架,向量索引,检索增强,查询引擎'}
-  - meta: {property: 'og:title', content: 'LlamaIndex教程 - RAG数据框架与检索增强实战 | PyLLM'}
-  - meta: {property: 'og:description', content: 'LlamaIndex RAG数据框架完整教程：数据连接器、文档解析、索引策略、高级检索、查询引擎、响应合成、评估调试、多模态RAG'}
-  - meta: {name: 'twitter:title', content: 'LlamaIndex教程 - RAG数据框架与检索增强实战 | PyLLM'}
-  - meta: {name: 'twitter:description', content: 'LlamaIndex RAG数据框架完整教程：数据连接器、文档解析、索引策略、高级检索、查询引擎、响应合成、评估调试、多模态RAG'}
+  - - meta
+    - name: keywords
+      content: LlamaIndex,RAG,数据框架,向量索引,检索增强,查询引擎
+  - - meta
+    - property: og:title
+      content: LlamaIndex教程 - RAG数据框架与检索增强实战 | PyLLM
+  - - meta
+    - property: og:description
+      content: LlamaIndex RAG数据框架完整教程：数据连接器、文档解析、索引策略、高级检索、查询引擎、响应合成、评估调试、多模态RAG
+  - - meta
+    - name: twitter:title
+      content: LlamaIndex教程 - RAG数据框架与检索增强实战 | PyLLM
+  - - meta
+    - name: twitter:description
+      content: LlamaIndex RAG数据框架完整教程：数据连接器、文档解析、索引策略、高级检索、查询引擎、响应合成、评估调试、多模态RAG
 ---
 
 # LlamaIndex 教程大纲
 
----
 
 ## 总体设计思路
 

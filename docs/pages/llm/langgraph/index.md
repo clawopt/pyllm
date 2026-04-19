@@ -2,16 +2,25 @@
 title: "LangGraph教程 - 有状态Agent工作流编排实战 | PyLLM"
 description: "LangGraph有状态Agent工作流编排完整教程：状态机、条件路由、人机协作、循环迭代、子图模块化、持久化与时间旅行、多智能体协作"
 head:
-  - meta: {name: 'keywords', content: 'LangGraph,Agent,工作流,状态机,人机协作,多智能体,Interrupt'}
-  - meta: {property: 'og:title', content: 'LangGraph教程 - 有状态Agent工作流编排实战 | PyLLM'}
-  - meta: {property: 'og:description', content: 'LangGraph有状态Agent工作流编排完整教程：状态机、条件路由、人机协作、循环迭代、子图模块化、持久化与时间旅行、多智能体协作'}
-  - meta: {name: 'twitter:title', content: 'LangGraph教程 - 有状态Agent工作流编排实战 | PyLLM'}
-  - meta: {name: 'twitter:description', content: 'LangGraph有状态Agent工作流编排完整教程：状态机、条件路由、人机协作、循环迭代、子图模块化、持久化与时间旅行、多智能体协作'}
+  - - meta
+    - name: keywords
+      content: LangGraph,Agent,工作流,状态机,人机协作,多智能体,Interrupt
+  - - meta
+    - property: og:title
+      content: LangGraph教程 - 有状态Agent工作流编排实战 | PyLLM
+  - - meta
+    - property: og:description
+      content: LangGraph有状态Agent工作流编排完整教程：状态机、条件路由、人机协作、循环迭代、子图模块化、持久化与时间旅行、多智能体协作
+  - - meta
+    - name: twitter:title
+      content: LangGraph教程 - 有状态Agent工作流编排实战 | PyLLM
+  - - meta
+    - name: twitter:description
+      content: LangGraph有状态Agent工作流编排完整教程：状态机、条件路由、人机协作、循环迭代、子图模块化、持久化与时间旅行、多智能体协作
 ---
 
 # LangGraph 教程大纲
 
----
 
 ## 总体设计思路
 

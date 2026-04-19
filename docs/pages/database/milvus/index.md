@@ -2,11 +2,21 @@
 title: "Milvus教程 - 分布式向量数据库实战 | PyLLM"
 description: "Milvus分布式向量数据库完整教程：Schema设计、数据操作、HNSW/量化索引、多向量搜索、RAG实战、集群部署、性能监控"
 head:
-  - meta: {name: 'keywords', content: 'Milvus,向量数据库,分布式,HNSW,多向量搜索,集群部署'}
-  - meta: {property: 'og:title', content: 'Milvus教程 - 分布式向量数据库实战 | PyLLM'}
-  - meta: {property: 'og:description', content: 'Milvus分布式向量数据库完整教程：Schema设计、数据操作、HNSW/量化索引、多向量搜索、RAG实战、集群部署、性能监控'}
-  - meta: {name: 'twitter:title', content: 'Milvus教程 - 分布式向量数据库实战 | PyLLM'}
-  - meta: {name: 'twitter:description', content: 'Milvus分布式向量数据库完整教程：Schema设计、数据操作、HNSW/量化索引、多向量搜索、RAG实战、集群部署、性能监控'}
+  - - meta
+    - name: keywords
+      content: Milvus,向量数据库,分布式,HNSW,多向量搜索,集群部署
+  - - meta
+    - property: og:title
+      content: Milvus教程 - 分布式向量数据库实战 | PyLLM
+  - - meta
+    - property: og:description
+      content: Milvus分布式向量数据库完整教程：Schema设计、数据操作、HNSW/量化索引、多向量搜索、RAG实战、集群部署、性能监控
+  - - meta
+    - name: twitter:title
+      content: Milvus教程 - 分布式向量数据库实战 | PyLLM
+  - - meta
+    - name: twitter:description
+      content: Milvus分布式向量数据库完整教程：Schema设计、数据操作、HNSW/量化索引、多向量搜索、RAG实战、集群部署、性能监控
 ---
 
 # Milvus 向量数据库教程大纲
